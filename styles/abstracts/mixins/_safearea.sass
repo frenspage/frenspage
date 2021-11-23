@@ -1,0 +1,13 @@
+@use "../var" as *
+//-----------------------------------
+// 			Safe Area Mixin
+//-----------------------------------
+
+@mixin safearea($padding: 0)
+	@media screen and (orientation: landscape) and (max-width: $tablet)
+		padding-left: env(safe-area-inset-left)
+		padding-right: env(safe-area-inset-right)
+
+	@media screen and (orientation: portrait) and (max-width: $tablet)
+		padding: $padding
+

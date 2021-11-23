@@ -1,0 +1,26 @@
+@use "../var" as *
+//----------------------------------------
+//  Pseudo Mixins for before & after
+//
+//	$loc: before,
+//  $content: '',
+//	$pos: 'absolute',
+//	$top: 0,
+//	$left: 0,
+//	$bottom: 0,
+//	$right: 0
+//
+//----------------------------------------
+
+
+@mixin pseudo( $loc: before, $content: '', $pos: absolute, $top: initial, $left: initial, $bottom: initial, $right: initial)
+	position: relative
+
+	&::#{$loc}
+		content: $content
+		position: $pos
+		top: $top
+		left: $left
+		bottom: $bottom
+		right: $right
+		@content

@@ -1,0 +1,518 @@
+#loading
+	position: fixed
+	top: 0
+	bottom: 0
+	left: 0
+	right: 0
+	background: #fff
+	z-index: 1000
+
+
+#loading .lds-ellipsis
+	position: absolute
+	top: 50%
+	left: 50%
+	transform: translate(-50%,-50%)
+
+.container
+	margin: auto
+	top: 100px
+	position: relative
+	text-align: center
+
+
+h1
+	margin-bottom: 20px
+	font-size: 24px
+	font-family: "OCR A Std"
+
+
+hr
+	border-top: 1px solid #333
+	border-bottom: none
+
+
+#btn-disconnect
+	display: none
+
+
+
+#secret, #walletcontent, #btn-connect, #walletinfo
+	display: none
+
+
+button
+	text-decoration:  none !important
+
+a:-webkit-any-link
+	text-decoration:  none !important
+
+
+.clearfix
+	clear: both
+
+
+
+.stdbutton
+	background: #000
+	color: #fff
+	cursor: pointer
+	padding: 10px
+	border-radius: 20px
+	font-weight: bold
+
+
+.stdbutton:hover
+	text-decoration:  none
+	opacity: 0.7
+
+
+.content
+	margin: auto
+	margin-top: 10px
+	display: none
+
+
+#loggedoutcontent
+	position: fixed
+	top: 50%
+	left: 50%
+	transform:  translate(-50%,-50%)
+
+
+#connectedwallet
+	text-overflow:  ellipsis
+	overflow: hidden
+
+
+.connectwallet
+	background: #000
+	color: #fff
+	font-weight: bold
+	padding: 20px 20px
+	font-family: "OCR A Std"
+	border-radius: 40px
+	-webkit-transition:  box-shadow 0.4s ease
+	-moz-transition:  box-shadow 0.4s ease
+	-o-transition:  box-shadow 0.4s ease
+	transition:  box-shadow 0.4s ease
+	width: 240px
+	margin: auto
+
+
+.disconnectwallet
+	background: #000
+	color: #fff
+	font-weight: bold
+	padding: 20px 20px
+	font-family: "OCR A Std"
+	border-radius: 40px
+	-webkit-transition:  box-shadow 0.4s ease
+	-moz-transition:  box-shadow 0.4s ease
+	-o-transition:  box-shadow 0.4s ease
+	transition:  box-shadow 0.4s ease
+	width: 240px
+	margin: 20px auto 0
+
+
+.connectwallet:hover, .disconnectwallet:hover
+	color: #fff
+	font-weight:  1000
+	text-decoration:  none
+	cursor: pointer
+	-webkit-box-shadow:  0px 0px 60px -15px rgba(0,0,0,1)
+	-moz-box-shadow:  0px 0px 60px -15px rgba(0,0,0,1)
+	box-shadow:  0px 0px 60px -15px rgba(0,0,0,1)
+	border: 0
+
+
+.disconnectwallet
+	display: none
+
+
+.connectwallet i, .disconnectwallet i
+	padding-left: 10px
+
+
+.btn-animated
+	animation:  moveInBottom 5s ease-out
+	animation-fill-mode:  backwards
+
+
+@keyframes moveInBottom
+	0%
+		opacity: 0
+		transform: translateY(30px)
+	100%
+		opacity: 1
+		transform: translateY(0px)
+
+
+
+
+#connected
+	margin-top: 40px
+	display: none
+
+
+.walletinfo
+	padding:  15px
+	border-radius:  10px
+	max-width: 520px
+	margin: 0 auto 25px
+	backdrop-filter:  blur(10px)
+	position: fixed
+	bottom: 10px
+	left: calc(50% - 125px)
+	width: 250px
+	color: #000
+	z-index: 100
+	font-size: 12px
+	cursor: pointer
+
+
+.nftimage
+	float: left
+	padding: 15px
+	max-width: 25%
+	height: 300px
+
+
+@media all and (max-width:  720px)
+
+.nftimage
+	max-width: 50%
+
+
+
+.popupbg
+	background:  rgba(0,0,0,0.5)
+	position: fixed
+	top: 0
+	left: 0
+	right: 0
+	bottom: 0
+	z-index: 101
+	display: none
+
+
+.popup
+	position: absolute
+	z-index: 101
+	width: 30%
+	top:  50%
+	left:  50%
+	transform:  translate(-50%, -50%)
+	background: #fff
+	padding: 100px 50px
+	border-radius: 30px
+
+
+.bigpopup
+	position: absolute
+	z-index: 101
+	width: 90%
+	top: 50%
+	left:  50%
+	transform:  translate(-50%, -50%)
+	background: #fff
+	padding: 50px 50px
+	border-radius: 30px
+	max-height: 100%
+
+
+.closepopup
+	position: absolute
+	top: 15px
+	right: 15px
+	width: 22px
+	height: 22px
+	text-align: center
+	line-height: 28px
+	background: #000
+	color: #fff
+	padding: 5px
+	border-radius: 50px
+	border: 2px solid rgba(0,0,0,0)
+	cursor: pointer
+
+.closepopup:hover
+	background: rgba(0,0,0,0)
+	color: #000
+	border: 2px solid #000
+
+
+
+.savebutton
+	position: absolute
+	bottom: -15px
+	left: calc(50% - 65px)
+	text-align: center
+	line-height: 28px
+	background: #ccc
+	width: 100px
+	color: #eee
+	padding: 5px 15px
+	border-radius: 50px
+	border: 2px solid #ccc
+
+
+
+
+.cansubmit
+	border: 2px solid #000
+	background: #000
+	cursor: pointer
+
+
+
+
+
+//First Login
+//#editprofile
+
+.profilepicselect
+	background: #eee
+	border-radius: 100px
+	height: 200px
+	width: 200px
+	background-size:  contain
+	background-position:  center center
+	background-repeat:  no-repeat
+	margin: auto
+	background-image:  url("/images/punk.png")
+	border: 1px solid #ddd
+	cursor: pointer
+	transition:  opacity 0.2s ease
+
+
+.profilepicselect:hover
+	opacity: 0.7
+
+
+#profilepicbox
+	position: fixed
+	top: 50%
+	left: 50%
+	transform:  translate(-50%,-50%)
+
+
+#profilepic
+	background: #eee
+	border-radius: 100px
+	height: 200px
+	width: 200px
+	background-size:  contain
+	background-position:  center center
+	background-repeat:  no-repeat
+	margin: auto
+	background-image: url("/images/punk.png")
+	border: 1px solid #ddd
+	cursor: pointer
+	transition:  opacity 0.2s ease
+	display: inline-block
+
+
+
+.profilepic:hover
+	opacity: 0.7
+
+
+#profilename
+	margin-top: 30px
+
+
+.ensselect
+	border-bottom: 2px solid #ddd
+	width: 300px
+	margin: auto
+	margin-top: 30px
+	padding: 5px
+	transition:  opacity 0.2s ease
+	cursor: pointer
+
+
+.ensselect:hover
+	opacity: 0.7
+
+
+
+#profilepicselect_nfts .nftbox, #ensselect .nftbox
+	float: left
+	padding: 30px
+	position: relative
+
+
+#profilepicselect_nfts .nftbubble
+	background-color: #eee
+	width: 160px
+	height: 160px
+	border-radius: 120px
+	background-size:  contain
+	background-repeat:  no-repeat
+	background-position:  center center
+	transition:  opacity 0.2s ease
+
+
+
+#profilepicselect_nfts .nftbubble:hover, #ensselect .ensbubble:hover
+	opacity: 0.7
+	cursor: pointer
+
+
+#profilepicselect_nfts, #ensselect
+	overflow-y: scroll
+	max-height: calc(100% - 100px)
+
+
+#profilepicselect_nfts .nftname, #ensselect .ensname
+	font-size: 14px
+	max-width: 180px
+	text-align:  center
+	text-overflow:  ellipsis
+	overflow: hidden
+	white-space:  nowrap
+	margin-top: 15px
+
+
+#profilepicselect_nfts .nftaddress, #ensselect .ensaddress
+	font-size: 12px
+	max-width: 180px
+	text-align:  center
+	text-overflow:  ellipsis
+	overflow: hidden
+	white-space:  nowrap
+	color: #999
+	transition:  opacity 0.2s ease
+
+
+#profilepicselect_nfts .nftaddress:hover, #ensselect .ensaddress:hover
+	opacity: 0.7
+
+
+.pfpselected, .ensselected
+	border-radius: 20px
+	height: 20px
+	width: 20px
+	padding: 10px
+	position: absolute
+	top: 40px
+	right: 40px
+	z-index: 5
+	background: #000
+	color: #fff
+	display: none
+
+
+.pfpselected.selected, .ensselected.selected
+	display: block
+
+
+
+#ensselect .ensbubble
+	background-color: #eee
+	width: 160px
+	height: 160px
+	border-radius: 20px
+	background-size:  contain
+	background-repeat:  no-repeat
+	background-position:  center center
+	transition:  opacity 0.2s ease
+
+
+/* Other */
+
+
+
+
+.glow-on-hover
+	width:  220px
+	height:  50px
+	color: #fff
+	font-weight: bold
+	padding: 20px 20px
+	font-size: 20px
+	font-family: "OCR A Std"
+	font-weight:  1000
+	border:  none
+	outline:  none
+	cursor:  pointer
+	position:  relative
+	z-index:  0
+	border-radius:  10px
+	backdrop-filter:  blur(10px)
+	border-top: 1px solid rgba(255,255,255,0.1)
+	border-left: 1px solid rgba(255,255,255,0.1)
+
+
+.glow-on-hover::before
+	content:  ''
+	text-decoration: none
+	background:  linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000)
+	position:  absolute
+	top:  -2px
+	left: -2px
+	background-size:  400%
+	z-index:  -1
+	filter:  blur(5px)
+	width:  calc(100% + 4px)
+	height:  calc(100% + 4px)
+	animation:  glowing 20s linear infinite
+	transition:  opacity .3s ease-in-out
+	border-radius:  10px
+
+
+.glow-on-hover:active::after
+	background:  transparent
+
+
+.glow-on-hover:hover
+	text-decoration:  none !important
+	background-color:  rgba(255,255,255,0.3)
+
+
+.glow-on-hover:after
+	z-index:  -1
+	content:  ''
+	position:  absolute
+	width:  100%
+	height:  100%
+	left:  0
+	top:  0
+	border-radius:  10px
+
+
+@keyframes glowing
+	0%
+		background-position:  0 0
+	50%
+		background-position:  400% 0
+	100%
+		background-position:  0 0
+
+
+.footer
+	position: fixed
+	bottom: 15px
+	font-size: 10px
+	text-align: center
+	z-index: 2
+	width: 100%
+	opacity: 0.6
+	color: #fff !important
+
+
+.footer a
+	color: #fff !important
+	font-weight:  bold
+
+
+
+
+@media all and (max-width: 720px)
+	.content
+		max-width:  calc(100% - 20px)
+
+
+	#disconnectwallet
+		max-width:  80%
