@@ -1,6 +1,7 @@
 import type { NextPage, GetServerSideProps } from "next";
 import React, { useEffect } from "react";
 import { init } from "../canvas/main";
+import Layout from "../components/global/Layout";
 
 interface Props {
     id: string;
@@ -13,7 +14,7 @@ const UserPage: NextPage<Props> = ({ id, data }) => {
     }, []);
 
     return (
-        <div className="root root-user">
+        <Layout addClass="root-user">
             <div className="user-container">
                 <div
                     className="profilepicselect myprofilepic"
@@ -31,13 +32,11 @@ const UserPage: NextPage<Props> = ({ id, data }) => {
             <button className="fab" id="fab">
                 +
             </button>
-        </div>
+        </Layout>
     );
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-    console.log(context.params);
-
     return {
         props: {
             id: context.params?.id,

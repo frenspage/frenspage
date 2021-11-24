@@ -1,8 +1,15 @@
 import type { NextPage } from "next";
-
+import React, { useEffect } from "react";
+import Layout from "../components/global/Layout";
+import { loadFrens } from "../canvas/lib/frens";
+import * as Moralis from "moralis";
 const Home: NextPage = () => {
+    useEffect(() => {
+        loadFrens(Moralis);
+    }, []);
+
     return (
-        <div className="root">
+        <Layout>
             <div id="loading">
                 <div className="lds-ellipsis">
                     gm<div></div>
@@ -162,7 +169,7 @@ const Home: NextPage = () => {
                     </div>
                 </div>
             </div>
-        </div>
+        </Layout>
     );
 };
 
