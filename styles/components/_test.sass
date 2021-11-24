@@ -1,3 +1,9 @@
+@use "../abstracts/index" as *
+
+//----------------------------------
+//               TEST               -
+//----------------------------------
+
 #loading
 	position: fixed
 	top: 0
@@ -32,14 +38,6 @@ hr
 	border-bottom: none
 
 
-#btn-disconnect
-	display: none
-
-
-
-#secret, #walletcontent, #btn-connect, #walletinfo
-	display: none
-
 
 button
 	text-decoration:  none !important
@@ -62,15 +60,10 @@ a:-webkit-any-link
 	font-weight: bold
 
 
-.stdbutton:hover
-	text-decoration:  none
-	opacity: 0.7
+	&:hover
+		text-decoration:  none
+		opacity: 0.7
 
-
-.content
-	margin: auto
-	margin-top: 10px
-	display: none
 
 
 #loggedoutcontent
@@ -98,6 +91,7 @@ a:-webkit-any-link
 	transition:  box-shadow 0.4s ease
 	width: 240px
 	margin: auto
+	border: none
 
 
 .disconnectwallet
@@ -126,9 +120,6 @@ a:-webkit-any-link
 	border: 0
 
 
-.disconnectwallet
-	display: none
-
 
 .connectwallet i, .disconnectwallet i
 	padding-left: 10px
@@ -152,7 +143,6 @@ a:-webkit-any-link
 
 #connected
 	margin-top: 40px
-	display: none
 
 
 .walletinfo
@@ -177,11 +167,8 @@ a:-webkit-any-link
 	max-width: 25%
 	height: 300px
 
-
-@media all and (max-width:  720px)
-
-.nftimage
-	max-width: 50%
+	@include media-below(phone)
+		max-width: 50%
 
 
 
@@ -193,7 +180,6 @@ a:-webkit-any-link
 	right: 0
 	bottom: 0
 	z-index: 101
-	display: none
 
 
 .popup
@@ -227,8 +213,10 @@ a:-webkit-any-link
 	right: 15px
 	width: 22px
 	height: 22px
-	text-align: center
-	line-height: 28px
+	display: flex
+	align-items: center
+	justify-content: center
+	line-height: 22px
 	background: #000
 	color: #fff
 	padding: 5px
@@ -236,17 +224,23 @@ a:-webkit-any-link
 	border: 2px solid rgba(0,0,0,0)
 	cursor: pointer
 
-.closepopup:hover
-	background: rgba(0,0,0,0)
-	color: #000
-	border: 2px solid #000
+	&:hover
+		background: rgba(0,0,0,0)
+		color: #000
+		border: 2px solid #000
+
+	span
+		text-align: center
+		padding-top: 4px
+
 
 
 
 .savebutton
 	position: absolute
 	bottom: -15px
-	left: calc(50% - 65px)
+	left: 50%
+	transform: translateX(-50%)
 	text-align: center
 	line-height: 28px
 	background: #ccc
@@ -286,8 +280,8 @@ a:-webkit-any-link
 	transition:  opacity 0.2s ease
 
 
-.profilepicselect:hover
-	opacity: 0.7
+	&:hover
+		opacity: 0.7
 
 
 #profilepicbox
@@ -314,8 +308,8 @@ a:-webkit-any-link
 
 
 
-.profilepic:hover
-	opacity: 0.7
+	&:hover
+		opacity: 0.7
 
 
 #profilename
@@ -331,9 +325,8 @@ a:-webkit-any-link
 	transition:  opacity 0.2s ease
 	cursor: pointer
 
-
-.ensselect:hover
-	opacity: 0.7
+	&:hover
+		opacity: 0.7
 
 
 
@@ -401,7 +394,6 @@ a:-webkit-any-link
 	z-index: 5
 	background: #000
 	color: #fff
-	display: none
 
 
 .pfpselected.selected, .ensselected.selected
@@ -433,7 +425,6 @@ a:-webkit-any-link
 	padding: 20px 20px
 	font-size: 20px
 	font-family: "OCR A Std"
-	font-weight:  1000
 	border:  none
 	outline:  none
 	cursor:  pointer
@@ -445,41 +436,41 @@ a:-webkit-any-link
 	border-left: 1px solid rgba(255,255,255,0.1)
 
 
-.glow-on-hover::before
-	content:  ''
-	text-decoration: none
-	background:  linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000)
-	position:  absolute
-	top:  -2px
-	left: -2px
-	background-size:  400%
-	z-index:  -1
-	filter:  blur(5px)
-	width:  calc(100% + 4px)
-	height:  calc(100% + 4px)
-	animation:  glowing 20s linear infinite
-	transition:  opacity .3s ease-in-out
-	border-radius:  10px
+	&::before
+		content:  ''
+		text-decoration: none
+		background:  linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000)
+		position:  absolute
+		top:  -2px
+		left: -2px
+		background-size:  400%
+		z-index:  -1
+		filter:  blur(5px)
+		width:  calc(100% + 4px)
+		height:  calc(100% + 4px)
+		animation:  glowing 20s linear infinite
+		transition:  opacity .3s ease-in-out
+		border-radius:  10px
 
 
-.glow-on-hover:active::after
-	background:  transparent
+	&:active::after
+		background:  transparent
 
 
-.glow-on-hover:hover
-	text-decoration:  none !important
-	background-color:  rgba(255,255,255,0.3)
+	&:hover
+		text-decoration:  none !important
+		background-color:  rgba(255,255,255,0.3)
 
 
-.glow-on-hover:after
-	z-index:  -1
-	content:  ''
-	position:  absolute
-	width:  100%
-	height:  100%
-	left:  0
-	top:  0
-	border-radius:  10px
+	&::after
+		z-index:  -1
+		content:  ''
+		position:  absolute
+		width:  100%
+		height:  100%
+		left:  0
+		top:  0
+		border-radius:  10px
 
 
 @keyframes glowing
@@ -502,9 +493,9 @@ a:-webkit-any-link
 	color: #fff !important
 
 
-.footer a
-	color: #fff !important
-	font-weight:  bold
+	a
+		color: #fff !important
+		font-weight:  bold
 
 
 

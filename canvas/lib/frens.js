@@ -98,12 +98,12 @@ export const loadFrens = (Moralis) => {
     }
 
     function endLoadingIn() {
-        $("#loggedincontent").fadeIn(300);
+        document.querySelector("#loggedincontent")?.style.display = "block";
     }
 
     function endLoadingOut() {
-        $("#loading").fadeOut(300);
-        $("#loggedoutcontent").fadeIn(300);
+        document.querySelector("#loading")?.style.display = "none";
+        document.querySelector("#loggedoutcontent")?.style.display = "block";
     }
 
     /*function getLocalStorage()
@@ -125,16 +125,17 @@ export const loadFrens = (Moralis) => {
     //Trigger the login process once user signs login msg with his wallet
     async function processLogin() {
         //getLocalStorage();
-        $("#loggedoutcontent").hide();
+        document.querySelector("#loggedoutcontent")?.style.display = "none";
 
-        $("#connectedwallet").html(user.get("ethAddress"));
+
+        document.querySelector("#connectedwallet")?.innerHTML = user.get("ethAddress")
 
         ensusername = user.get("ensusername");
 
         if (ensusername !== undefined) {
-            $(".username").html(user.get("ensusername"));
+            document.querySelector(".username")?.innerHTML = user.get("ensusername")
         } else {
-            $(".username").html(user.get("username"));
+            document.querySelector(".username")?.innerHTML = user.get("username")
         }
 
         setFrontend();
@@ -181,15 +182,18 @@ export const loadFrens = (Moralis) => {
             showEditPopup();
         }
 
-        $("#connectedwallet").html(userAddress);
+        document.querySelector("connectedwallet")?.innerHTML = userAddress
         $("#walletinfo").show();
-        $("#loading").fadeOut(300);
+        document.querySelector("#walletinfo")?.style.display = "block";
+
+        document.querySelector("#loading")?.style.display = "none";
 
         endLoadingIn();
     }
 
     function showEditPopup() {
-        $("#editprofile").show();
+        document.querySelector("#editprofile")?.style.display = "block";
+
     }
 
     //Load a single NFT, check if it the secret and display it
@@ -223,13 +227,13 @@ export const loadFrens = (Moralis) => {
     //Display individual NFT as images
     function showNFT(items) {
         if (showcontent) {
-            var img = items["image"];
-            var name = items["name"];
-            var animation_url = items["animation_url"]; //not needed rn
-            var token_address = items["token_address"];
-            var token_id = items["token_id"];
+            let img = items["image"];
+            let name = items["name"];
+            let animation_url = items["animation_url"]; //not needed rn
+            let token_address = items["token_address"];
+            let token_id = items["token_id"];
 
-            var token_metadata = items["token_metdata"];
+            let token_metadata = items["token_metdata"];
 
             clog(token_address);
 
@@ -237,7 +241,7 @@ export const loadFrens = (Moralis) => {
                 clog("ENS FOUND;");
                 clog(items);
 
-                var d = "<div class='nftbox'>";
+                let d = "<div class='nftbox'>";
 
                 d +=
                     "<div id='pfp_" +
@@ -270,9 +274,10 @@ export const loadFrens = (Moralis) => {
 
                 d += "</div>";
 
-                $("#ensselect").append(d);
+                let oldInner = document.querySelector("#ensselect")?.innerHTML;
+                document.querySelector("#ensselect")?.innerHTML = oldInner + d;
             } else {
-                var d = "<div class='nftbox'>";
+                let d = "<div class='nftbox'>";
 
                 d +=
                     "<div id='pfp_" +
@@ -305,7 +310,8 @@ export const loadFrens = (Moralis) => {
 
                 d += "</div>";
 
-                $("#profilepicselect_nfts").append(d);
+                let oldInner = document.querySelector("#profilepicselect_nfts")?.innerHTML;
+                document.querySelector("#profilepicselect_nfts")?.innerHTML = oldInner + d;
             }
 
             //$("#profilepicselect_nfts").append("<img class='nftimage' src='" + img + "' onerror='defaultImage(this)'} ><br>");
@@ -426,19 +432,21 @@ export const loadFrens = (Moralis) => {
         //Unselect
         if (id == selectedENS["id"]) {
             selectedENS = [];
-            $("#" + id).removeClass("selected");
-            $("#saveens").removeClass("cansubmit");
+            document.querySelector("#" +id).classList.remove("selected");
+            document.querySelector("#saveens").classList.remove("cansubmit");
+
             cansaveens = false;
         } else {
-            $("#" + selectedENS["id"]).removeClass("selected");
+            document.querySelector("#" + selectedENS["id"]).classList.remove("selected");
+
 
             selectedENS["id"] = id;
             selectedENS["token_address"] = token_address;
             selectedENS["token_id"] = token_id;
 
             clog(id);
-            $("#" + id).addClass("selected");
-            $("#saveens").addClass("cansubmit");
+            document.querySelector("#"+id).classList.add("selected");
+            document.querySelector("#saveens").classList.add("cansubmit");
             cansaveens = true;
         }
     }
@@ -446,14 +454,15 @@ export const loadFrens = (Moralis) => {
     let newusername;
 
     function chooseENS() {
-        newusername = $(
+        newusername = document.querySelector(
             "#ensname_" +
                 selectedENS["token_address"] +
                 "_" +
                 selectedENS["token_id"],
-        ).html();
+        ).innerHTML;
         cansaveens = true;
-        $(".username").html(newusername);
+        document.querySelector('.username')?.innerHTML = newusername + "";
+
         closeENSSelect();
     }
 
@@ -464,7 +473,7 @@ export const loadFrens = (Moralis) => {
             user.save().then(
                 (ens) => {
                     // Execute any logic that should take place after the object is saved.
-                    $(".username").html(newusername);
+                    document.querySelector('.username')?.innerHTML = newusername + "";
                     closeENSSelect();
                 },
                 (error) => {
@@ -552,7 +561,7 @@ export const loadFrens = (Moralis) => {
     //Fire this if the hook was found for bling bling
     function triggerSecretHook(hookurl) {
         if (!hooked) {
-            $("#loadingsecret").hide();
+            document.getElementById('loadingsecret')?.style.display = 'none';
 
             $.ajax({
                 url: hookurl,
@@ -577,37 +586,37 @@ export const loadFrens = (Moralis) => {
     }
 
     function openProfilePicSelect() {
-        $("#profilepicselect_nfts").html("");
-        $("#profilepicselect_nfts_loading").show();
-        $("#profilepicselect_popup").show();
+        document.getElementsByClassName("profilepicselect_nfts")?.innerHTML = ""
+        document.getElementById('profilepicselect_nfts_loading')?.style.display = 'block';
+        document.getElementById('profilepicselect_popup')?.style.display = 'block';
 
         getNFTS().then(function () {
             userEthNFTs.result.forEach(loadNFT);
-            $("#profilepicselect_nfts_loading").hide();
+            document.getElementById('profilepicselect_nfts_loading')?.style.display = 'none';
         });
     }
 
     function closeProfilePicSelect() {
-        $("#profilepicselect_popup").hide();
+        document.getElementById('profilepicselect_popup')?.style.display = 'none';
     }
 
     function openENSSelect() {
-        $("#ensselect_nfts_loading").show();
-        $("#ensselect").html("");
+        document.getElementById('ensselect_nfts_loading')?.style.display = 'block';
 
+        document.getElementById("ensselect")?.innerHTML = "";
         //getENS();
         //userEthNFTs.result.forEach(loadNFT);
 
         //BECAUSE OF BUG:
 
-        token_address = "0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85";
-        token_id =
+        let token_address = "0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85";
+        let token_id =
             "25222095590874728349755125166335892413298380980240991954037623438333759328804";
-        ensname = "Mitchoz.eth";
-        img =
+        let ensname = "Mitchoz.eth";
+        let img =
             "https://lh3.googleusercontent.com/OsUWP7Pe9nzHknJfMbXSaTJiIZE7qMvJ1MwwJMZ_Qm26k9_hkk9FJ7YYvh6up0NXDoFiPvOIdUuo0qOHW95aUpnmSFxa1k70iQsJ=w600";
 
-        var d = "<div class='nftbox'>";
+        let d = "<div class='nftbox'>";
 
         d +=
             "<div id='ens_" +
@@ -647,14 +656,16 @@ export const loadFrens = (Moralis) => {
 
         d += "</div>";
 
-        $("#ensselect").html(d);
+        document.getElementById('ensselect')?.innerHTML(d);
 
-        $("#ensselect_popup").show();
-        $("#ensselect_nfts_loading").hide();
+
+        document.getElementById('ensselect_popup')?.style.display = 'block';
+
+        document.getElementById('ensselect_nfts_loading')?.style.display = 'none';
     }
 
     function closeENSSelect() {
-        $("#ensselect_popup").hide();
+        document.getElementById('ensselect_popup')?.style.display = 'none';
     }
 
     function saveProfile() {
@@ -669,7 +680,7 @@ export const loadFrens = (Moralis) => {
     }
 
     function closeEditProfile() {
-        $("#editprofile").hide();
+        document.getElementById('editprofile').style.display = 'none';
     }
 
     //Disconnect the user's wallet and reset UI
@@ -688,7 +699,7 @@ export const loadFrens = (Moralis) => {
     }
 
     //Load this somewhere on frontend to trigger App start
-    $(document).ready(function () {
+    document.addEventListener("DOMContentLoaded", function () {
         //is the user already logged in
         //user = getLocalStorage();
 
@@ -703,15 +714,19 @@ export const loadFrens = (Moralis) => {
             processLogin();
         }
 
-        $("#connectedwallet").on("mouseenter", function () {
-            $("#connectedwallet").html("Disconnect");
-        });
+        document
+            .getElementById("connectedwallet")
+            ?.addEventListener("mouseenter", function () {
+                $("#connectedwallet").html("Disconnect");
+            });
 
-        $("#connectedwallet").on("mouseleave", function () {
-            if (user != null) {
-                $("#connectedwallet").html(user.get("ethAddress"));
-            }
-        });
+        document
+            .getElementById("connectedwallet")
+            ?.addEventListener("mouseleave", function () {
+                if (user != null) {
+                    $("#connectedwallet").html(user.get("ethAddress"));
+                }
+            });
     });
 
     //---------------------------------------
