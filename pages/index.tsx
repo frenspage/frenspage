@@ -2,7 +2,6 @@ import type { NextPage } from "next";
 import React, { useEffect, useState } from "react";
 import Layout from "../components/global/Layout";
 import { useMoralis } from "react-moralis";
-
 const Home: NextPage = () => {
     const [showEditPopup, setShowEditPopup] = useState(false);
     const [ensSelectPopup, setEnsSelectPopup] = useState(false);
@@ -15,12 +14,24 @@ const Home: NextPage = () => {
         isInitialized,
         logout,
         isAuthenticating,
+        web3,
+        enableWeb3,
+        isWeb3Enabled,
+        isWeb3EnableLoading,
+        web3EnableError,
+        Moralis,
     } = useMoralis();
 
     useEffect(() => {
-        console.log("isInitialized", isInitialized);
-        console.log("isAuthenticated", isAuthenticated);
-    }, [isInitialized, isAuthenticated]);
+        const fetcher = async () => {
+            if (user) {
+                let options = { address: user.get("ethAddress") };
+                let userEthNFTs = await Moralis.Web3API.account.getNFTs(options);
+                console.log("userEthNFTs", userEthNFTs);
+            }
+        }
+        fetcher()
+    }, [user]);
 
     if (!isInitialized)
         return (
@@ -119,7 +130,7 @@ const Home: NextPage = () => {
                                 >
                                     Select your .eth name
                                 </div>
-                                <div className="smallfont greyfont">
+                                <div className="smallfont greyfont paddingTop">
                                     username: {user?.get("username")}
                                 </div>
 
