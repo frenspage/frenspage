@@ -276,6 +276,7 @@ const Home: NextPage = () => {
                                                                         ""
                                                                     }
                                                                     target="_blank"
+                                                                    rel="noopener noreferrer"
                                                                     className="pfp__nft__permalink"
                                                                 >
                                                                     <span className="c--grey">
