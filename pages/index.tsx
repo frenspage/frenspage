@@ -6,7 +6,7 @@ const Home: NextPage = () => {
     const [showEditPopup, setShowEditPopup] = useState(false);
     const [ensSelectPopup, setEnsSelectPopup] = useState(false);
     const [profilePicPopup, setProfilePicPopup] = useState(false);
-
+    const [nfts, setNfts] = useState<any>(null);
     const {
         authenticate,
         isAuthenticated,
@@ -26,11 +26,18 @@ const Home: NextPage = () => {
         const fetcher = async () => {
             if (user) {
                 let options = { address: user.get("ethAddress") };
-                let userEthNFTs = await Moralis.Web3API.account.getNFTs(options);
-                console.log("userEthNFTs", userEthNFTs);
+                let userEthNFTs = await Moralis.Web3API.account
+                    .getNFTs(options)
+                    .then((res: any) => {
+                        setNfts(res);
+                        console.log("userEthNFTs", res);
+                    })
+                    .catch((err: any) =>
+                        console.error("Fetch NFTs Error: ", err),
+                    );
             }
-        }
-        fetcher()
+        };
+        fetcher();
     }, [user]);
 
     if (!isInitialized)
@@ -170,7 +177,23 @@ const Home: NextPage = () => {
                                     </div>
                                 </div>
 
-                                <div id="profilepicselect_nfts"></div>
+                                {nfts && nfts.total > 0 ? (
+                                    <div id="profilepicselect_nfts">
+                                        {nfts.result?.map(
+                                            (nft: any, index: number) => {
+                                                console.log(
+                                                    `NFT ${index}:`,
+                                                    nft,
+                                                );
+                                                return <div>one nft</div>;
+                                            },
+                                        )}
+                                    </div>
+                                ) : (
+                                    <div className="paddingTop--big">
+                                        It seems that u don't have any nfts yet.
+                                    </div>
+                                )}
 
                                 <div className="clearfix"></div>
 
