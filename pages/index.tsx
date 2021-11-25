@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import Layout from "../components/global/Layout";
 import { useMoralis } from "react-moralis";
 import { INFT, INFTs } from "../types/types";
+import EditPopup from "../components/popups/EditPopup";
 
 const Home: NextPage = () => {
     const [showEditPopup, setShowEditPopup] = useState(false);
@@ -11,6 +12,7 @@ const Home: NextPage = () => {
     const [allowPfpSubmit, setAllowPfpSubmit] = useState(false);
     const [nfts, setNfts] = useState<any>(null);
     const [profile, setProfile] = useState<any>(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     const {
         authenticate,
@@ -18,60 +20,56 @@ const Home: NextPage = () => {
         user,
         isInitialized,
         logout,
-        isAuthenticating,
-        web3,
-        enableWeb3,
-        isWeb3Enabled,
-        isWeb3EnableLoading,
-        web3EnableError,
         Moralis,
     } = useMoralis();
 
     useEffect(() => {
-        const fetcher = async () => {
-            if (user) {
-                let ethAddress = user.get("ethAddress");
-                const options = { method: "GET" };
+        console.log("test");
+    }, [showEditPopup]);
 
-                fetch(
-                    `https://api.opensea.io/api/v1/assets?owner=${ethAddress}&order_direction=desc&offset=0&limit=50`,
-                    options,
-                )
-                    .then((response) => response.json())
-                    .then((response) => {
-                        setNfts(response);
-                        //console.log("opensea response:", response);
-                    })
-                    .catch((err) => console.error(err));
-            }
-        };
+    const fetcher = async () => {
+        if (user) {
+            let ethAddress = user.get("ethAddress");
+            const options = { method: "GET" };
 
-        const loadPFP = async () => {
-            const PFP = Moralis.Object.extend("ProfilePic");
-            const query = new Moralis.Query(PFP);
-            query.equalTo("owner", user);
-            query.descending("createdAt");
-            const object = await query.first();
+            fetch(
+                `https://api.opensea.io/api/v1/assets?owner=${ethAddress}&order_direction=desc&offset=0&limit=50`,
+                options,
+            )
+                .then((response) => response.json())
+                .then((response) => {
+                    setNfts(response);
+                    //console.log("opensea response:", response);
+                })
+                .catch((err) => console.error(err));
+        }
+    };
 
-            if (object && object.isDataAvailable()) {
-                let ta = object.get("token_address");
-                let ti = object.get("token_id");
-                const options = { method: "GET" };
-                fetch(
-                    `https://api.opensea.io/api/v1/asset/${ta}/${ti}/`,
-                    options,
-                )
-                    .then((response) => response.json())
-                    .then((response) => {
-                        setProfile(response);
-                        console.log("opensea response:", response);
-                    })
-                    .catch((err) => console.error(err));
-            } else {
-                console.log("No PFP yet");
-            }
-        };
-        fetcher().then(() => loadPFP());
+    const loadPFP = async () => {
+        const PFP = Moralis.Object.extend("ProfilePic");
+        const query = new Moralis.Query(PFP);
+        query.equalTo("owner", user);
+        query.descending("createdAt");
+        const object = await query.first();
+
+        if (object && object.isDataAvailable()) {
+            let ta = object.get("token_address");
+            let ti = object.get("token_id");
+            const options = { method: "GET" };
+            fetch(`https://api.opensea.io/api/v1/asset/${ta}/${ti}/`, options)
+                .then((response) => response.json())
+                .then((response) => {
+                    setProfile(response);
+                    console.log("opensea response:", response);
+                })
+                .catch((err) => console.error(err));
+        } else {
+            console.log("No PFP yet");
+        }
+    };
+
+    useEffect(() => {
+        fetcher().then(() => loadPFP().then(() => setIsLoading(false)));
     }, [user, Moralis.Web3API.account]);
 
     const changeProfilePic = (data: any) => {
@@ -164,52 +162,14 @@ const Home: NextPage = () => {
                             </div>
                         </div>
 
-                        <div
-                            id="editprofile"
-                            className={
-                                "popupbg" + (!showEditPopup ? " hidden" : "")
-                            }
-                        >
-                            <div className="popup">
-                                <div
-                                    className="closepopup"
-                                    data-onclick="closeEditProfile();"
-                                    onClick={() => setShowEditPopup(false)}
-                                >
-                                    <span>&times;</span>
-                                </div>
-
-                                <img
-                                    src={
-                                        profile?.image_preview_url ??
-                                        "/images/punk.png"
-                                    }
-                                    className="profilepicselect myprofilepic"
-                                    onClick={() => setProfilePicPopup(true)}
-                                />
-
-                                <div
-                                    className={
-                                        "ensselect" +
-                                        (!ensSelectPopup ? " hidden" : "")
-                                    }
-                                    onClick={() => setEnsSelectPopup(true)}
-                                >
-                                    Select your .eth name
-                                </div>
-                                <div className="smallfont greyfont paddingTop">
-                                    username: {user?.get("username")}
-                                </div>
-
-                                <div
-                                    id="savesettings"
-                                    className="savebutton cansubmit"
-                                    data-onclick="saveProfile();"
-                                >
-                                    Save
-                                </div>
-                            </div>
-                        </div>
+                        <EditPopup
+                            showEditPopup={showEditPopup}
+                            setShowEditPopup={setShowEditPopup}
+                            profile={profile}
+                            setProfilePicPopup={setProfilePicPopup}
+                            ensSelectPopup={ensSelectPopup}
+                            setEnsSelectPopup={setEnsSelectPopup}
+                        />
 
                         <div
                             id="profilepicselect_popup"

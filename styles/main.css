@@ -283,7 +283,8 @@ html {
 }
 
 .hidden {
-  display: none;
+  opacity: 0 !important;
+  visibility: hidden !important;
 }
 
 a {
@@ -877,6 +878,9 @@ a:-webkit-any-link {
   right: 0;
   bottom: 0;
   z-index: 101;
+  opacity: 1;
+  visibility: visible;
+  transition: all 0.3s ease;
 }
 
 .popup {

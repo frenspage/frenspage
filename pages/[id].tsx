@@ -20,7 +20,14 @@ const UserPage: NextPage<Props> = ({ id, data }) => {
             const PFP = Moralis.Object.extend("ProfilePic");
             const query = await new Moralis.Query(PFP);
 
-            query.equalTo("objectId", id);
+            const User = Moralis.Object.extend("User");
+            const userQuery = new Moralis.Query(User);
+            userQuery.equalTo("ensusername", id);
+            userQuery.descending("createdAt");
+            const user = await userQuery.find();
+            console.log("queried user: ", user);
+
+            query.equalTo("owner", user);
             query.descending("createdAt");
             const object = await query.first();
 
