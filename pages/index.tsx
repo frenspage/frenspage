@@ -2,11 +2,13 @@ import type { NextPage } from "next";
 import React, { useEffect, useState } from "react";
 import Layout from "../components/global/Layout";
 import { useMoralis } from "react-moralis";
+import { INFT, INFTs } from "../types/types";
+
 const Home: NextPage = () => {
     const [showEditPopup, setShowEditPopup] = useState(false);
     const [ensSelectPopup, setEnsSelectPopup] = useState(false);
     const [profilePicPopup, setProfilePicPopup] = useState(false);
-    const [nfts, setNfts] = useState<any>(null);
+    const [nfts, setNfts] = useState<INFTs | null>(null);
     const {
         authenticate,
         isAuthenticated,
@@ -28,7 +30,7 @@ const Home: NextPage = () => {
                 let options = { address: user.get("ethAddress") };
                 let userEthNFTs = await Moralis.Web3API.account
                     .getNFTs(options)
-                    .then((res: any) => {
+                    .then((res: INFTs) => {
                         setNfts(res);
                         console.log("userEthNFTs", res);
                     })
@@ -177,10 +179,10 @@ const Home: NextPage = () => {
                                     </div>
                                 </div>
 
-                                {nfts && nfts.total > 0 ? (
+                                {nfts?.total && nfts.total > 0 ? (
                                     <div id="profilepicselect_nfts">
                                         {nfts.result?.map(
-                                            (nft: any, index: number) => {
+                                            (nft: INFT, index: number) => {
                                                 console.log(
                                                     `NFT ${index}:`,
                                                     nft,
