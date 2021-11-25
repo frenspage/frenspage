@@ -31,6 +31,16 @@ html
     overflow: hidden
     z-index: 0
 
+
+.content
+    width: 100%
+    padding: 1rem
+    margin: 0 auto
+
+    &--no-padding, &__padding--none
+        padding: 0
+
+
 .canvas-container
     width: 100vw
     height: 100vh
@@ -43,5 +53,15 @@ html
 .hidden
     display: none
 
+
+a
+    text-decoration: none
+    color: $black
+    border-bottom: 1px solid transparent
+    transition: $transition-default
+    &:hover
+        text-decoration: none
+        color: $black
+        border-bottom: 1px solid black
 
 

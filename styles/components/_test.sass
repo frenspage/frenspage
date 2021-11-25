@@ -202,9 +202,15 @@ a:-webkit-any-link
 	left:  50%
 	transform:  translate(-50%, -50%)
 	background: #fff
-	padding: 50px 50px
+	padding: 3rem
 	border-radius: 30px
-	max-height: 100%
+	max-height: calc(100vh - 4rem)
+	height: calc(100vh - 4rem)
+	overflow: hidden
+	& > .content
+		overflow: hidden
+		height: 100%
+
 
 
 .closepopup
@@ -237,7 +243,7 @@ a:-webkit-any-link
 
 
 .savebutton
-	position: absolute
+	position: relative
 	bottom: -15px
 	left: 50%
 	transform: translateX(-50%)
@@ -250,13 +256,10 @@ a:-webkit-any-link
 	border-radius: 50px
 	border: 2px solid #ccc
 
-
-
-
-.cansubmit
-	border: 2px solid #000
-	background: #000
-	cursor: pointer
+	.allowed
+		border: 2px solid #000
+		background: #000
+		cursor: pointer
 
 
 
@@ -297,14 +300,12 @@ a:-webkit-any-link
 	height: 200px
 	width: 200px
 	background-size:  contain
-	background-position:  center center
-	background-repeat:  no-repeat
 	margin: auto
-	background-image: url("/images/punk.png")
 	border: 1px solid #ddd
 	cursor: pointer
 	transition:  opacity 0.2s ease
 	display: inline-block
+	overflow: hidden
 
 
 
@@ -329,6 +330,10 @@ a:-webkit-any-link
 		opacity: 0.7
 
 
+#profilepicselect_nfts
+	overflow-y: scroll
+	position: relative
+	height: 85%
 
 #profilepicselect_nfts .nftbox, #ensselect .nftbox
 	float: left
@@ -353,9 +358,6 @@ a:-webkit-any-link
 	cursor: pointer
 
 
-#profilepicselect_nfts, #ensselect
-	overflow-y: scroll
-	max-height: calc(100% - 100px)
 
 
 #profilepicselect_nfts .nftname, #ensselect .ensname

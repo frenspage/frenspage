@@ -1,0 +1,73 @@
+@use "../abstracts/index" as *
+
+//----------------------------------
+//               FLEX              -
+//----------------------------------
+
+.flex
+	display: flex
+	justify-content: flex-start
+	flex-wrap: wrap
+	flex-direction: row
+
+	&-column-center
+		flex-direction: column
+		align-items: center
+		justify-content: center
+
+	&--main
+		justify-content: center
+
+	&.noWrap
+		flex-wrap: nowrap
+	&--gap
+		gap: 1rem
+
+	&--gap--big
+		gap: 2rem
+
+	&--no-gap
+		gap: 0
+
+	&.fullWrap
+		div, a, p
+			width: 100%
+
+	&-padding--inline
+		padding-inline: .5rem
+
+	&.spaceBetween, &-space-between
+		justify-content: space-between
+
+	&-space-around
+		justify-content: space-around
+
+	&-space-evenly
+		justify-content: space-evenly
+
+	&-center--horizontal
+		justify-content: center
+
+	&-center--vertical
+		align-items: center
+
+	&-direction--column
+		flex-direction: column
+
+	&-align--end
+		align-items: flex-end
+
+	&-align--start
+		align-items: flex-start
+
+	&-justify--start
+		justify-content: flex-start
+
+	&-justify--end
+		justify-content: flex-end
+
+	&.mobileFullWrap
+		@include media-below(phone)
+			div, a, p
+				width: 100%
+

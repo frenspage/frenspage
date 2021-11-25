@@ -1,0 +1,162 @@
+@use "../abstracts/index" as *
+
+//----------------------------------
+//               GRID              -
+//----------------------------------
+
+.grid
+	display: grid
+	grid-gap: 1rem
+	align-items: center
+
+	&--gap-big
+		grid-gap: 2rem
+
+	&--no-gap
+		grid-gap: 0
+
+	&--mobile-no-gap
+		@include media-below(tablet)
+			grid-row-gap: 0
+
+	&.spaceBetween, &-space-between
+		justify-content: space-between
+
+	&-align--flex-start, &-align--start
+		align-items: flex-start
+
+	&-justify--flex-start,&-justify--start
+		justify-content: flex-start
+
+	&-space-around
+		justify-content: space-around
+
+	&-center--horizontal
+		justify-content: center
+
+	&-center--vertical
+		align-items: center
+
+	&.center
+		align-items: center
+
+	&.paddingTop
+		padding-top: 3rem
+
+	&.fraction-auto
+		grid-template-columns: 1fr auto
+
+	&.reverse, &__reverse
+		direction: rtl
+		&--mobile
+			@include media-below(phone)
+				direction: rtl
+
+
+	&.noPadding--left
+		padding-left: 0 !important
+	// 50-50
+	&.half-half, &__half-half
+		grid-template-columns: 1fr 1fr
+
+		@include media-below(tablet)
+			grid-template-columns: 1fr
+
+			&.keepTwo
+				grid-template-columns: 1fr 1fr
+
+
+	// 33-33-33
+	&.three-thirds, &__three-thirds
+		grid-template-columns: 1fr 1fr 1fr
+
+		@include media-below(tablet)
+			grid-template-columns: 1fr 1fr
+
+			&.keepTwo
+				grid-template-columns: 1fr 1fr
+
+		@include media-below(phone)
+			grid-template-columns: 1fr
+			&.keepTwo
+				grid-template-columns: 1fr
+
+
+
+	// 25-25-25-25
+	&.four-fourths, &__four-fourths
+		grid-template-columns: 1fr 1fr 1fr 1fr
+
+		@include media-below(desktop)
+			grid-template-columns: 1fr 1fr
+
+
+		@include media-below(tablet)
+			grid-template-columns: 1fr
+
+
+
+	&.two-rows
+		grid-template-rows: 1fr 1fr
+
+	//60-40
+	&.sixty-forty, &__sixty-forty
+		grid-template-columns: 3fr 2fr
+
+		@include media-below(tablet)
+			grid-template-columns: 1fr
+
+	//40-60
+	&.forty-sixty, &__forty-sixty
+		grid-template-columns: 2fr 3fr
+
+		@include media-below(tablet)
+			grid-template-columns: 1fr
+
+
+
+	//70-30
+	&.seventy-thirty, &__seventy-thirty
+		grid-template-columns: 2fr 1fr
+
+		@include media-below(tablet)
+			grid-template-columns: 1fr
+
+	//30-70
+	&.thirty-seventy, &__thirty-seventy
+		grid-template-columns: 1fr 2fr
+
+		@include media-below(tablet)
+			grid-template-columns: 1fr
+
+	//80-20
+	&.eighty-twenty, &__eighty-twenty
+		grid-template-columns: 3fr 1fr
+
+		@include media-below(tablet)
+			grid-template-columns: 1fr
+
+
+	//20-80
+	&.twenty-eighty, &__twenty-eighty
+		grid-template-columns: 1fr 3fr
+
+		@include media-below(tablet)
+			grid-template-columns: 1fr
+
+
+	//90-10
+	&.ninty-ten, &__ninty-ten
+		grid-template-columns: 5fr 1fr
+
+		@include media-below(tablet)
+			grid-template-columns: 1fr
+
+
+	//10-90
+	&.ten-ninty, &__ten-ninty
+		grid-template-columns: 1fr 5fr
+
+		@include media-below(tablet)
+			grid-template-columns: 1fr
+

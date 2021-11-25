@@ -3,9 +3,9 @@ import Drawer from "./View/Drawer";
 
 let drawer: Drawer | null = null;
 
-export const init = () => {
-    let root = document.getElementById(
+export const init = async () => {
+    let root = (await document.getElementById(
         "main-canvas-container",
-    ) as HTMLDivElement;
+    )) as HTMLDivElement;
     drawer = new Drawer(root);
 };
