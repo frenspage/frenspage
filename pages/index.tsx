@@ -38,7 +38,7 @@ const Home: NextPage = () => {
             }
         };
         fetcher();
-    }, [user]);
+    }, [user, Moralis.Web3API.account]);
 
     if (!isInitialized)
         return (
@@ -185,7 +185,11 @@ const Home: NextPage = () => {
                                                     `NFT ${index}:`,
                                                     nft,
                                                 );
-                                                return <div>one nft</div>;
+                                                return (
+                                                    <div key={`nft__${index}`}>
+                                                        one nft
+                                                    </div>
+                                                );
                                             },
                                         )}
                                     </div>
