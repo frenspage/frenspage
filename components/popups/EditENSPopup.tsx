@@ -26,26 +26,26 @@ const EditENSPopup: React.FC<Props> = ({ nfts, setEditUsername }) => {
             className={"popupbg" + (!showEditENSPopup ? " hidden" : "")}
         >
             <div className="bigpopup">
-                <div
-                    className="closepopup"
-                    onClick={() => setShowEditENSPopup(false)}
-                >
-                    <span>&times;</span>
-                </div>
-
-                <h1>Anon, select your .eth name</h1>
-                <h4>Can be changed later</h4>
-
-                <div id="ensselect_nfts_loading">
-                    <div className="lds-ellipsis">
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
+                <div className="content">
+                    <div
+                        className="closepopup"
+                        onClick={() => setShowEditENSPopup(false)}
+                    >
+                        <span>&times;</span>
                     </div>
-                </div>
 
-                <div id="ensselect">
+                    <h1>Anon, select your .eth name</h1>
+                    <h4>Can be changed later</h4>
+
+                    <div id="ensselect_nfts_loading">
+                        <div className="lds-ellipsis">
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                        </div>
+                    </div>
+
                     {nfts?.assets && nfts.assets.length > 0 ? (
                         <div className="profilepicselect_nfts">
                             <div className="content flex flex--gap--big paddingTop--big">
@@ -89,16 +89,16 @@ const EditENSPopup: React.FC<Props> = ({ nfts, setEditUsername }) => {
                             It seems that u don't have any nfts yet.
                         </div>
                     )}
-                </div>
 
-                <div className="clearfix"></div>
+                    <div className="clearfix"></div>
 
-                <div
-                    id="saveens"
-                    className="savebutton"
-                    data-onclick="chooseENS();"
-                >
-                    Save
+                    <div
+                        id="saveens"
+                        className="savebutton"
+                        data-onclick="chooseENS();"
+                    >
+                        Save
+                    </div>
                 </div>
             </div>
         </div>
