@@ -3,16 +3,28 @@ import React, { useEffect, useState } from "react";
 import Layout from "../components/global/Layout";
 import { useMoralis } from "react-moralis";
 import { INFT, INFTs } from "../types/types";
-import EditPopup from "../components/popups/EditPopup";
+import EditProfilePopup from "../components/popups/EditProfilePopup";
+import EditProfilePicPopup from "../components/popups/EditProfilePicPopup";
+import EditENSPopup from "../components/popups/EditENSPopup";
+import { createLogicalOr } from "typescript";
 
 const Home: NextPage = () => {
-    const [showEditPopup, setShowEditPopup] = useState(false);
+    const [showEditProfilePopup, setShowEditProfilePopup] = useState(false);
+    const [showEditProfilePicPopup, setShowEditProfilePicPopup] = useState(false);
     const [ensSelectPopup, setEnsSelectPopup] = useState(false);
     const [profilePicPopup, setProfilePicPopup] = useState(false);
     const [allowPfpSubmit, setAllowPfpSubmit] = useState(false);
     const [nfts, setNfts] = useState<any>(null);
     const [profile, setProfile] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(true);
+
+    const [profilePic, setProfilePic] = useState<any>(null);
+    const [editProfilePic, setEditProfilePic] = useState<any>(null); // this is the profile pic that is displayed in the preview/edit box
+
+    const [ENS, setENS] = useState<any>(null); // this is the ENS domain, here we may need to check if the user still owns the domain or check for the reverse record
+    const [username, setUsername] = useState<any>(null); // this is the actual username, which can also be just a random string
+    const [editUsername, setEditUsername] = useState<any>(null); // this is the username that is displayed in the preview/edit box
+    const [showEditENSPopup, setShowEditENSPopup] = useState<any>(null);
 
     const {
         authenticate,
@@ -24,8 +36,7 @@ const Home: NextPage = () => {
     } = useMoralis();
 
     useEffect(() => {
-        console.log("test");
-    }, [showEditPopup]);
+    }, [showEditProfilePopup]);
 
     const fetcher = async () => {
         if (user) {
@@ -39,8 +50,24 @@ const Home: NextPage = () => {
                 .then((response) => response.json())
                 .then((response) => {
                     setNfts(response);
+                    
                     //console.log("opensea response:", response);
+                    console.log(response);
+                    response.assets.forEach(element => {
+                        console.dir(element);
+                        console.dir(typeof element.asset_contract.address);
+                        console.dir(typeof process.env.NEXT_PUBLIC_ENSCONTRACTADDRESS);
+
+                        if(process.env.NEXT_PUBLIC_ENSCONTRACTADDRESS == element.asset_contract.address)
+                        {
+                            console.log("ENS");
+                            console.log(element);
+                            alert("wtf");
+                        }
+                        
+                    });
                 })
+                
                 .catch((err) => console.error(err));
         }
     };
@@ -59,8 +86,12 @@ const Home: NextPage = () => {
             fetch(`https://api.opensea.io/api/v1/asset/${ta}/${ti}/`, options)
                 .then((response) => response.json())
                 .then((response) => {
+                    console.log("Setting Profile Pic from DB");
+                    console.log(response);
                     setProfile(response);
-                    console.log("opensea response:", response);
+                    setProfilePic(response);
+                    setEditProfilePic(response);
+                    console.log("opensea response/profile:", response);
                 })
                 .catch((err) => console.error(err));
         } else {
@@ -68,35 +99,17 @@ const Home: NextPage = () => {
         }
     };
 
+    const loadENS = async() =>{
+        setENS(user?.get("username"));
+        setUsername(user?.get("username"));
+        setEditUsername(user?.get("username")); //yes, for now, both values are the same, but this may change in the future
+    }
+
     useEffect(() => {
-        fetcher().then(() => loadPFP().then(() => setIsLoading(false)));
+        fetcher().then(() => loadPFP().then(() => loadENS().then( () => setIsLoading(false))));
     }, [user, Moralis.Web3API.account]);
 
-    const changeProfilePic = (data: any) => {
-        console.log(data);
-        if (!data) return;
 
-        let PFP = Moralis.Object.extend("ProfilePic");
-        let pfp = new PFP();
-
-        pfp.set("owner", user);
-        pfp.set("token_address", data.asset_contract?.address);
-        pfp.set("token_id", data.token_id);
-
-        pfp.save()
-            .then((res: any) => {
-                setProfile(data);
-                setProfilePicPopup(false);
-            })
-            .catch((error: any) => {
-                // Execute any logic that should take place if the save fails.
-                // error is a Moralis.Error with an error code and message.
-                alert(
-                    "Failed to create new object, with error code: " +
-                        error.message,
-                );
-            });
-    };
 
     if (!isInitialized)
         return (
@@ -139,186 +152,83 @@ const Home: NextPage = () => {
                         <div className="frenpage">
                             <div id="profilepicbox">
                                 <img
-                                    src={
-                                        profile?.image_preview_url ??
+                                    src={                                        
+                                        profilePic?.image_preview_url ??
                                         "/images/punk.png"
                                     }
                                     id="profilepic"
                                     className="myprofilepic"
-                                    onClick={() => setShowEditPopup(true)}
+                                    onClick={() => setShowEditProfilePopup(true)}
                                 />
                                 <div
                                     id="profilename"
                                     className="username myprofilename"
                                 >
-                                    {user?.get("username")}
+                                    {username}
                                 </div>
                             </div>
                         </div>
 
                         <div className="walletinfo" id="walletinfo">
                             <div id="connectedwallet" onClick={() => logout()}>
-                                {user.get("ethAddress")}
+                                {username}
                             </div>
                         </div>
 
-                        <EditPopup
-                            showEditPopup={showEditPopup}
-                            setShowEditPopup={setShowEditPopup}
+                        <EditProfilePopup
+                            Moralis = {Moralis}
+                            showEditProfilePopup={showEditProfilePopup}
+                            setShowEditProfilePopup={setShowEditProfilePopup}
+                            showEditProfilePicPopup={showEditProfilePicPopup}
+                            setShowEditProfilePicPopup={setShowEditProfilePicPopup}
                             profile={profile}
+                            profilePic={profilePic}
+                            setProfilePic={setProfilePic}
                             setProfilePicPopup={setProfilePicPopup}
                             ensSelectPopup={ensSelectPopup}
                             setEnsSelectPopup={setEnsSelectPopup}
+                            editProfilePic={editProfilePic}
+                            setEditProfilePic={setEditProfilePic}
+                            showEditENSPopup={showEditENSPopup}
+                            setShowEditENSPopup={setShowEditENSPopup}
+                            editUsername={editUsername}
+                            setEditUsername={setEditUsername}
+                            username={username}
+                            setUsername = {setUsername}
                         />
 
-                        <div
-                            id="profilepicselect_popup"
-                            className={
-                                "popupbg" + (!profilePicPopup ? " hidden" : "")
-                            }
-                        >
-                            <div className="bigpopup">
-                                <div className="content">
-                                    <div
-                                        className="closepopup"
-                                        onClick={() =>
-                                            setProfilePicPopup(false)
-                                        }
-                                    >
-                                        <span>&times;</span>
-                                    </div>
+                        <EditProfilePicPopup
+                            Moralis = {Moralis}
+                            showEditProfilePopup={showEditProfilePopup}
+                            setShowEditProfilePopup={setShowEditProfilePopup}
+                            showEditProfilePicPopup={showEditProfilePicPopup}
+                            setShowEditProfilePicPopup={setShowEditProfilePicPopup}
+                            setProfilePic={setProfilePic}
+                            editProfilePic={editProfilePic}
+                            setEditProfilePic={setEditProfilePic}
+                            setProfilePicPopup={setProfilePicPopup}
+                            profile={profile}    
+                            nfts={nfts}  
+                            setProfile={setProfile}
+                        />
 
-                                    <h1>Select your pfp</h1>
-                                    <h4>Can be changed later</h4>
+                        <EditENSPopup
+                            Moralis = {Moralis}
+                            showEditProfilePopup={showEditProfilePopup}
+                            showEditENSPopup={showEditENSPopup}
+                            setShowEditENSPopup={setShowEditENSPopup}
+                            profile={profile}    
+                            nfts={nfts}  
+                            ENS={ENS}
+                            username={username}
+                            editUsername={editUsername}
+                            setUsername={setUsername}
+                            setEditUsername={setEditUsername}
+                            setENS = {setENS}
+                        />
 
-                                    <div id="profilepicselect_nfts_loading">
-                                        <div className="lds-ellipsis">
-                                            <div></div>
-                                            <div></div>
-                                            <div></div>
-                                            <div></div>
-                                        </div>
-                                    </div>
 
-                                    {nfts?.assets && nfts.assets.length > 0 ? (
-                                        <div className="profilepicselect_nfts">
-                                            <div className="content flex flex--gap--big paddingTop--big">
-                                                {nfts.assets?.map(
-                                                    (
-                                                        nft: any,
-                                                        index: number,
-                                                    ) => {
-                                                        return (
-                                                            <div
-                                                                className="pfp__nft grid__item"
-                                                                key={`nft__${index}`}
-                                                            >
-                                                                <img
-                                                                    src={
-                                                                        nft?.image_preview_url ??
-                                                                        ""
-                                                                    }
-                                                                    alt=""
-                                                                    className="pfp__nft__image"
-                                                                    onClick={() =>
-                                                                        changeProfilePic(
-                                                                            nft,
-                                                                        )
-                                                                    }
-                                                                />
-                                                                <h3 className="pfp__nft__title">
-                                                                    {nft?.name ??
-                                                                        ""}
-                                                                </h3>
-                                                                <a
-                                                                    href={
-                                                                        nft.permalink ??
-                                                                        ""
-                                                                    }
-                                                                    target="_blank"
-                                                                    rel="noopener noreferrer"
-                                                                    className="pfp__nft__permalink"
-                                                                >
-                                                                    <span className="c--grey">
-                                                                        {
-                                                                            nft
-                                                                                ?.asset_contract
-                                                                                ?.address
-                                                                        }
-                                                                    </span>
-                                                                </a>
-                                                            </div>
-                                                        );
-                                                    },
-                                                )}
-                                            </div>
-                                        </div>
-                                    ) : (
-                                        <div className="paddingTop--big">
-                                            It seems that u don't have any nfts
-                                            yet.
-                                        </div>
-                                    )}
-
-                                    <div className="clearfix"></div>
-
-                                    <div
-                                        id="savepfp"
-                                        className={
-                                            "savebutton" +
-                                            (allowPfpSubmit ? " allowed" : "")
-                                        }
-                                        data-onclick="choosePFP();"
-                                        onClick={() => {
-                                            if (allowPfpSubmit)
-                                                setProfilePicPopup(false);
-                                        }}
-                                    >
-                                        Save
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div
-                            id="ensselect_popup"
-                            className={
-                                "popupbg" + (!ensSelectPopup ? " hidden" : "")
-                            }
-                        >
-                            <div className="bigpopup">
-                                <div
-                                    className="closepopup"
-                                    onClick={() => setEnsSelectPopup(false)}
-                                >
-                                    <span>&times;</span>
-                                </div>
-
-                                <h1>Anon, select your .eth name</h1>
-                                <h4>Can be changed later</h4>
-
-                                <div id="ensselect_nfts_loading">
-                                    <div className="lds-ellipsis">
-                                        <div></div>
-                                        <div></div>
-                                        <div></div>
-                                        <div></div>
-                                    </div>
-                                </div>
-
-                                <div id="ensselect"></div>
-
-                                <div className="clearfix"></div>
-
-                                <div
-                                    id="saveens"
-                                    className="savebutton"
-                                    data-onclick="chooseENS();"
-                                >
-                                    Save
-                                </div>
-                            </div>
-                        </div>
+                        
                     </div>
                 </div>
             </Layout>

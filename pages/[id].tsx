@@ -41,7 +41,7 @@ const UserPage: NextPage<Props> = ({ id, data }) => {
                 )
                     .then((response) => response.json())
                     .then((response) => {
-                        setProfile(response);
+                        setProfile(response);                        
                         console.log("opensea response:", response);
                     })
                     .catch((err) => console.error(err));
