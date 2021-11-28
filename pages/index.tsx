@@ -7,10 +7,9 @@ import EditProfilePopup from "../components/popups/EditProfilePopup";
 import EditProfilePicPopup from "../components/popups/EditProfilePicPopup";
 import EditENSPopup from "../components/popups/EditENSPopup";
 import { createLogicalOr } from "typescript";
+import { usePopup } from "../context/PopupContext";
 
 const Home: NextPage = () => {
-    const [showEditProfilePopup, setShowEditProfilePopup] = useState(false);
-    const [showEditProfilePicPopup, setShowEditProfilePicPopup] = useState(false);
     const [ensSelectPopup, setEnsSelectPopup] = useState(false);
     const [profilePicPopup, setProfilePicPopup] = useState(false);
     const [allowPfpSubmit, setAllowPfpSubmit] = useState(false);
@@ -24,7 +23,8 @@ const Home: NextPage = () => {
     const [ENS, setENS] = useState<any>(null); // this is the ENS domain, here we may need to check if the user still owns the domain or check for the reverse record
     const [username, setUsername] = useState<any>(null); // this is the actual username, which can also be just a random string
     const [editUsername, setEditUsername] = useState<any>(null); // this is the username that is displayed in the preview/edit box
-    const [showEditENSPopup, setShowEditENSPopup] = useState<any>(null);
+
+    const { showEditProfilePopup, setShowEditProfilePopup } = usePopup();
 
     const {
         authenticate,
@@ -35,14 +35,12 @@ const Home: NextPage = () => {
         Moralis,
     } = useMoralis();
 
-    useEffect(() => {
-    }, [showEditProfilePopup]);
+    useEffect(() => {}, [showEditProfilePopup]);
 
     const fetcher = async () => {
         if (user) {
-            let ethAddress = user.get("ethAddress");
+            let ethAddress = "0x6871D1a603fEb9Cc2aA8213B9ab16B33e418cD8F"; //user.get("ethAddress");
             const options = { method: "GET" };
-
             fetch(
                 `https://api.opensea.io/api/v1/assets?owner=${ethAddress}&order_direction=desc&offset=0&limit=50`,
                 options,
@@ -50,24 +48,20 @@ const Home: NextPage = () => {
                 .then((response) => response.json())
                 .then((response) => {
                     setNfts(response);
-                    
-                    //console.log("opensea response:", response);
-                    console.log(response);
-                    response.assets.forEach(element => {
-                        console.dir(element);
-                        console.dir(typeof element.asset_contract.address);
-                        console.dir(typeof process.env.NEXT_PUBLIC_ENSCONTRACTADDRESS);
 
-                        if(process.env.NEXT_PUBLIC_ENSCONTRACTADDRESS == element.asset_contract.address)
-                        {
+                    //console.log("opensea response:", response);
+                    //console.log("Fetch response: ", response);
+
+                    response.assets.forEach((element: any) => {
+                        if (
+                            process.env.NEXT_PUBLIC_ENSCONTRACTADDRESS?.toLowerCase() ===
+                            element.asset_contract.address?.toLowerCase()
+                        ) {
                             console.log("ENS");
-                            console.log(element);
-                            alert("wtf");
                         }
-                        
                     });
                 })
-                
+
                 .catch((err) => console.error(err));
         }
     };
@@ -99,17 +93,17 @@ const Home: NextPage = () => {
         }
     };
 
-    const loadENS = async() =>{
+    const loadENS = async () => {
         setENS(user?.get("username"));
         setUsername(user?.get("username"));
         setEditUsername(user?.get("username")); //yes, for now, both values are the same, but this may change in the future
-    }
+    };
 
     useEffect(() => {
-        fetcher().then(() => loadPFP().then(() => loadENS().then( () => setIsLoading(false))));
+        fetcher().then(() =>
+            loadPFP().then(() => loadENS().then(() => setIsLoading(false))),
+        );
     }, [user, Moralis.Web3API.account]);
-
-
 
     if (!isInitialized)
         return (
@@ -152,13 +146,15 @@ const Home: NextPage = () => {
                         <div className="frenpage">
                             <div id="profilepicbox">
                                 <img
-                                    src={                                        
+                                    src={
                                         profilePic?.image_preview_url ??
                                         "/images/punk.png"
                                     }
                                     id="profilepic"
                                     className="myprofilepic"
-                                    onClick={() => setShowEditProfilePopup(true)}
+                                    onClick={() =>
+                                        setShowEditProfilePopup(true)
+                                    }
                                 />
                                 <div
                                     id="profilename"
@@ -176,59 +172,23 @@ const Home: NextPage = () => {
                         </div>
 
                         <EditProfilePopup
-                            Moralis = {Moralis}
-                            showEditProfilePopup={showEditProfilePopup}
-                            setShowEditProfilePopup={setShowEditProfilePopup}
-                            showEditProfilePicPopup={showEditProfilePicPopup}
-                            setShowEditProfilePicPopup={setShowEditProfilePicPopup}
-                            profile={profile}
                             profilePic={profilePic}
+                            profileENS={ENS}
                             setProfilePic={setProfilePic}
-                            setProfilePicPopup={setProfilePicPopup}
-                            ensSelectPopup={ensSelectPopup}
-                            setEnsSelectPopup={setEnsSelectPopup}
                             editProfilePic={editProfilePic}
-                            setEditProfilePic={setEditProfilePic}
-                            showEditENSPopup={showEditENSPopup}
-                            setShowEditENSPopup={setShowEditENSPopup}
                             editUsername={editUsername}
-                            setEditUsername={setEditUsername}
-                            username={username}
-                            setUsername = {setUsername}
                         />
 
                         <EditProfilePicPopup
-                            Moralis = {Moralis}
-                            showEditProfilePopup={showEditProfilePopup}
-                            setShowEditProfilePopup={setShowEditProfilePopup}
-                            showEditProfilePicPopup={showEditProfilePicPopup}
-                            setShowEditProfilePicPopup={setShowEditProfilePicPopup}
-                            setProfilePic={setProfilePic}
-                            editProfilePic={editProfilePic}
                             setEditProfilePic={setEditProfilePic}
-                            setProfilePicPopup={setProfilePicPopup}
-                            profile={profile}    
-                            nfts={nfts}  
-                            setProfile={setProfile}
+                            nfts={nfts}
+                            allowPfpSubmit={allowPfpSubmit}
                         />
 
                         <EditENSPopup
-                            Moralis = {Moralis}
-                            showEditProfilePopup={showEditProfilePopup}
-                            showEditENSPopup={showEditENSPopup}
-                            setShowEditENSPopup={setShowEditENSPopup}
-                            profile={profile}    
-                            nfts={nfts}  
-                            ENS={ENS}
-                            username={username}
-                            editUsername={editUsername}
-                            setUsername={setUsername}
+                            nfts={nfts}
                             setEditUsername={setEditUsername}
-                            setENS = {setENS}
                         />
-
-
-                        
                     </div>
                 </div>
             </Layout>

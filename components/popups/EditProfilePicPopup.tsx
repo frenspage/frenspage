@@ -1,74 +1,46 @@
-import React from "react"
+import React from "react";
 import { useMoralis } from "react-moralis";
+import { usePopup } from "../../context/PopupContext";
 
-interface Props{
-    Moralis : any;
-    showEditProfilePopup: boolean;
-    setShowEditProfilePopup: (val: boolean) => void;
-    showEditProfilePicPopup: boolean;
-    setShowEditProfilePicPopup: (val:boolean) => void;
+interface Props {
     nfts: any;
-    profile: any
-    editProfilePic: any;
-    allowPfpSubmit: boolean
-    setProfile: (val:any) => void;
-    setProfilePic: (val:string) => void;
-    setProfilePicPopup: (val:boolean) => void
-    setEditProfilePic: (val:any) => void;
+    allowPfpSubmit: boolean;
+    setEditProfilePic: (val: boolean) => void;
 }
 
-
 const EditProfilePicPopup: React.FC<Props> = ({
-    Moralis,
-    showEditProfilePopup,
-    setShowEditProfilePopup,
-    setShowEditProfilePicPopup,
-    showEditProfilePicPopup,
     nfts,
-    profile,
-    allowPfpSubmit, 
-    setProfile,
+    allowPfpSubmit,
     setEditProfilePic,
-    editProfilePic,
-    setProfilePic,
-    setProfilePicPopup
-
 }) => {
-    const {user} = useMoralis();
+    const { showEditProfilePicPopup, setShowEditProfilePicPopup } = usePopup();
 
     const changeProfilePic = (data: any) => {
         console.log("Setting new pfp");
         console.log(data);
 
         if (!data) return;
-        
+
         setEditProfilePic(data);
         setShowEditProfilePicPopup(false);
-        
     };
 
-    
-
     return (
-
-    <div
+        <div
             id="profilepicselect_popup"
-            className={
-                "popupbg" + (!showEditProfilePicPopup ? " hidden" : "")
-            }
+            className={"popupbg" + (!showEditProfilePicPopup ? " hidden" : "")}
         >
             <div className="bigpopup">
                 <div className="content">
                     <div
                         className="closepopup"
-                        onClick={() =>
-                            setShowEditProfilePicPopup(false)
-                        }
+                        onClick={() => setShowEditProfilePicPopup(false)}
                     >
                         <span>&times;</span>
                     </div>
 
                     <h1>Select your pfp</h1>
+
                     <h4>Can be changed later</h4>
 
                     <div id="profilepicselect_nfts_loading">
@@ -83,60 +55,46 @@ const EditProfilePicPopup: React.FC<Props> = ({
                     {nfts?.assets && nfts.assets.length > 0 ? (
                         <div className="profilepicselect_nfts">
                             <div className="content flex flex--gap--big paddingTop--big">
-                                {nfts.assets?.map(
-                                    (
-                                        nft: any,
-                                        index: number,
-                                    ) => {
-                                        return (
-                                            <div
-                                                className="pfp__nft grid__item"
-                                                key={`nft__${index}`}
+                                {nfts.assets?.map((nft: any, index: number) => {
+                                    return (
+                                        <div
+                                            className="pfp__nft grid__item"
+                                            key={`nft__${index}`}
+                                        >
+                                            <img
+                                                src={
+                                                    nft?.image_preview_url ?? ""
+                                                }
+                                                alt=""
+                                                className="pfp__nft__image"
+                                                onClick={() =>
+                                                    changeProfilePic(nft)
+                                                }
+                                            />
+                                            <h3 className="pfp__nft__title">
+                                                {nft?.name ?? ""}
+                                            </h3>
+                                            <a
+                                                href={nft.permalink ?? ""}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="pfp__nft__permalink"
                                             >
-                                                <img
-                                                    src={
-                                                        nft?.image_preview_url ??
-                                                        ""
+                                                <span className="c--grey">
+                                                    {
+                                                        nft?.asset_contract
+                                                            ?.address
                                                     }
-                                                    alt=""
-                                                    className="pfp__nft__image"
-                                                    onClick={() =>
-                                                        changeProfilePic(
-                                                            nft,
-                                                        )
-                                                    }
-                                                />
-                                                <h3 className="pfp__nft__title">
-                                                    {nft?.name ??
-                                                        ""}
-                                                </h3>
-                                                <a
-                                                    href={
-                                                        nft.permalink ??
-                                                        ""
-                                                    }
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="pfp__nft__permalink"
-                                                >
-                                                    <span className="c--grey">
-                                                        {
-                                                            nft
-                                                                ?.asset_contract
-                                                                ?.address
-                                                        }
-                                                    </span>
-                                                </a>
-                                            </div>
-                                        );
-                                    },
-                                )}
+                                                </span>
+                                            </a>
+                                        </div>
+                                    );
+                                })}
                             </div>
                         </div>
                     ) : (
                         <div className="paddingTop--big">
-                            It seems that u don't have any nfts
-                            yet.
+                            It seems that u don't have any nfts yet.
                         </div>
                     )}
 
@@ -145,8 +103,7 @@ const EditProfilePicPopup: React.FC<Props> = ({
                     <div
                         id="savepfp"
                         className={
-                            "savebutton" +
-                            (allowPfpSubmit ? " allowed" : "")
+                            "savebutton" + (allowPfpSubmit ? " allowed" : "")
                         }
                         data-onclick="choosePFP();"
                         onClick={() => {
@@ -159,9 +116,7 @@ const EditProfilePicPopup: React.FC<Props> = ({
                 </div>
             </div>
         </div>
-
     );
-
 };
 
 export default EditProfilePicPopup;

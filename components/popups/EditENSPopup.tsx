@@ -1,46 +1,14 @@
-import React from "react"
+import React from "react";
 import { useMoralis } from "react-moralis";
+import { usePopup } from "../../context/PopupContext";
 
-interface Props{
-    showEditProfilePopup: boolean;
-    setShowEditProfilePopup: (val: boolean) => void;
+interface Props {
     nfts: any;
-    profile: any
-    allowPfpSubmit: boolean
-    setProfile: (val:any) => void;
-    ENS: any;
-    setENS: (val:string) => void;
-    showEditENSPopup: boolean;
-    setShowEditENSPopup: (val:boolean) => void;
-    setEditENS: (val:any) => void;
-    username: string;
-    editUsername: string;
-    setUsername: (val:string) => void;
-    setEditUsername: (val:string) => void;
-    Moralis: any;
+    setEditUsername: (val: string) => void;
 }
 
-
-const EditENSPopup: React.FC<Props> = ({
-    showEditProfilePopup,
-    setShowEditProfilePopup,
-    nfts,
-    profile,
-    allowPfpSubmit, 
-    setProfile,
-    ENS,
-    setENS,    
-    showEditENSPopup,
-    setShowEditENSPopup, 
-    setEditENS,
-    username,
-    editUsername,
-    setUsername,
-    setEditUsername,
-    Moralis
-
-}) => {
-    const {user} = useMoralis();
+const EditENSPopup: React.FC<Props> = ({ nfts, setEditUsername }) => {
+    const { showEditENSPopup, setShowEditENSPopup } = usePopup();
 
     const changeENS = (data: any) => {
         console.log("Setting new ENS name");
@@ -49,16 +17,13 @@ const EditENSPopup: React.FC<Props> = ({
         if (!data) return;
 
         setEditUsername(data.name);
-        setShowEditENSPopup(false);        
+        setShowEditENSPopup(false);
     };
 
     return (
-
         <div
             id="ensselect_popup"
-            className={
-                "popupbg" + (!showEditENSPopup ? " hidden" : "")
-            }
+            className={"popupbg" + (!showEditENSPopup ? " hidden" : "")}
         >
             <div className="bigpopup">
                 <div
@@ -81,68 +46,49 @@ const EditENSPopup: React.FC<Props> = ({
                 </div>
 
                 <div id="ensselect">
-
                     {nfts?.assets && nfts.assets.length > 0 ? (
                         <div className="profilepicselect_nfts">
                             <div className="content flex flex--gap--big paddingTop--big">
-                                {nfts.assets?.map(
-                                    (
-                                        nft: any,
-                                        index: number,
-                                    ) => {
-                                        return (
-                                            <div
-                                                className="pfp__nft grid__item"
-                                                key={`nft__${index}`}
+                                {nfts.assets?.map((nft: any, index: number) => {
+                                    return (
+                                        <div
+                                            className="pfp__nft grid__item"
+                                            key={`nft__${index}`}
+                                        >
+                                            <img
+                                                src={
+                                                    nft?.image_preview_url ?? ""
+                                                }
+                                                alt=""
+                                                className="pfp__nft__image"
+                                                onClick={() => changeENS(nft)}
+                                            />
+                                            <h3 className="pfp__nft__title">
+                                                {nft?.name ?? ""}
+                                            </h3>
+                                            <a
+                                                href={nft.permalink ?? ""}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="pfp__nft__permalink"
                                             >
-                                                <img
-                                                    src={
-                                                        nft?.image_preview_url ??
-                                                        ""
+                                                <span className="c--grey">
+                                                    {
+                                                        nft?.asset_contract
+                                                            ?.address
                                                     }
-                                                    alt=""
-                                                    className="pfp__nft__image"
-                                                    onClick={() =>
-                                                        changeENS(
-                                                            nft,
-                                                        )
-                                                    }
-                                                />
-                                                <h3 className="pfp__nft__title">
-                                                    {nft?.name ??
-                                                        ""}
-                                                </h3>
-                                                <a
-                                                    href={
-                                                        nft.permalink ??
-                                                        ""
-                                                    }
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="pfp__nft__permalink"
-                                                >
-                                                    <span className="c--grey">
-                                                        {
-                                                            nft
-                                                                ?.asset_contract
-                                                                ?.address
-                                                        }
-                                                    </span>
-                                                </a>
-                                            </div>
-                                        );
-                                    },
-                                )}
+                                                </span>
+                                            </a>
+                                        </div>
+                                    );
+                                })}
                             </div>
                         </div>
                     ) : (
                         <div className="paddingTop--big">
-                            It seems that u don't have any nfts
-                            yet.
+                            It seems that u don't have any nfts yet.
                         </div>
                     )}
-
-
                 </div>
 
                 <div className="clearfix"></div>
@@ -156,9 +102,7 @@ const EditENSPopup: React.FC<Props> = ({
                 </div>
             </div>
         </div>
-
     );
-
 };
 
 export default EditENSPopup;
