@@ -16,47 +16,52 @@ const UserPage: NextPage<Props> = ({ id, data }) => {
     const { isInitialized, Moralis } = useMoralis();
 
     useEffect(() => {
-        const loadPFP = async () => {
-            const PFP = Moralis.Object.extend("ProfilePic");
-            const query = await new Moralis.Query(PFP);
-
-            const User = Moralis.Object.extend("User");
-            const userQuery = new Moralis.Query(User);
-            userQuery.equalTo("ensusername", id);
-            userQuery.descending("createdAt");
-            const user = await userQuery.find();
-            console.log("queried user: ", user);
-
-            query.equalTo("owner", user);
-            query.descending("createdAt");
-            const object = await query.first();
-
-            if (object && object?.isDataAvailable()) {
-                let ta = object.get("token_address");
-                let ti = object.get("token_id");
-                const options = { method: "GET" };
-                fetch(
-                    `https://api.opensea.io/api/v1/asset/${ta}/${ti}/`,
-                    options,
-                )
-                    .then((response) => response.json())
-                    .then((response) => {
-                        setProfile(response);                        
-                        console.log("opensea response:", response);
-                    })
-                    .catch((err) => console.error(err));
-            } else {
-                console.log("No PFP yet");
-            }
-        };
-        const load = async () => {
-            await init();
-            await loadPFP();
-        };
         load().then(() => setLoading(false));
     }, []);
 
-    if (!isInitialized && isLoading)
+    const load = async () => {
+        await init();
+        await loadPFP();
+    };
+
+    const loadPFP = async () => {
+        const PFP = Moralis.Object.extend("ProfilePic");
+        const query = await new Moralis.Query(PFP);
+
+        const UserObject = Moralis.Object.extend("User");
+        const userQuery = new Moralis.Query(UserObject);
+        //userQuery.equalTo("ensusername", id);
+        //userQuery.descending("createdAt");
+        const users = await userQuery.find({ useMasterKey: true });
+        console.log("users: ", users);
+
+        /*const user = await userQuery
+            .get(id)
+            .then((result: any) => console.log("result:", result))
+            .catch((err: any) => console.error("error: ", err));
+        console.log("queried user: ", user);
+
+        query.equalTo("owner", user);
+        query.descending("createdAt");
+        const object = await query.first();
+
+        if (object && object?.isDataAvailable()) {
+            let ta = object.get("token_address");
+            let ti = object.get("token_id");
+            const options = { method: "GET" };
+            fetch(`https://api.opensea.io/api/v1/asset/${ta}/${ti}/`, options)
+                .then((response) => response.json())
+                .then((response) => {
+                    setProfile(response);
+                    console.log("opensea response:", response);
+                })
+                .catch((err) => console.error(err));
+        } else {
+            console.log("No PFP yet");
+        }*/
+    };
+
+    if (!isInitialized || isLoading)
         return (
             <Layout>
                 <div id="loading">

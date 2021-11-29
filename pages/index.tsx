@@ -173,7 +173,7 @@ const Home: NextPage = () => {
 
                         <EditProfilePopup
                             profilePic={profilePic}
-                            profileENS={ENS}
+                            ENS={ENS}
                             setProfilePic={setProfilePic}
                             editProfilePic={editProfilePic}
                             editUsername={editUsername}

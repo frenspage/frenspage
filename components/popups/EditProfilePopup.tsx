@@ -5,7 +5,7 @@ import { usePopup } from "../../context/PopupContext";
 interface Props {
     profilePic: any;
     editProfilePic: any;
-    profileENS: string;
+    ENS: string;
     setProfilePic: (val: string) => void;
     ensSelectInput?: boolean;
     editUsername: string;
@@ -18,7 +18,7 @@ editProfilePic and editUsername are the names which are displayed in the popup, 
 */
 const EditProfilePopup: React.FC<Props> = ({
     profilePic,
-    profileENS,
+    ENS,
     setProfilePic,
     editProfilePic,
     ensSelectInput,
@@ -64,9 +64,9 @@ const EditProfilePopup: React.FC<Props> = ({
     const saveChangeENS = () => {
         console.log("Saving new pfp");
 
-        if (!profileENS || !user) return;
+        if (!ENS || !user) return;
 
-        user.set("ensusername", profileENS);
+        user.set("ensusername", ENS);
 
         user.save().then(
             (ens) => {
