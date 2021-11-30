@@ -39,7 +39,7 @@ const Home: NextPage = () => {
     const pageAuthenticate = async () => {
         if (user) {
             const slug = user?.get("ensusername") ?? user?.get("username");
-            console.log("Slug: ", slug);
+
             const SlugObject = Moralis.Object.extend("Page");
             const query = new Moralis.Query(SlugObject);
             query.equalTo("slug", slug);
