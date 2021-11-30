@@ -188,13 +188,19 @@ a:-webkit-any-link
 .popup
 	position: absolute
 	z-index: 101
-	width: 30%
+	width: 40%
 	top:  50%
 	left:  50%
 	transform:  translate(-50%, -50%)
 	background: #fff
 	padding: 100px 50px
 	border-radius: 30px
+
+	@include media-below(content)
+		min-width: 80%
+
+	@include media-below(tablet)
+		min-width: 90%
 
 
 .bigpopup
@@ -318,6 +324,18 @@ a:-webkit-any-link
 
 #profilename
 	margin-top: 30px
+
+
+.cansubmit
+	border: 2px solid #000
+	background: #000
+	cursor: pointer
+	transition: $transition-default
+
+	&:hover
+		border: 2px solid #777
+		background: #777
+
 
 
 .ensselect
