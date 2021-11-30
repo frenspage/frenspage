@@ -15,6 +15,7 @@ const Home: NextPage = () => {
     const [allowPfpSubmit, setAllowPfpSubmit] = useState(false);
     const [nfts, setNfts] = useState<any>(null);
     const [profile, setProfile] = useState<any>(null);
+    const [page, setPage] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(true);
 
     const [profilePic, setProfilePic] = useState<any>(null);
@@ -35,11 +36,40 @@ const Home: NextPage = () => {
         Moralis,
     } = useMoralis();
 
-    useEffect(() => {}, [showEditProfilePopup]);
+    const pageAuthenticate = async () => {
+        if (user) {
+            const slug = user?.get("ensusername") ?? user?.get("username");
+            console.log("Slug: ", slug);
+            const SlugObject = Moralis.Object.extend("Page");
+            const query = new Moralis.Query(SlugObject);
+            query.equalTo("slug", slug);
+            query.descending("createdAt");
+            const object = await query.first();
+
+            if (!object) {
+                let PageObject = Moralis.Object.extend("Page");
+                let page = new PageObject();
+
+                page.set("owner", user);
+                page.set("slug", slug);
+                page.save()
+                    .then((res: any) => {
+                        setPage(res);
+                        console.log("setPage: ", res);
+                    })
+                    .catch((error: any) => {
+                        alert(
+                            "Failed to create new page, with error code: " +
+                                error.message,
+                        );
+                    });
+            }
+        }
+    };
 
     const fetcher = async () => {
         if (user) {
-            let ethAddress = "0x6871D1a603fEb9Cc2aA8213B9ab16B33e418cD8F"; //user.get("ethAddress");
+            let ethAddress = user.get("ethAddress"); //"0x6871D1a603fEb9Cc2aA8213B9ab16B33e418cD8F"; //
             const options = { method: "GET" };
             fetch(
                 `https://api.opensea.io/api/v1/assets?owner=${ethAddress}&order_direction=desc&offset=0&limit=50`,
@@ -80,8 +110,7 @@ const Home: NextPage = () => {
             fetch(`https://api.opensea.io/api/v1/asset/${ta}/${ti}/`, options)
                 .then((response) => response.json())
                 .then((response) => {
-                    console.log("Setting Profile Pic from DB");
-                    console.log(response);
+                    console.log("Setting Profile Pic from DB", response);
                     setProfile(response);
                     setProfilePic(response);
                     setEditProfilePic(response);
@@ -94,14 +123,19 @@ const Home: NextPage = () => {
     };
 
     const loadENS = async () => {
-        setENS(user?.get("username"));
-        setUsername(user?.get("username"));
-        setEditUsername(user?.get("username")); //yes, for now, both values are the same, but this may change in the future
+        let ensusername = user?.get("ensusername") ?? user?.get("username");
+        await setENS(ensusername);
+        await setUsername(ensusername);
+        await setEditUsername(ensusername); //yes, for now, both values are the same, but this may change in the future
     };
 
     useEffect(() => {
         fetcher().then(() =>
-            loadPFP().then(() => loadENS().then(() => setIsLoading(false))),
+            loadPFP().then(() =>
+                loadENS().then(() =>
+                    pageAuthenticate().then(() => setIsLoading(false)),
+                ),
+            ),
         );
     }, [user, Moralis.Web3API.account]);
 

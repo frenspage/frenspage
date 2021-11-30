@@ -35,8 +35,7 @@ const EditProfilePopup: React.FC<Props> = ({
     const saveChangeProfilePic = () => {
         let data = profilePic;
 
-        console.log("Saving new pfp");
-        console.log(data);
+        console.log("Saving new pfp", data);
 
         if (!data) return;
 
