@@ -171,7 +171,9 @@ const EditENSPopup: React.FC<Props> = ({ ENS, setENS, setEditUsername }) => {
                         className={
                             "savebutton" + (currentSelected ? " cansubmit" : "")
                         }
-                        onClick={() => changeENS(currentSelected)}
+                        onClick={() => {
+                            if (currentSelected) changeENS(currentSelected);
+                        }}
                     >
                         Save
                     </div>

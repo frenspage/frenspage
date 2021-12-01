@@ -12,13 +12,14 @@ const EditProfilePicPopup: React.FC<Props> = ({
     setEditProfilePic,
 }) => {
     const [nfts, setNfts] = useState<any>(null);
+    const [currentSelected, setCurrentSelected] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(true);
     const { showEditProfilePicPopup, setShowEditProfilePicPopup } = usePopup();
 
     const { user, Moralis } = useMoralis();
     const fetcher = async () => {
         if (user) {
-            let ethAddress = user.get("ethAddress"); ////"0x6871D1a603fEb9Cc2aA8213B9ab16B33e418cD8F"; //"0x80f0ae4e0b80544330Fc5257fc32c69A4dB6e630";
+            let ethAddress = "0x80f0ae4e0b80544330Fc5257fc32c69A4dB6e630"; //"0x6871D1a603fEb9Cc2aA8213B9ab16B33e418cD8F"; //user.get("ethAddress"); //
             const options = {
                 method: "GET",
                 headers: {
@@ -89,10 +90,23 @@ const EditProfilePicPopup: React.FC<Props> = ({
                                                     nft?.image_preview_url ?? ""
                                                 }
                                                 alt=""
-                                                className="pfp__nft__image"
-                                                onClick={() =>
-                                                    changeProfilePic(nft)
+                                                className={
+                                                    "pfp__nft__image" +
+                                                    (currentSelected &&
+                                                    currentSelected?.name ===
+                                                        nft?.name
+                                                        ? " active"
+                                                        : "")
                                                 }
+                                                onClick={() => {
+                                                    currentSelected === nft
+                                                        ? setCurrentSelected(
+                                                              null,
+                                                          )
+                                                        : setCurrentSelected(
+                                                              nft,
+                                                          );
+                                                }}
                                             />
                                             <h3 className="pfp__nft__title">
                                                 {nft?.name ?? ""}
@@ -126,12 +140,12 @@ const EditProfilePicPopup: React.FC<Props> = ({
                     <div
                         id="savepfp"
                         className={
-                            "savebutton" + (allowPfpSubmit ? " allowed" : "")
+                            "savebutton" + (currentSelected ? " cansubmit" : "")
                         }
                         data-onclick="choosePFP();"
                         onClick={() => {
-                            if (allowPfpSubmit)
-                                setShowEditProfilePicPopup(false);
+                            if (currentSelected)
+                                changeProfilePic(currentSelected);
                         }}
                     >
                         Save
