@@ -3,14 +3,10 @@ import { useMoralis } from "react-moralis";
 import { usePopup } from "../../context/PopupContext";
 
 interface Props {
-    allowPfpSubmit: boolean;
     setEditProfilePic: (val: boolean) => void;
 }
 
-const EditProfilePicPopup: React.FC<Props> = ({
-    allowPfpSubmit,
-    setEditProfilePic,
-}) => {
+const EditProfilePicPopup: React.FC<Props> = ({ setEditProfilePic }) => {
     const [nfts, setNfts] = useState<any>(null);
     const [currentSelected, setCurrentSelected] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(true);

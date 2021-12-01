@@ -8,8 +8,6 @@ import EditENSPopup from "../components/popups/EditENSPopup";
 import { usePopup } from "../context/PopupContext";
 
 const Home: NextPage = () => {
-    const [allowPfpSubmit, setAllowPfpSubmit] = useState(false);
-
     const [profile, setProfile] = useState<any>(null);
     const [page, setPage] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -172,7 +170,6 @@ const Home: NextPage = () => {
 
                         <EditProfilePicPopup
                             setEditProfilePic={setEditProfilePic}
-                            allowPfpSubmit={allowPfpSubmit}
                         />
 
                         <EditENSPopup
