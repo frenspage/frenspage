@@ -19,7 +19,7 @@ const EditENSPopup: React.FC<Props> = ({ ENS, setENS, setEditUsername }) => {
 
     const fetcher = async () => {
         if (user) {
-            let ethAddress = "0x80f0ae4e0b80544330Fc5257fc32c69A4dB6e630"; //"0x6871D1a603fEb9Cc2aA8213B9ab16B33e418cD8F"; //user.get("ethAddress"); //
+            let ethAddress = user.get("ethAddress"); ////"0x6871D1a603fEb9Cc2aA8213B9ab16B33e418cD8F"; //"0x80f0ae4e0b80544330Fc5257fc32c69A4dB6e630";
             const options = {
                 method: "GET",
                 headers: {
@@ -43,7 +43,6 @@ const EditENSPopup: React.FC<Props> = ({ ENS, setENS, setEditUsername }) => {
                             process.env.NEXT_PUBLIC_ENSCONTRACTADDRESS?.toLowerCase() ===
                             element.asset_contract.address?.toLowerCase()
                         ) {
-                            console.log("ENS");
                             domains = [...domains, element];
                         }
                     });
@@ -172,7 +171,9 @@ const EditENSPopup: React.FC<Props> = ({ ENS, setENS, setEditUsername }) => {
                         className={
                             "savebutton" + (currentSelected ? " cansubmit" : "")
                         }
-                        onClick={() => changeENS(currentSelected)}
+                        onClick={() => {
+                            if (currentSelected) changeENS(currentSelected);
+                        }}
                     >
                         Save
                     </div>
