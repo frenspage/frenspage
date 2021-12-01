@@ -2,18 +2,14 @@ import type { NextPage } from "next";
 import React, { useEffect, useState } from "react";
 import Layout from "../components/global/Layout";
 import { useMoralis } from "react-moralis";
-import { INFT, INFTs } from "../types/types";
 import EditProfilePopup from "../components/popups/EditProfilePopup";
 import EditProfilePicPopup from "../components/popups/EditProfilePicPopup";
 import EditENSPopup from "../components/popups/EditENSPopup";
-import { createLogicalOr } from "typescript";
 import { usePopup } from "../context/PopupContext";
 
 const Home: NextPage = () => {
-    const [ensSelectPopup, setEnsSelectPopup] = useState(false);
-    const [profilePicPopup, setProfilePicPopup] = useState(false);
     const [allowPfpSubmit, setAllowPfpSubmit] = useState(false);
-    const [nfts, setNfts] = useState<any>(null);
+
     const [profile, setProfile] = useState<any>(null);
     const [page, setPage] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -21,11 +17,11 @@ const Home: NextPage = () => {
     const [profilePic, setProfilePic] = useState<any>(null);
     const [editProfilePic, setEditProfilePic] = useState<any>(null); // this is the profile pic that is displayed in the preview/edit box
 
-    const [ENS, setENS] = useState<any>(null); // this is the ENS domain, here we may need to check if the user still owns the domain or check for the reverse record
+    const [ENS, setENS] = useState<any>(null); // this is the ENS domain OBJECT, here we may need to check if the user still owns the domain or check for the reverse record
     const [username, setUsername] = useState<any>(null); // this is the actual username, which can also be just a random string
     const [editUsername, setEditUsername] = useState<any>(null); // this is the username that is displayed in the preview/edit box
 
-    const { showEditProfilePopup, setShowEditProfilePopup } = usePopup();
+    const { setShowEditProfilePopup } = usePopup();
 
     const {
         authenticate,
@@ -36,107 +32,64 @@ const Home: NextPage = () => {
         Moralis,
     } = useMoralis();
 
-    const pageAuthenticate = async () => {
+    const loadPFP = async () => {
         if (user) {
-            const slug = user?.get("ensusername") ?? user?.get("username");
-
-            const SlugObject = Moralis.Object.extend("Page");
-            const query = new Moralis.Query(SlugObject);
-            query.equalTo("slug", slug);
+            const PFP = Moralis.Object.extend("ProfilePic");
+            const query = new Moralis.Query(PFP);
+            query.equalTo("owner", user);
             query.descending("createdAt");
-            const object = await query.first();
+            const object = await query?.first();
 
-            if (!object) {
-                let PageObject = Moralis.Object.extend("Page");
-                let page = new PageObject();
-
-                page.set("owner", user);
-                page.set("slug", slug);
-                page.save()
-                    .then((res: any) => {
-                        setPage(res);
-                        console.log("setPage: ", res);
+            if (object && object.isDataAvailable()) {
+                let ta = object.get("token_address");
+                let ti = object.get("token_id");
+                const options = { method: "GET" };
+                fetch(
+                    `https://api.opensea.io/api/v1/asset/${ta}/${ti}/`,
+                    options,
+                )
+                    .then((response) => response.json())
+                    .then((response) => {
+                        setProfile(response);
+                        setProfilePic(response);
+                        setEditProfilePic(response);
                     })
-                    .catch((error: any) => {
-                        alert(
-                            "Failed to create new page, with error code: " +
-                                error.message,
-                        );
-                    });
+                    .catch((err) => console.error(err));
+            } else {
+                console.log("No PFP yet");
             }
         }
     };
 
-    const fetcher = async () => {
+    const loadPage = async () => {
         if (user) {
-            let ethAddress = user.get("ethAddress"); //"0x6871D1a603fEb9Cc2aA8213B9ab16B33e418cD8F"; //
-            const options = { method: "GET" };
-            fetch(
-                `https://api.opensea.io/api/v1/assets?owner=${ethAddress}&order_direction=desc&offset=0&limit=50`,
-                options,
-            )
-                .then((response) => response.json())
-                .then((response) => {
-                    setNfts(response);
+            //const slug = user?.get("ensusername") ?? user?.get("username");
 
-                    //console.log("opensea response:", response);
-                    //console.log("Fetch response: ", response);
+            const SlugObject = Moralis.Object.extend("Page");
+            const query = new Moralis.Query(SlugObject);
+            query.equalTo("owner", user);
+            query.descending("createdAt");
+            const object: any = await query.first();
 
-                    response.assets.forEach((element: any) => {
-                        if (
-                            process.env.NEXT_PUBLIC_ENSCONTRACTADDRESS?.toLowerCase() ===
-                            element.asset_contract.address?.toLowerCase()
-                        ) {
-                            console.log("ENS");
-                        }
-                    });
-                })
-
-                .catch((err) => console.error(err));
+            if (object) {
+                setPage(object);
+                loadENS(object.get("slug"), object);
+            } else {
+                loadENS(user?.get("username"), { name: user?.get("username") });
+            }
         }
     };
 
-    const loadPFP = async () => {
-        const PFP = Moralis.Object.extend("ProfilePic");
-        const query = new Moralis.Query(PFP);
-        query.equalTo("owner", user);
-        query.descending("createdAt");
-        const object = await query.first();
-
-        if (object && object.isDataAvailable()) {
-            let ta = object.get("token_address");
-            let ti = object.get("token_id");
-            const options = { method: "GET" };
-            fetch(`https://api.opensea.io/api/v1/asset/${ta}/${ti}/`, options)
-                .then((response) => response.json())
-                .then((response) => {
-                    console.log("Setting Profile Pic from DB", response);
-                    setProfile(response);
-                    setProfilePic(response);
-                    setEditProfilePic(response);
-                    console.log("opensea response/profile:", response);
-                })
-                .catch((err) => console.error(err));
-        } else {
-            console.log("No PFP yet");
-        }
-    };
-
-    const loadENS = async () => {
-        let ensusername = user?.get("ensusername") ?? user?.get("username");
-        await setENS(ensusername);
+    const loadENS = async (newName: string, newENS: any) => {
+        let ensusername =
+            newName ?? user?.get("ensusername") ?? user?.get("username");
+        await setENS(newENS);
         await setUsername(ensusername);
         await setEditUsername(ensusername); //yes, for now, both values are the same, but this may change in the future
     };
 
     useEffect(() => {
-        fetcher().then(() =>
-            loadPFP().then(() =>
-                loadENS().then(() =>
-                    pageAuthenticate().then(() => setIsLoading(false)),
-                ),
-            ),
-        );
+        loadPFP().then(() => loadPage().then(() => setIsLoading(false)));
     }, [user, Moralis.Web3API.account]);
 
     if (!isInitialized)
@@ -208,19 +161,23 @@ const Home: NextPage = () => {
                         <EditProfilePopup
                             profilePic={profilePic}
                             ENS={ENS}
+                            setENS={(val: any) => {
+                                loadENS(val?.name, val);
+                            }}
                             setProfilePic={setProfilePic}
                             editProfilePic={editProfilePic}
                             editUsername={editUsername}
+                            setPage={setPage}
                         />
 
                         <EditProfilePicPopup
                             setEditProfilePic={setEditProfilePic}
-                            nfts={nfts}
                             allowPfpSubmit={allowPfpSubmit}
                         />
 
                         <EditENSPopup
-                            nfts={nfts}
+                            ENS={ENS}
+                            setENS={setENS}
                             setEditUsername={setEditUsername}
                         />
                     </div>
