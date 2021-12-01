@@ -1,6 +1,6 @@
 import type { NextPage, GetServerSideProps } from "next";
 import React, { useEffect, useState } from "react";
-import { init } from "../canvas/main";
+import { init as initCanvas } from "../canvas/main";
 import Layout from "../components/global/Layout";
 import { useMoralis, useMoralisQuery } from "react-moralis";
 import PostitCanvas from "../components/canvas/PostitCanvas";
@@ -8,6 +8,8 @@ import PostitCanvas from "../components/canvas/PostitCanvas";
 interface Props {
     slug: string;
 }
+
+const showCanvas = false;
 
 const UserPage: NextPage<Props> = ({ slug }) => {
     const [profile, setProfile] = useState<any>(null);
@@ -23,17 +25,32 @@ const UserPage: NextPage<Props> = ({ slug }) => {
     );
 
     useEffect(() => {
-        load().then(() => setLoading(false));
+        load();
     }, [pageData, isLoadingPage]);
 
+    useEffect(() => {
+        console.log("\n\n------------------------------------------");
+        console.log("isLoading: ", isLoading);
+        console.log("isLoadingPage: ", isLoadingPage);
+        console.log("isInitialized: ", isInitialized);
+        console.log("profile: ", profile);
+        console.log("pageData: ", pageData);
+    }, [
+        isLoading,
+        setLoading,
+        isLoadingPage,
+        isInitialized,
+        profile,
+        pageData,
+    ]);
+
     const load = async () => {
-        await init();
+        if (showCanvas) await initCanvas();
         await loadPFP();
     };
 
     const loadPFP = async () => {
         if (pageData[0]) {
-            console.log("pageData:", pageData);
             const owner = pageData[0].get("owner");
 
             if (owner) {
@@ -44,20 +61,19 @@ const UserPage: NextPage<Props> = ({ slug }) => {
                 pfpQuery.descending("createdAt");
                 const pfp = await pfpQuery.first();
 
-                console.log("PFP", pfp);
-
                 if (pfp && pfp?.isDataAvailable()) {
                     let ta = pfp.get("token_address");
                     let ti = pfp.get("token_id");
                     const options = { method: "GET" };
-                    fetch(
+                    await fetch(
                         `https://api.opensea.io/api/v1/asset/${ta}/${ti}/`,
                         options,
                     )
                         .then((response) => response.json())
                         .then((response) => {
                             setProfile(response);
-                            console.log("opensea response:", response);
+                            setLoading(false);
+                            console.log("***CHANGED LOADING**");
                         })
                         .catch((err) => console.error(err));
                 } else {
@@ -67,22 +83,29 @@ const UserPage: NextPage<Props> = ({ slug }) => {
         }
     };
 
-    if (!isInitialized || isLoadingPage || isLoading)
+    if (
+        (!profile || !pageData || pageData.length <= 0) &&
+        isLoading &&
+        !isInitialized
+    ) {
+        console.log("LOADING.......");
         return (
-            <Layout>
-                <div id="loading">
-                    <div className="lds-ellipsis">
-                        gm<div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                    </div>
+            <Layout addClass="root-user">
+                <div style={{ background: "red" }}>
+                    <p>gm</p>
                 </div>
-                <PostitCanvas />
             </Layout>
         );
+    }
 
     if (pageError) return <p>Error {pageError.message}</p>;
+
+    if (!pageData || pageData.length <= 0)
+        return (
+            <Layout addClass="root-user">
+                <p>no fren here</p>
+            </Layout>
+        );
 
     return (
         <Layout addClass="root-user">
@@ -93,7 +116,7 @@ const UserPage: NextPage<Props> = ({ slug }) => {
                 />
                 <p style={{ textAlign: "center" }}>{slug}</p>
             </div>
-            <PostitCanvas />
+            {showCanvas && <PostitCanvas />}
         </Layout>
     );
 };

@@ -1,23 +1,83 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useMoralis } from "react-moralis";
 import { usePopup } from "../../context/PopupContext";
 
 interface Props {
-    nfts: any;
+    ENS: string;
+    setENS: (val: string) => void;
     setEditUsername: (val: string) => void;
 }
 
-const EditENSPopup: React.FC<Props> = ({ nfts, setEditUsername }) => {
+const EditENSPopup: React.FC<Props> = ({ ENS, setENS, setEditUsername }) => {
+    const [ensNames, setEnsNames] = useState<any[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    const [currentSelected, setCurrentSelected] = useState<any>(null);
+
     const { showEditENSPopup, setShowEditENSPopup } = usePopup();
+    const { user, Moralis } = useMoralis();
 
-    const changeENS = (data: any) => {
-        console.log("Setting new ENS name");
-        console.log(data);
+    const fetcher = async () => {
+        if (user) {
+            let ethAddress = "0x80f0ae4e0b80544330Fc5257fc32c69A4dB6e630"; //"0x6871D1a603fEb9Cc2aA8213B9ab16B33e418cD8F"; //user.get("ethAddress"); //
+            const options = {
+                method: "GET",
+                headers: {
+                    "X-API-KEY": "8c7bf4fd89934d35a88dd6ecf44fe627",
+                },
+            };
+            fetch(
+                `https://api.opensea.io/api/v1/assets?owner=${ethAddress}&order_direction=desc&offset=0&limit=50`,
+                options,
+            )
+                .then((response) => response.json())
+                .then((response) => {
+                    if (!response || response.length <= 0)
+                        console.log(
+                            "You have no nfts, neither .eth names in your wallet!",
+                        );
 
+                    let domains: any[] = [];
+                    response?.assets?.map((element: any) => {
+                        if (
+                            process.env.NEXT_PUBLIC_ENSCONTRACTADDRESS?.toLowerCase() ===
+                            element.asset_contract.address?.toLowerCase()
+                        ) {
+                            console.log("ENS");
+                            domains = [...domains, element];
+                        }
+                    });
+                    setEnsNames(domains);
+                })
+
+                .catch((err) => console.error(err));
+        }
+    };
+
+    useEffect(() => {
+        fetcher().then(() => setIsLoading(false));
+    }, [user, Moralis.Web3API.account]);
+
+    const changeENS = async (data: any) => {
         if (!data) return;
 
-        setEditUsername(data.name);
-        setShowEditENSPopup(false);
+        let PageObject = Moralis.Object.extend("Page");
+
+        let checkPageAlreadyExists = new Moralis.Query(PageObject);
+        checkPageAlreadyExists.equalTo("slug", data.name); //data.name);
+        const isPageAlreadyExists = await checkPageAlreadyExists.first();
+
+        if (!isPageAlreadyExists) {
+            setENS(data);
+            setEditUsername(data.name);
+            setShowEditENSPopup(false);
+        } else {
+            alert(
+                "a page with the ens username '" +
+                    data.name +
+                    "' already exists!\nPlease use another name!",
+            );
+        }
     };
 
     return (
@@ -45,11 +105,11 @@ const EditENSPopup: React.FC<Props> = ({ nfts, setEditUsername }) => {
                             <div></div>
                         </div>
                     </div>
-
-                    {nfts?.assets && nfts.assets.length > 0 ? (
+                    {isLoading && <p>Loading...</p>}
+                    {!isLoading && ensNames && ensNames.length > 0 ? (
                         <div className="profilepicselect_nfts">
                             <div className="content flex flex--gap--big paddingTop--big">
-                                {nfts.assets?.map((nft: any, index: number) => {
+                                {ensNames?.map((nft: any, index: number) => {
                                     return (
                                         <div
                                             className="pfp__nft grid__item"
@@ -60,14 +120,29 @@ const EditENSPopup: React.FC<Props> = ({ nfts, setEditUsername }) => {
                                                     nft?.image_preview_url ?? ""
                                                 }
                                                 alt=""
-                                                className="pfp__nft__image"
-                                                onClick={() => changeENS(nft)}
+                                                className={
+                                                    "pfp__nft__image" +
+                                                    (currentSelected &&
+                                                    currentSelected?.name ===
+                                                        nft?.name
+                                                        ? " active"
+                                                        : "")
+                                                }
+                                                onClick={() => {
+                                                    currentSelected === nft
+                                                        ? setCurrentSelected(
+                                                              null,
+                                                          )
+                                                        : setCurrentSelected(
+                                                              nft,
+                                                          );
+                                                }}
                                             />
                                             <h3 className="pfp__nft__title">
                                                 {nft?.name ?? ""}
                                             </h3>
                                             <a
-                                                href={nft.permalink ?? ""}
+                                                href={nft?.permalink ?? ""}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                                 className="pfp__nft__permalink"
@@ -94,8 +169,10 @@ const EditENSPopup: React.FC<Props> = ({ nfts, setEditUsername }) => {
 
                     <div
                         id="saveens"
-                        className="savebutton"
-                        data-onclick="chooseENS();"
+                        className={
+                            "savebutton" + (currentSelected ? " cansubmit" : "")
+                        }
+                        onClick={() => changeENS(currentSelected)}
                     >
                         Save
                     </div>

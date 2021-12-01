@@ -1,24 +1,46 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useMoralis } from "react-moralis";
 import { usePopup } from "../../context/PopupContext";
 
 interface Props {
-    nfts: any;
     allowPfpSubmit: boolean;
     setEditProfilePic: (val: boolean) => void;
 }
 
 const EditProfilePicPopup: React.FC<Props> = ({
-    nfts,
     allowPfpSubmit,
     setEditProfilePic,
 }) => {
+    const [nfts, setNfts] = useState<any>(null);
+    const [isLoading, setIsLoading] = useState(true);
     const { showEditProfilePicPopup, setShowEditProfilePicPopup } = usePopup();
 
-    const changeProfilePic = (data: any) => {
-        console.log("Setting new pfp");
-        console.log(data);
+    const { user, Moralis } = useMoralis();
+    const fetcher = async () => {
+        if (user) {
+            let ethAddress = "0x80f0ae4e0b80544330Fc5257fc32c69A4dB6e630"; //"0x6871D1a603fEb9Cc2aA8213B9ab16B33e418cD8F"; //user.get("ethAddress"); //
+            const options = {
+                method: "GET",
+                headers: {
+                    "X-API-KEY": "8c7bf4fd89934d35a88dd6ecf44fe627",
+                },
+            };
+            fetch(
+                `https://api.opensea.io/api/v1/assets?owner=${ethAddress}&order_direction=desc&offset=0&limit=50`,
+                options,
+            )
+                .then((response) => response.json())
+                .then((response) => {
+                    setNfts(response);
+                })
+                .catch((err) => console.error(err));
+        }
+    };
+    useEffect(() => {
+        fetcher().then(() => setIsLoading(false));
+    }, [user, Moralis.Web3API.account]);
 
+    const changeProfilePic = (data: any) => {
         if (!data) return;
 
         setEditProfilePic(data);
@@ -52,7 +74,8 @@ const EditProfilePicPopup: React.FC<Props> = ({
                         </div>
                     </div>
 
-                    {nfts?.assets && nfts.assets.length > 0 ? (
+                    {isLoading && <p>Loading...</p>}
+                    {!isLoading && nfts?.assets && nfts.assets.length > 0 ? (
                         <div className="profilepicselect_nfts">
                             <div className="content flex flex--gap--big paddingTop--big">
                                 {nfts.assets?.map((nft: any, index: number) => {

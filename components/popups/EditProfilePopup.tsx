@@ -5,10 +5,12 @@ import { usePopup } from "../../context/PopupContext";
 interface Props {
     profilePic: any;
     editProfilePic: any;
-    ENS: string;
+    ENS: any;
+    setENS: (val: any) => void;
     setProfilePic: (val: string) => void;
     ensSelectInput?: boolean;
     editUsername: string;
+    setPage: (val: any) => void;
 }
 
 /*
@@ -19,10 +21,12 @@ editProfilePic and editUsername are the names which are displayed in the popup, 
 const EditProfilePopup: React.FC<Props> = ({
     profilePic,
     ENS,
+    setENS,
     setProfilePic,
     editProfilePic,
     ensSelectInput,
     editUsername,
+    setPage,
 }) => {
     const { user, Moralis } = useMoralis();
     const {
@@ -32,10 +36,8 @@ const EditProfilePopup: React.FC<Props> = ({
         setShowEditENSPopup,
     } = usePopup();
 
-    const saveChangeProfilePic = () => {
-        let data = profilePic;
-
-        console.log("Saving new pfp", data);
+    const saveChangeProfilePic = async () => {
+        let data = editProfilePic;
 
         if (!data) return;
 
@@ -60,33 +62,61 @@ const EditProfilePopup: React.FC<Props> = ({
             });
     };
 
-    const saveChangeENS = () => {
-        console.log("Saving new pfp");
-
+    const saveChangeENS = async () => {
+        let data: any = ENS;
         if (!ENS || !user) return;
 
-        user.set("ensusername", ENS);
+        let PageObject = Moralis.Object.extend("Page");
 
-        user.save().then(
-            (ens) => {
-                // Execute any logic that should take place after the object is saved.
-                //document.querySelector('.username')?.innerHTML = profileENS + "";
-                console.log("ENS SAVED");
-            },
-            (error) => {
-                // Execute any logic that should take place if the save fails.
-                // error is a Moralis.Error with an error code and message.
-                alert(
-                    "Failed to create new object, with error code: " +
-                        error.message,
+        let checkUserHasPage = new Moralis.Query(PageObject);
+        checkUserHasPage.equalTo("owner", user);
+        checkUserHasPage.descending("createdAt");
+        const userPage = await checkUserHasPage.first();
+
+        if (userPage) {
+            userPage.set("slug", ENS?.name);
+            userPage
+                .save()
+                .then(() => {
+                    setPage(ENS);
+                    setENS(ENS);
+                })
+                .catch((err: any) =>
+                    console.error(
+                        "Save new ens slug for page ERROR: ",
+                        err.message,
+                    ),
                 );
-            },
-        );
+        } else {
+            let page = new PageObject();
+
+            page.set("owner", user);
+            page.set("slug", ENS?.name);
+            page.save()
+                .then(() => {
+                    setPage(data);
+                    setENS(ENS);
+                })
+                .catch((error: any) => {
+                    alert(
+                        "Failed to create new page, with error code: " +
+                            error.message,
+                    );
+                });
+        }
     };
 
     const saveProfile = () => {
-        saveChangeProfilePic();
-        saveChangeENS();
+        saveChangeProfilePic()
+            .then(() =>
+                saveChangeENS().then(() => {
+                    console.log("** SAVED **");
+                    setShowEditProfilePopup(false);
+                }),
+            )
+            .catch((err: any) =>
+                console.error("saveProfile ERROR: ", err.message),
+            );
     };
 
     return (
