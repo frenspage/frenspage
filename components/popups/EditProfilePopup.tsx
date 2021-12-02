@@ -36,8 +36,10 @@ const EditProfilePopup: React.FC<Props> = ({
         setShowEditProfilePopup,
         setShowEditProfilePicPopup,
         setShowEditENSPopup,
+        setShowFirstTimePopup,
     } = usePopup();
 
+    /** Save new Profile Pic to DB **/
     const saveChangeProfilePic = async () => {
         let data = editProfilePic;
 
@@ -55,8 +57,6 @@ const EditProfilePopup: React.FC<Props> = ({
                 setProfilePic(data);
             })
             .catch((error: any) => {
-                // Execute any logic that should take place if the save fails.
-                // error is a Moralis.Error with an error code and message.
                 alert(
                     "Failed to create new object, with error code: " +
                         error.message,
@@ -64,6 +64,11 @@ const EditProfilePopup: React.FC<Props> = ({
             });
     };
 
+    /**
+     * Save new ENS to DB
+     * If the page doesn't exist yet,
+     * it will create a new page with the user.username id
+     * **/
     const saveChangeENS = async () => {
         let data: any = ENS;
         if (!ENS || !user) return;
@@ -109,17 +114,41 @@ const EditProfilePopup: React.FC<Props> = ({
     };
 
     const saveProfile = () => {
-        saveChangeProfilePic()
-            .then(() =>
-                saveChangeENS().then(() => {
-                    console.log("** SAVED **");
-                    setShowEditProfilePopup(false);
-                    router.push("/" + ENS.name);
-                }),
-            )
-            .catch((err: any) =>
-                console.error("saveProfile ERROR: ", err.message),
-            );
+        let hasClaimed: boolean = user?.get("hasClaimed");
+        console.log(hasClaimed);
+
+        if (false && hasClaimed) {
+            alert("No confetti");
+            //if he already had a page, no confetti for u
+            saveChangeProfilePic()
+                .then(() =>
+                    saveChangeENS().then(() => {
+                        console.log("** SAVED **");
+                        setShowEditProfilePopup(false);
+                        user?.set("hasClaimed", false);
+                    }),
+                )
+                .catch((err: any) =>
+                    console.error("saveProfile ERROR: ", err.message),
+                );
+        } else {
+            //if the user creates his first page: show confetti
+            saveChangeProfilePic()
+                .then(() =>
+                    saveChangeENS().then(() => {
+                        console.log("** SAVED **");
+                        setShowFirstTimePopup(true);
+                        setShowEditProfilePopup(false);
+                        user?.set("hasClaimed", true);
+
+                        console.log("claimed");
+                        console.log(user?.get("hasClaimed"));
+                    }),
+                )
+                .catch((err: any) =>
+                    console.error("saveProfile ERROR: ", err.message),
+                );
+        }
     };
 
     return (
