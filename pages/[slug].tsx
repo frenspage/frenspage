@@ -4,6 +4,7 @@ import { init as initCanvas } from "../canvas/main";
 import Layout from "../components/global/Layout";
 import { useMoralis, useMoralisQuery } from "react-moralis";
 import PostitCanvas from "../components/canvas/PostitCanvas";
+import UserLoggedIn from "../components/user/UserLoggedIn";
 
 interface Props {
     slug: string;
@@ -15,8 +16,12 @@ const UserPage: NextPage<Props> = ({ slug }) => {
     const [profile, setProfile] = useState<any>(null);
     const [doesExist, setDoesExist] = useState(false);
     const [isLoading, setLoading] = useState(true);
-    const { isInitialized, Moralis } = useMoralis();
+    const { isInitialized, Moralis, isAuthenticated, user } = useMoralis();
 
+    /**
+     * useMoralisQuery fropm "react-moralis"-package
+     * return { data, error, isLoading, ... }
+     */
     const {
         data: pageData,
         error: pageError,
@@ -88,6 +93,14 @@ const UserPage: NextPage<Props> = ({ slug }) => {
                 <p>no fren here</p>
             </Layout>
         );
+
+    if (
+        !isLoading &&
+        doesExist &&
+        isAuthenticated &&
+        user?.id === pageData[0]?.get("owner")?.id
+    )
+        return <UserLoggedIn />;
 
     return (
         <Layout addClass="root-user">

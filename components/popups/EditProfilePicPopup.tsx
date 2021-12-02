@@ -11,8 +11,8 @@ const EditProfilePicPopup: React.FC<Props> = ({ setEditProfilePic }) => {
     const [currentSelected, setCurrentSelected] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(true);
     const { showEditProfilePicPopup, setShowEditProfilePicPopup } = usePopup();
-
     const { user, Moralis } = useMoralis();
+
     const fetcher = async () => {
         if (user) {
             let ethAddress = user.get("ethAddress"); //"0x80f0ae4e0b80544330Fc5257fc32c69A4dB6e630"; //"0x6871D1a603fEb9Cc2aA8213B9ab16B33e418cD8F"; //
@@ -34,7 +34,7 @@ const EditProfilePicPopup: React.FC<Props> = ({ setEditProfilePic }) => {
         }
     };
     useEffect(() => {
-        fetcher().then(() => setIsLoading(false));
+        if (user) fetcher().then(() => setIsLoading(false));
     }, [user, Moralis.Web3API.account]);
 
     const changeProfilePic = (data: any) => {

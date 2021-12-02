@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useMoralis } from "react-moralis";
 import { usePopup } from "../../context/PopupContext";
+import { useRouter } from "next/router";
 
 interface Props {
     profilePic: any;
@@ -28,6 +29,7 @@ const EditProfilePopup: React.FC<Props> = ({
     editUsername,
     setPage,
 }) => {
+    const router = useRouter();
     const { user, Moralis } = useMoralis();
     const {
         showEditProfilePopup,
@@ -112,6 +114,7 @@ const EditProfilePopup: React.FC<Props> = ({
                 saveChangeENS().then(() => {
                     console.log("** SAVED **");
                     setShowEditProfilePopup(false);
+                    router.push("/" + ENS.name);
                 }),
             )
             .catch((err: any) =>
