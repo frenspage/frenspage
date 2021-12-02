@@ -80,7 +80,9 @@ const Home: NextPage = () => {
 
     const loadENS = async (newName: string, newENS: any) => {
         let ensusername =
-            newName ?? user?.get("ensusername") ?? user?.get("username");
+            newName?.toLowerCase() ??
+            user?.get("ensusername") ??
+            user?.get("username");
         await setENS(newENS);
         await setUsername(ensusername);
         await setEditUsername(ensusername); //yes, for now, both values are the same, but this may change in the future

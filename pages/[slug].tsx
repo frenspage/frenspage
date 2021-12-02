@@ -13,6 +13,7 @@ const showCanvas = false;
 
 const UserPage: NextPage<Props> = ({ slug }) => {
     const [profile, setProfile] = useState<any>(null);
+    const [doesExist, setDoesExist] = useState(false);
     const [isLoading, setLoading] = useState(true);
     const { isInitialized, Moralis } = useMoralis();
 
@@ -25,24 +26,13 @@ const UserPage: NextPage<Props> = ({ slug }) => {
     );
 
     useEffect(() => {
-        load();
+        load().then(() => {
+            if (pageData && pageData.length > 0) {
+                setDoesExist(true);
+            }
+            setLoading(false);
+        });
     }, [pageData, isLoadingPage]);
-
-    useEffect(() => {
-        console.log("\n\n------------------------------------------");
-        console.log("isLoading: ", isLoading);
-        console.log("isLoadingPage: ", isLoadingPage);
-        console.log("isInitialized: ", isInitialized);
-        console.log("profile: ", profile);
-        console.log("pageData: ", pageData);
-    }, [
-        isLoading,
-        setLoading,
-        isLoadingPage,
-        isInitialized,
-        profile,
-        pageData,
-    ]);
 
     const load = async () => {
         if (showCanvas) await initCanvas();
@@ -72,35 +62,27 @@ const UserPage: NextPage<Props> = ({ slug }) => {
                         .then((response) => response.json())
                         .then((response) => {
                             setProfile(response);
-                            setLoading(false);
-                            console.log("***CHANGED LOADING**");
                         })
                         .catch((err) => console.error(err));
                 } else {
                     console.log("No PFP yet");
                 }
             }
+        } else {
+            //console.log("No data");
         }
     };
 
-    if (
-        (!profile || !pageData || pageData.length <= 0) &&
-        isLoading &&
-        !isInitialized
-    ) {
-        console.log("LOADING.......");
+    if (isLoading)
         return (
             <Layout addClass="root-user">
-                <div style={{ background: "red" }}>
-                    <p>gm</p>
-                </div>
+                <p>gm</p>
             </Layout>
         );
-    }
 
     if (pageError) return <p>Error {pageError.message}</p>;
 
-    if (!pageData || pageData.length <= 0)
+    if (!isLoading && !doesExist)
         return (
             <Layout addClass="root-user">
                 <p>no fren here</p>
@@ -122,9 +104,10 @@ const UserPage: NextPage<Props> = ({ slug }) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
+    const slug: string = context.params?.slug as string;
     return {
         props: {
-            slug: context.params?.slug,
+            slug: slug.toLowerCase(),
         },
     };
 };

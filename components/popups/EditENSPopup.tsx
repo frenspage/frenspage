@@ -60,20 +60,22 @@ const EditENSPopup: React.FC<Props> = ({ ENS, setENS, setEditUsername }) => {
     const changeENS = async (data: any) => {
         if (!data) return;
 
+        let name = data.name?.toLowerCase();
+
         let PageObject = Moralis.Object.extend("Page");
 
         let checkPageAlreadyExists = new Moralis.Query(PageObject);
-        checkPageAlreadyExists.equalTo("slug", data.name); //data.name);
+        checkPageAlreadyExists.equalTo("slug", name); //data.name);
         const isPageAlreadyExists = await checkPageAlreadyExists.first();
 
         if (!isPageAlreadyExists) {
             setENS(data);
-            setEditUsername(data.name);
+            setEditUsername(name);
             setShowEditENSPopup(false);
         } else {
             alert(
                 "a page with the ens username '" +
-                    data.name +
+                    name +
                     "' already exists!\nPlease use another name!",
             );
         }
