@@ -1,5 +1,6 @@
 import type { NextPage, GetServerSideProps } from "next";
 import React, { useEffect, useState } from "react";
+import Link from "next/link";
 import { init as initCanvas } from "../canvas/main";
 import Layout from "../components/global/Layout";
 import { useMoralis, useMoralisQuery } from "react-moralis";
@@ -91,8 +92,11 @@ const UserPage: NextPage<Props> = ({ slug }) => {
         return (
             <Layout addClass="root-user centertext">
                 <div>
-                <h3>no fren here</h3><br />
-                <p><a href="/">go back home</a></p>
+                    <h3>no fren here</h3>
+                    <br />
+                    <p>
+                        <Link href="/">go back home</Link>
+                    </p>
                 </div>
             </Layout>
         );
