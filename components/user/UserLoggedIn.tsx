@@ -3,6 +3,7 @@ import Layout from "../global/Layout";
 import EditProfilePopup from "../popups/EditProfilePopup";
 import EditProfilePicPopup from "../popups/EditProfilePicPopup";
 import EditENSPopup from "../popups/EditENSPopup";
+import FirstTimePopup from "../popups/FirstTimePopup";
 import { useMoralis } from "react-moralis";
 import { usePopup } from "../../context/PopupContext";
 import PostitCanvas from "../canvas/PostitCanvas";
@@ -40,6 +41,8 @@ const UserLoggedIn: FC<Props> = ({
         Moralis,
     } = useMoralis();
 
+    const [disconnectIsShown, setDisconnectIsShown] = useState(false);
+
     const loadPFP = async () => {
         if (user) {
             const PFP = Moralis.Object.extend("ProfilePic");
@@ -70,6 +73,8 @@ const UserLoggedIn: FC<Props> = ({
     };
 
     const loadPage = async () => {
+
+
         if (user) {
             //const slug = user?.get("ensusername") ?? user?.get("username");
 
@@ -78,7 +83,7 @@ const UserLoggedIn: FC<Props> = ({
             query.equalTo("owner", user);
             query.descending("createdAt");
             const object: any = await query.first();
-
+            
             if (object) {
                 setPage(object);
                 loadENS(object.get("slug"), object);
@@ -94,7 +99,18 @@ const UserLoggedIn: FC<Props> = ({
             user?.get("ensusername") ??
             user?.get("username");
         await setENS(newENS);
-        user?.set("ensusername", ensusername);
+        console.log("Username");
+        console.log(username);
+       
+        if(!ensusername)
+        {
+            user?.set("ensusername", username);
+        }
+        else
+        {
+            user?.set("ensusername", ensusername);
+        }
+        
         await setUsername(ensusername);
         await setEditUsername(ensusername); //yes, for now, both values are the same, but this may change in the future
         await setRedirectName(ensusername);
@@ -109,6 +125,7 @@ const UserLoggedIn: FC<Props> = ({
         await logout();
         router.push("/");
     };
+
 
     return (
         <Layout>
@@ -135,8 +152,16 @@ const UserLoggedIn: FC<Props> = ({
                     </div>
 
                     <div className="walletinfo" id="walletinfo">
-                        <div id="connectedwallet" onClick={logoutUser}>
-                            {username}
+                        <div id="connectedwallet" 
+                        onClick={logoutUser}
+                        onMouseEnter={() => setDisconnectIsShown(true)}
+                        onMouseLeave={() => setDisconnectIsShown(false)}
+                        >                            
+                            <div>
+                            {disconnectIsShown ? "disconnect": username}
+                            </div>
+                            
+                            
                         </div>
                     </div>
 
@@ -160,6 +185,13 @@ const UserLoggedIn: FC<Props> = ({
                         ENS={ENS}
                         setENS={setENS}
                         setEditUsername={setEditUsername}
+                    />
+
+                    <FirstTimePopup
+                        editProfilePic={editProfilePic}
+                        editUsername={editUsername}
+                        setPage={setPage}
+
                     />
                 </div>
             </div>

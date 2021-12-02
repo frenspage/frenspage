@@ -95,13 +95,9 @@ const EditProfilePicPopup: React.FC<Props> = ({ setEditProfilePic }) => {
                                                         : "")
                                                 }
                                                 onClick={() => {
-                                                    currentSelected === nft
-                                                        ? setCurrentSelected(
-                                                              null,
-                                                          )
-                                                        : setCurrentSelected(
+                                                       changeProfilePic(
                                                               nft,
-                                                          );
+                                                        );
                                                 }}
                                             />
                                             <h3 className="pfp__nft__title">

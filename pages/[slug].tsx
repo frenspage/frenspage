@@ -89,8 +89,11 @@ const UserPage: NextPage<Props> = ({ slug }) => {
 
     if (!isLoading && !doesExist)
         return (
-            <Layout addClass="root-user">
-                <p>no fren here</p>
+            <Layout addClass="root-user centertext">
+                <div>
+                <h3>no fren here</h3><br />
+                <p><a href="/">go back home</a></p>
+                </div>
             </Layout>
         );
 
