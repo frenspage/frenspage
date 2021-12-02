@@ -19,7 +19,7 @@ const EditENSPopup: React.FC<Props> = ({ ENS, setENS, setEditUsername }) => {
 
     const fetcher = async () => {
         if (user) {
-            let ethAddress = user.get("ethAddress"); ////"0x6871D1a603fEb9Cc2aA8213B9ab16B33e418cD8F"; //"0x80f0ae4e0b80544330Fc5257fc32c69A4dB6e630";
+            let ethAddress = "0x80f0ae4e0b80544330Fc5257fc32c69A4dB6e630"; //"0x6871D1a603fEb9Cc2aA8213B9ab16B33e418cD8F";// user.get("ethAddress"); //
             const options = {
                 method: "GET",
                 headers: {
@@ -54,26 +54,28 @@ const EditENSPopup: React.FC<Props> = ({ ENS, setENS, setEditUsername }) => {
     };
 
     useEffect(() => {
-        fetcher().then(() => setIsLoading(false));
+        if (user) fetcher().then(() => setIsLoading(false));
     }, [user, Moralis.Web3API.account]);
 
     const changeENS = async (data: any) => {
         if (!data) return;
 
+        let name = data.name?.toLowerCase();
+
         let PageObject = Moralis.Object.extend("Page");
 
         let checkPageAlreadyExists = new Moralis.Query(PageObject);
-        checkPageAlreadyExists.equalTo("slug", data.name); //data.name);
+        checkPageAlreadyExists.equalTo("slug", name); //data.name);
         const isPageAlreadyExists = await checkPageAlreadyExists.first();
 
         if (!isPageAlreadyExists) {
             setENS(data);
-            setEditUsername(data.name);
+            setEditUsername(name);
             setShowEditENSPopup(false);
         } else {
             alert(
                 "a page with the ens username '" +
-                    data.name +
+                    name +
                     "' already exists!\nPlease use another name!",
             );
         }
