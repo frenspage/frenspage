@@ -128,55 +128,58 @@ const EditProfilePopup: React.FC<Props> = ({
             className={"popupbg" + (!showEditProfilePopup ? " hidden" : "")}
         >
             <div className="popup">
-                <div
-                    className="closepopup"
-                    onClick={() => setShowEditProfilePopup(false)}
-                >
-                    <span>&times;</span>
-                </div>
-
-                <img
-                    src={
-                        editProfilePic?.image_preview_url ?? "/images/punk.png"
-                    }
-                    className="profilepicselect myprofilepic"
-                    onClick={() => setShowEditProfilePicPopup(true)}
-                    alt="Profile Picture"
-                />
-
-                <div
-                    className={"ensselect"}
-                    onClick={() => setShowEditENSPopup(true)}
-                >
+                <div className="content">
                     <div
-                        id="ensname"
-                        className={!ensSelectInput ? " dontdisplay" : ""}
+                        className="closepopup"
+                        onClick={() => setShowEditProfilePopup(false)}
+                    >
+                        <span>&times;</span>
+                    </div>
+
+                    <img
+                        src={
+                            editProfilePic?.image_preview_url ??
+                            "/images/punk.png"
+                        }
+                        className="profilepicselect myprofilepic"
+                        onClick={() => setShowEditProfilePicPopup(true)}
+                        alt="Profile Picture"
                     />
 
                     <div
-                        id="selectensname"
-                        className={ensSelectInput ? " dontdisplay" : ""}
+                        className={"ensselect"}
+                        onClick={() => setShowEditENSPopup(true)}
                     >
-                        Select ENS name
+                        <div
+                            id="ensname"
+                            className={!ensSelectInput ? " dontdisplay" : ""}
+                        />
+
+                        <div
+                            id="selectensname"
+                            className={ensSelectInput ? " dontdisplay" : ""}
+                        >
+                            Select ENS name
+                        </div>
                     </div>
-                </div>
 
-                <div
-                    className={
-                        "hoverfont smallfont greyfont paddingTop" +
-                        (ensSelectInput ? " hidden" : "")
-                    }
-                    onClick={() => setShowEditENSPopup(true)}
-                >
-                    username: {editUsername}
-                </div>
+                    <div
+                        className={
+                            "hoverfont smallfont greyfont paddingTop" +
+                            (ensSelectInput ? " hidden" : "")
+                        }
+                        onClick={() => setShowEditENSPopup(true)}
+                    >
+                        username: {editUsername}
+                    </div>
 
-                <div
-                    id="savesettings"
-                    className="savebutton cansubmit"
-                    onClick={() => saveProfile()}
-                >
-                    Save
+                    <div
+                        id="savesettings"
+                        className="savebutton cansubmit"
+                        onClick={() => saveProfile()}
+                    >
+                        Save
+                    </div>
                 </div>
             </div>
         </div>

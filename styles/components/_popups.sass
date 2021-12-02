@@ -1,0 +1,114 @@
+@use "../abstracts/index" as *
+
+//----------------------------------
+//              POPUPS             -
+//----------------------------------
+
+
+.popupbg
+	background:  rgba(0,0,0,0.5)
+	position: fixed
+	top: 0
+	left: 0
+	right: 0
+	bottom: 0
+	z-index: 101
+	opacity: 1
+	visibility: visible
+	transition: all .2s ease
+
+
+.popup
+	position: absolute
+	z-index: 101
+	width: 40%
+	min-height: 50%
+	height: auto
+	top:  50%
+	left:  50%
+	transform:  translate(-50%, -50%)
+	padding: 100px 50px
+	background: #fff
+	transition: all .3s ease
+	border-radius: 30px
+	overflow: hidden
+	opacity: 1
+
+	@include media-below(content)
+		min-width: 80%
+
+	@include media-below(tablet)
+		min-width: 90%
+		padding: 3rem 1rem
+
+	.content
+		transition: all .3s ease .2s
+		opacity: 1
+		visibility: visible
+
+.popupbg
+	&.hidden
+		opacity: 0
+		visibility: hidden
+		transition: all .2s ease .3s
+		.popup
+			width: 200px
+			border-radius: 100%
+			opacity: 0
+			transition: all .3s ease .1s
+
+			.content
+				transition: all .2s ease
+				opacity: 0
+				visibility: hidden
+
+
+
+.bigpopup
+	position: absolute
+	z-index: 101
+	width: 90%
+	top: 50%
+	left:  50%
+	transform:  translate(-50%, -50%)
+	background: #fff
+	padding: 3rem
+	border-radius: 30px
+	max-height: calc(100vh - 4rem)
+	height: calc(100vh - 4rem)
+	overflow: hidden
+	& > .content
+		overflow: hidden
+		height: 100%
+
+	@include media-below(tablet)
+		padding: 3rem 1rem
+
+
+
+.closepopup
+	position: absolute
+	top: 15px
+	right: 15px
+	width: 22px
+	height: 22px
+	display: flex
+	align-items: center
+	justify-content: center
+	line-height: 22px
+	background: #000
+	color: #fff
+	padding: 5px
+	border-radius: 50px
+	border: 2px solid rgba(0,0,0,0)
+	cursor: pointer
+
+	&:hover
+		background: rgba(0,0,0,0)
+		color: #000
+		border: 2px solid #000
+
+	span
+		text-align: center
+		padding-top: 4px
+
