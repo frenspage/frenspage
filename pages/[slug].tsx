@@ -20,8 +20,9 @@ const UserPage: NextPage<Props> = ({ slug }) => {
     const { isInitialized, Moralis, isAuthenticated, user } = useMoralis();
 
     /**
-     * useMoralisQuery fropm "react-moralis"-package
+     * useMoralisQuery from "react-moralis"-package
      * return { data, error, isLoading, ... }
+     * This is the same as Moralis.Query("Page")
      */
     const {
         data: pageData,
@@ -31,6 +32,10 @@ const UserPage: NextPage<Props> = ({ slug }) => {
         query.equalTo("slug", slug).descending("createdAt").limit(1),
     );
 
+    /**
+     * This useEffect check if the page with slug exists
+     * after pageData from useMoralisQuery hook is loaded
+     */
     useEffect(() => {
         load().then(() => {
             if (pageData && pageData.length > 0) {
@@ -40,11 +45,13 @@ const UserPage: NextPage<Props> = ({ slug }) => {
         });
     }, [pageData, isLoadingPage]);
 
+    /** Initial load function **/
     const load = async () => {
         if (showCanvas) await initCanvas();
         await loadPFP();
     };
 
+    /** Load ProfilePicture from Database **/
     const loadPFP = async () => {
         if (pageData[0]) {
             const owner = pageData[0].get("owner");
@@ -71,7 +78,7 @@ const UserPage: NextPage<Props> = ({ slug }) => {
                         })
                         .catch((err) => console.error(err));
                 } else {
-                    console.log("No PFP yet");
+                    //console.log("No PFP yet");
                 }
             }
         } else {
@@ -79,7 +86,7 @@ const UserPage: NextPage<Props> = ({ slug }) => {
         }
     };
 
-    if (isLoading)
+    if (isLoading && !isAuthenticated)
         return (
             <Layout addClass="root-user">
                 <p>gm</p>
@@ -88,7 +95,7 @@ const UserPage: NextPage<Props> = ({ slug }) => {
 
     if (pageError) return <p>Error {pageError.message}</p>;
 
-    if (!isLoading && !doesExist)
+    if (!isLoading && !doesExist && !isAuthenticated)
         return (
             <Layout addClass="root-user centertext">
                 <div>
