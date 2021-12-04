@@ -3,6 +3,8 @@ import { useMoralis } from "react-moralis";
 import { usePopup } from "../../context/PopupContext";
 import { useRouter } from "next/router";
 
+
+
 interface Props {
     profilePic: any;
     editProfilePic: any;
@@ -111,6 +113,7 @@ const EditProfilePopup: React.FC<Props> = ({
 
     const saveProfile = () => {
         
+
         let hasClaimed:boolean = user?.get("hasClaimed");
         console.log(hasClaimed);
 

@@ -2,6 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useMoralis } from "react-moralis";
 import { usePopup } from "../../context/PopupContext";
 import { useRouter } from "next/router";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { fab } from '@fortawesome/free-brands-svg-icons'
+
+import useWindowSize from 'react-use/lib/useWindowSize'
+import Confetti from 'react-confetti'
 
 interface Props {
     editProfilePic: any;
@@ -32,6 +37,14 @@ const FirstTimePopup: React.FC<Props> = ({
             id="showfirsttime"
             className={"popupbg" + (!showFirstTimePopup ? " hidden" : "")}
         >
+            
+            <Confetti
+                width={window.innerWidth}
+                height={300}
+                tweenDuration={10000}
+            />
+
+
             <div className="popup">
 
                 <img
@@ -43,16 +56,56 @@ const FirstTimePopup: React.FC<Props> = ({
                     alt="Profile Picture"
                 />
 
-                <div                                       
+                <br /><br />
+
+                <div   className="gm"                                  
                 >
-                    username: {editUsername}
+                    <h2>
+                        gm {editUsername}
+                    </h2>
                 </div>
 
+                <br /><br />
+
+                <div   className="smallfont"                                  
+                >
+                   Here is your new frens page:
+                </div>
+                
+                <div   className="gm2"                                  
+                >
+                     { /* <Link href={window.location.pathname} className="greyfont smallfont"
+                     >
+                         {window.location.pathname}
+                </Link> */}
+                URL
+
+                </div>
+
+                <br />
+
+                <div   className="gm3"                                  
+                >
+                     <a href="/" class="greyfont smallfont" data-show-count="false">
+                    wallet: 
+                    </a>
+                </div>
+
+                <br /><br />
+                
+                {/*Include a Twitter share button widget*/}
+                <a href="/" class="sharebutton twitter-share-button" data-show-count="false">
+                Tell your Twitter frens <FontAwesomeIcon icon={["fab", "twitter"]} />
+                </a>
+                <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+                
+
                 <div
-                    className="savebutton cansubmit"
+                    className="savebutton cansubmit" 
                     onClick={() => setShowFirstTimePopup(false)}
                 >
-                    Close
+                    See<FontAwesomeIcon icon="arrow-right" />
                 </div>
             </div>
         </div>

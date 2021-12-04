@@ -193,7 +193,7 @@ a:-webkit-any-link
 	left:  50%
 	transform:  translate(-50%, -50%)
 	background: #fff
-	padding: 100px 50px
+	padding: 100px 50px 60px
 	border-radius: 30px
 
 	@include media-below(content)
@@ -253,11 +253,12 @@ a:-webkit-any-link
 
 .savebutton
 	position: relative
-	bottom: -15px
+	bottom: -77px	
 	left: 50%
 	transform: translateX(-50%)
 	text-align: center
 	line-height: 28px
+	min-height: 28px
 	background: #ccc
 	width: 100px
 	color: #eee
@@ -269,6 +270,25 @@ a:-webkit-any-link
 		border: 2px solid #000
 		background: #000
 		cursor: pointer
+
+.sharebutton
+	background: #000
+	display: inline-block
+	color: #eee
+	padding: 10px 25px
+	border-radius: 50px
+	border: 2px solid #000
+	font-size: 13px
+
+	
+.sharebutton:hover
+	background: #fff
+	display: inline-block
+	color: #000
+	padding: 10px 25px
+	border-radius: 50px
+	border: 2px solid #000
+	font-size: 13px
 
 
 
@@ -437,6 +457,21 @@ a:-webkit-any-link
 #savesettings
 	margin-top: 25px
 		
+
+/* First Time Popup */
+
+.gm
+
+.gm2
+	background:#eee
+	border-radius: 10px
+	display: inline-block
+	padding: 15px
+	margin: 15px
+	font-weight: bold
+
+
+.gm3
 
 
 /* Other */

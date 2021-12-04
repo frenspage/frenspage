@@ -74,7 +74,6 @@ const UserLoggedIn: FC<Props> = ({
 
     const loadPage = async () => {
 
-
         if (user) {
             //const slug = user?.get("ensusername") ?? user?.get("username");
 
