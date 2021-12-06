@@ -130,13 +130,7 @@ const EditENSPopup: React.FC<Props> = ({ ENS, setENS, setEditUsername }) => {
                                                         : "")
                                                 }
                                                 onClick={() => {
-                                                    currentSelected === nft
-                                                        ? setCurrentSelected(
-                                                              null,
-                                                          )
-                                                        : setCurrentSelected(
-                                                              nft,
-                                                          );
+                                                    changeENS(nft);
                                                 }}
                                             />
                                             <h3 className="pfp__nft__title">

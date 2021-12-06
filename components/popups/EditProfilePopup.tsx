@@ -36,8 +36,10 @@ const EditProfilePopup: React.FC<Props> = ({
         setShowEditProfilePopup,
         setShowEditProfilePicPopup,
         setShowEditENSPopup,
+        setShowFirstTimePopup,
     } = usePopup();
 
+    /** Save new Profile Pic to DB **/
     const saveChangeProfilePic = async () => {
         let data = editProfilePic;
 
@@ -55,8 +57,6 @@ const EditProfilePopup: React.FC<Props> = ({
                 setProfilePic(data);
             })
             .catch((error: any) => {
-                // Execute any logic that should take place if the save fails.
-                // error is a Moralis.Error with an error code and message.
                 alert(
                     "Failed to create new object, with error code: " +
                         error.message,
@@ -64,6 +64,11 @@ const EditProfilePopup: React.FC<Props> = ({
             });
     };
 
+    /**
+     * Save new ENS to DB
+     * If the page doesn't exist yet,
+     * it will create a new page with the user.username id
+     * **/
     const saveChangeENS = async () => {
         let data: any = ENS;
         if (!ENS || !user) return;
@@ -109,12 +114,25 @@ const EditProfilePopup: React.FC<Props> = ({
     };
 
     const saveProfile = () => {
+        let hasClaimed: boolean = user?.get("hasClaimed");
+        console.log(hasClaimed);
+
         saveChangeProfilePic()
             .then(() =>
                 saveChangeENS().then(() => {
-                    console.log("** SAVED **");
-                    setShowEditProfilePopup(false);
-                    router.push("/" + ENS.name);
+                    if (hasClaimed) {
+                        console.log("** SAVED **");
+                        setShowEditProfilePopup(false);
+                        user?.set("hasClaimed", hasClaimed);
+                    } else {
+                        console.log("** SAVED ** -- CONFETTI");
+                        setShowFirstTimePopup(true);
+                        setShowEditProfilePopup(false);
+                        user?.set("hasClaimed", hasClaimed);
+
+                        console.log("claimed", user?.get("hasClaimed"));
+                    }
+                    router.push(ENS.name);
                 }),
             )
             .catch((err: any) =>
