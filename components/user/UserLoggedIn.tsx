@@ -39,6 +39,7 @@ const UserLoggedIn: FC<Props> = ({
         isInitialized,
         logout,
         Moralis,
+        setUserData,
     } = useMoralis();
 
     const [disconnectIsShown, setDisconnectIsShown] = useState(false);
@@ -72,8 +73,13 @@ const UserLoggedIn: FC<Props> = ({
         }
     };
 
+    /**
+     * Loads the page information from the DB
+     * When there's no page saved in the DB with the given ens
+     * this function will create a new page
+     * --> for first time sign up --> page will be created
+     */
     const loadPage = async () => {
-
         if (user) {
             //const slug = user?.get("ensusername") ?? user?.get("username");
 
@@ -82,12 +88,30 @@ const UserLoggedIn: FC<Props> = ({
             query.equalTo("owner", user);
             query.descending("createdAt");
             const object: any = await query.first();
-            
+
             if (object) {
                 setPage(object);
                 loadENS(object.get("slug"), object);
             } else {
-                loadENS(user?.get("username"), { name: user?.get("username") });
+                let slug = user?.get("username").toLowerCase();
+                let PageObject = Moralis.Object.extend("Page");
+                let page = new PageObject();
+
+                page.set("owner", user);
+                page.set("slug", slug);
+                page.save()
+                    .then((res: any) => {
+                        setPage(res);
+                        loadENS(user?.get("username"), {
+                            name: user?.get("username"),
+                        });
+                    })
+                    .catch((error: any) => {
+                        alert(
+                            "Failed to create new page, with error code: " +
+                                error.message,
+                        );
+                    });
             }
         }
     };
@@ -98,18 +122,9 @@ const UserLoggedIn: FC<Props> = ({
             user?.get("ensusername") ??
             user?.get("username");
         await setENS(newENS);
-        console.log("Username");
-        console.log(username);
-       
-        if(!ensusername)
-        {
-            user?.set("ensusername", username);
-        }
-        else
-        {
-            user?.set("ensusername", ensusername);
-        }
-        
+
+        setUserData({ ensusername: ensusername.toLowerCase() });
+
         await setUsername(ensusername);
         await setEditUsername(ensusername); //yes, for now, both values are the same, but this may change in the future
         await setRedirectName(ensusername);
@@ -124,7 +139,6 @@ const UserLoggedIn: FC<Props> = ({
         await logout();
         router.push("/");
     };
-
 
     return (
         <Layout>
@@ -151,16 +165,15 @@ const UserLoggedIn: FC<Props> = ({
                     </div>
 
                     <div className="walletinfo" id="walletinfo">
-                        <div id="connectedwallet" 
-                        onClick={logoutUser}
-                        onMouseEnter={() => setDisconnectIsShown(true)}
-                        onMouseLeave={() => setDisconnectIsShown(false)}
-                        >                            
+                        <div
+                            id="connectedwallet"
+                            onClick={logoutUser}
+                            onMouseEnter={() => setDisconnectIsShown(true)}
+                            onMouseLeave={() => setDisconnectIsShown(false)}
+                        >
                             <div>
-                            {disconnectIsShown ? "disconnect": username}
+                                {disconnectIsShown ? "disconnect" : username}
                             </div>
-                            
-                            
                         </div>
                     </div>
 
@@ -190,7 +203,6 @@ const UserLoggedIn: FC<Props> = ({
                         editProfilePic={editProfilePic}
                         editUsername={editUsername}
                         setPage={setPage}
-
                     />
                 </div>
             </div>

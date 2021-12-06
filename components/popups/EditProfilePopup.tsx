@@ -3,8 +3,6 @@ import { useMoralis } from "react-moralis";
 import { usePopup } from "../../context/PopupContext";
 import { useRouter } from "next/router";
 
-
-
 interface Props {
     profilePic: any;
     editProfilePic: any;
@@ -29,7 +27,7 @@ const EditProfilePopup: React.FC<Props> = ({
     editProfilePic,
     ensSelectInput,
     editUsername,
-    setPage
+    setPage,
 }) => {
     const router = useRouter();
     const { user, Moralis } = useMoralis();
@@ -112,49 +110,30 @@ const EditProfilePopup: React.FC<Props> = ({
     };
 
     const saveProfile = () => {
-        
-
-        let hasClaimed:boolean = user?.get("hasClaimed");
+        let hasClaimed: boolean = user?.get("hasClaimed");
         console.log(hasClaimed);
 
-        if(false && hasClaimed)
-        {
-            alert("No confetti");
-            //if he already had a page, no confetti for u
-            saveChangeProfilePic()
+        saveChangeProfilePic()
             .then(() =>
                 saveChangeENS().then(() => {
-                    console.log("** SAVED **");
-                    setShowEditProfilePopup(false);
-                    user?.set("hasClaimed",false)
+                    if (hasClaimed) {
+                        console.log("** SAVED **");
+                        setShowEditProfilePopup(false);
+                        user?.set("hasClaimed", false);
+                    } else {
+                        console.log("** SAVED **");
+                        setShowFirstTimePopup(true);
+                        setShowEditProfilePopup(false);
+                        user?.set("hasClaimed", true);
+                        console.log("claimed");
+                        console.log(user?.get("hasClaimed"));
+                        router.push(ENS.name);
+                    }
                 }),
             )
             .catch((err: any) =>
                 console.error("saveProfile ERROR: ", err.message),
             );
-           
-        }
-        else
-        {
-            //if the user creates his first page: show confetti
-            saveChangeProfilePic()
-            .then(() =>
-                saveChangeENS().then(() => {
-                    console.log("** SAVED **");
-                    setShowFirstTimePopup(true);
-                    setShowEditProfilePopup(false);
-                    user?.set("hasClaimed", true)
-
-                    console.log("claimed");
-                    console.log( user?.get("hasClaimed"))
-                }),
-            )
-            .catch((err: any) =>
-                console.error("saveProfile ERROR: ", err.message),
-            );
-        }
-
-        
     };
 
     return (
