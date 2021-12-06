@@ -7,13 +7,23 @@ import UserLoggedIn from "../components/user/UserLoggedIn";
 
 const Home: NextPage = () => {
     const router = useRouter();
-    const { authenticate, isAuthenticated, user, isInitialized, Moralis } =
-        useMoralis();
+    const {
+        authenticate,
+        isAuthenticated,
+        user,
+        isInitialized,
+        Moralis,
+        setUserData,
+    } = useMoralis();
     const [userEns, setUserEns] = useState(user?.get("ensusername") ?? "");
 
     useEffect(() => {        
         if (user) {
             setUserEns(user?.get("ensusername"));
+            if (!user.get("ensusername")) {
+                let ens = user.get("username")?.toLowerCase();
+                setUserData({ ensusername: ens });
+            }
         }
     }, [user, Moralis.Web3API.account, isAuthenticated]);
 

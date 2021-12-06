@@ -68,7 +68,7 @@ const UserLoggedIn: FC<Props> = ({
                     })
                     .catch((err) => console.error(err));
             } else {
-                console.log("No PFP yet");
+                //console.log("No PFP yet");
             }
         }
     };

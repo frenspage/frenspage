@@ -26,11 +26,10 @@ const UserPage: NextPage<Props> = ({ slug }) => {
         load();
     }, [isInitialized]);
 
+    /** Initial load function **/
     const load = async () => {
         if (showCanvas) await initCanvas();
-        await loadData().then(() => {
-            console.log("then");
-        });
+        await loadData().then(() => {});
     };
 
     /**********************************************
@@ -97,7 +96,9 @@ const UserPage: NextPage<Props> = ({ slug }) => {
                 }
             }
         } else {
-            console.log("not yet initialised");
+            /********************************
+             *  Moralis not yet initialised
+             * ******************************/
             setIsLoading(true);
         }
     };

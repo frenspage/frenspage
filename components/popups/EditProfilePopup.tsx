@@ -39,6 +39,7 @@ const EditProfilePopup: React.FC<Props> = ({
         setShowFirstTimePopup,
     } = usePopup();
 
+    /** Save new Profile Pic to DB **/
     const saveChangeProfilePic = async () => {
         let data = editProfilePic;
 
@@ -56,8 +57,6 @@ const EditProfilePopup: React.FC<Props> = ({
                 setProfilePic(data);
             })
             .catch((error: any) => {
-                // Execute any logic that should take place if the save fails.
-                // error is a Moralis.Error with an error code and message.
                 alert(
                     "Failed to create new object, with error code: " +
                         error.message,
@@ -65,6 +64,11 @@ const EditProfilePopup: React.FC<Props> = ({
             });
     };
 
+    /**
+     * Save new ENS to DB
+     * If the page doesn't exist yet,
+     * it will create a new page with the user.username id
+     * **/
     const saveChangeENS = async () => {
         let data: any = ENS;
         if (!ENS || !user) return;
@@ -111,22 +115,17 @@ const EditProfilePopup: React.FC<Props> = ({
 
     const saveProfile = () => {
         let hasClaimed: boolean = user?.get("hasClaimed");
-        console.log(hasClaimed);
+        console.log("hasClaimed: ", hasClaimed);
 
         saveChangeProfilePic()
             .then(() =>
                 saveChangeENS().then(() => {
                     if (hasClaimed) {
-                        console.log("** SAVED **");
                         setShowEditProfilePopup(false);
-                        user?.set("hasClaimed", false);
                     } else {
-                        console.log("** SAVED **");
                         setShowFirstTimePopup(true);
                         setShowEditProfilePopup(false);
                         user?.set("hasClaimed", true);
-                        console.log("claimed");
-                        console.log(user?.get("hasClaimed"));
                         router.push(ENS.name);
                     }
                 }),
@@ -142,55 +141,58 @@ const EditProfilePopup: React.FC<Props> = ({
             className={"popupbg" + (!showEditProfilePopup ? " hidden" : "")}
         >
             <div className="popup">
-                <div
-                    className="closepopup"
-                    onClick={() => setShowEditProfilePopup(false)}
-                >
-                    <span>&times;</span>
-                </div>
-
-                <img
-                    src={
-                        editProfilePic?.image_preview_url ?? "/images/punk.png"
-                    }
-                    className="profilepicselect myprofilepic"
-                    onClick={() => setShowEditProfilePicPopup(true)}
-                    alt="Profile Picture"
-                />
-
-                <div
-                    className={"ensselect"}
-                    onClick={() => setShowEditENSPopup(true)}
-                >
+                <div className="content">
                     <div
-                        id="ensname"
-                        className={!ensSelectInput ? " dontdisplay" : ""}
+                        className="closepopup"
+                        onClick={() => setShowEditProfilePopup(false)}
+                    >
+                        <span>&times;</span>
+                    </div>
+
+                    <img
+                        src={
+                            editProfilePic?.image_preview_url ??
+                            "/images/punk.png"
+                        }
+                        className="profilepicselect myprofilepic"
+                        onClick={() => setShowEditProfilePicPopup(true)}
+                        alt="Profile Picture"
                     />
 
                     <div
-                        id="selectensname"
-                        className={ensSelectInput ? " dontdisplay" : ""}
+                        className={"ensselect"}
+                        onClick={() => setShowEditENSPopup(true)}
                     >
-                        Select ENS name
+                        <div
+                            id="ensname"
+                            className={!ensSelectInput ? " dontdisplay" : ""}
+                        />
+
+                        <div
+                            id="selectensname"
+                            className={ensSelectInput ? " dontdisplay" : ""}
+                        >
+                            Select ENS name
+                        </div>
                     </div>
-                </div>
 
-                <div
-                    className={
-                        "hoverfont smallfont greyfont paddingTop" +
-                        (ensSelectInput ? " hidden" : "")
-                    }
-                    onClick={() => setShowEditENSPopup(true)}
-                >
-                    username: {editUsername}
-                </div>
+                    <div
+                        className={
+                            "hoverfont smallfont greyfont paddingTop" +
+                            (ensSelectInput ? " hidden" : "")
+                        }
+                        onClick={() => setShowEditENSPopup(true)}
+                    >
+                        username: {editUsername}
+                    </div>
 
-                <div
-                    id="savesettings"
-                    className="savebutton cansubmit"
-                    onClick={() => saveProfile()}
-                >
-                    Save
+                    <div
+                        id="savesettings"
+                        className="savebutton cansubmit"
+                        onClick={() => saveProfile()}
+                    >
+                        Save
+                    </div>
                 </div>
             </div>
         </div>
