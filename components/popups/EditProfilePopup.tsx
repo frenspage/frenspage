@@ -117,38 +117,27 @@ const EditProfilePopup: React.FC<Props> = ({
         let hasClaimed: boolean = user?.get("hasClaimed");
         console.log(hasClaimed);
 
-        if (false && hasClaimed) {
-            alert("No confetti");
-            //if he already had a page, no confetti for u
-            saveChangeProfilePic()
-                .then(() =>
-                    saveChangeENS().then(() => {
+        saveChangeProfilePic()
+            .then(() =>
+                saveChangeENS().then(() => {
+                    if (hasClaimed) {
                         console.log("** SAVED **");
                         setShowEditProfilePopup(false);
-                        user?.set("hasClaimed", false);
-                    }),
-                )
-                .catch((err: any) =>
-                    console.error("saveProfile ERROR: ", err.message),
-                );
-        } else {
-            //if the user creates his first page: show confetti
-            saveChangeProfilePic()
-                .then(() =>
-                    saveChangeENS().then(() => {
-                        console.log("** SAVED **");
+                        user?.set("hasClaimed", hasClaimed);
+                    } else {
+                        console.log("** SAVED ** -- CONFETTI");
                         setShowFirstTimePopup(true);
                         setShowEditProfilePopup(false);
-                        user?.set("hasClaimed", true);
+                        user?.set("hasClaimed", hasClaimed);
 
-                        console.log("claimed");
-                        console.log(user?.get("hasClaimed"));
-                    }),
-                )
-                .catch((err: any) =>
-                    console.error("saveProfile ERROR: ", err.message),
-                );
-        }
+                        console.log("claimed", user?.get("hasClaimed"));
+                    }
+                    router.push(ENS.name);
+                }),
+            )
+            .catch((err: any) =>
+                console.error("saveProfile ERROR: ", err.message),
+            );
     };
 
     return (

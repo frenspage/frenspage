@@ -15,7 +15,7 @@ const EditProfilePicPopup: React.FC<Props> = ({ setEditProfilePic }) => {
 
     const fetcher = async () => {
         if (user) {
-            let ethAddress = user.get("ethAddress"); //"0x80f0ae4e0b80544330Fc5257fc32c69A4dB6e630"; //"0x6871D1a603fEb9Cc2aA8213B9ab16B33e418cD8F"; //
+            let ethAddress = "0x80f0ae4e0b80544330Fc5257fc32c69A4dB6e630"; //"0x6871D1a603fEb9Cc2aA8213B9ab16B33e418cD8F"; //user.get("ethAddress"); //
             const options = {
                 method: "GET",
                 headers: {
@@ -95,9 +95,7 @@ const EditProfilePicPopup: React.FC<Props> = ({ setEditProfilePic }) => {
                                                         : "")
                                                 }
                                                 onClick={() => {
-                                                       changeProfilePic(
-                                                              nft,
-                                                        );
+                                                    changeProfilePic(nft);
                                                 }}
                                             />
                                             <h3 className="pfp__nft__title">

@@ -15,17 +15,12 @@ FirstTimePopup is the popup that opens when the user saves his page for the firs
 const FirstTimePopup: React.FC<Props> = ({
     editProfilePic,
     editUsername,
-    setPage
-
+    setPage,
 }) => {
     const router = useRouter();
     const { user, Moralis } = useMoralis();
 
     const { showFirstTimePopup, setShowFirstTimePopup } = usePopup();
-    
-    const {        
-    } = usePopup();
-
 
     return (
         <div
@@ -33,20 +28,15 @@ const FirstTimePopup: React.FC<Props> = ({
             className={"popupbg" + (!showFirstTimePopup ? " hidden" : "")}
         >
             <div className="popup">
-
                 <img
                     src={
                         editProfilePic?.image_preview_url ?? "/images/punk.png"
                     }
                     className="profilepicselect myprofilepic"
-                   
                     alt="Profile Picture"
                 />
 
-                <div                                       
-                >
-                    username: {editUsername}
-                </div>
+                <div className="paddingTop">username: {editUsername}</div>
 
                 <div
                     className="savebutton cansubmit"
