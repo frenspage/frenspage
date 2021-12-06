@@ -114,8 +114,8 @@ const EditProfilePopup: React.FC<Props> = ({
     };
 
     const saveProfile = () => {
-        let hasClaimed: boolean = user?.get("hasClaimed");
-        console.log("hasClaimed: ", hasClaimed);
+        let hasClaimed: any = user?.get("hasClaimed");
+        //console.log("hasClaimed: ", hasClaimed);
 
         saveChangeProfilePic()
             .then(() =>
