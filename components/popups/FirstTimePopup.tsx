@@ -54,6 +54,12 @@ const FirstTimePopup: React.FC<Props> = ({
             />
 
             <div className="popup">
+                <div
+                    className="closepopup"
+                    onClick={() => setShowFirstTimePopup(false)}
+                >
+                    <span>&times;</span>
+                </div>
                 <img
                     src={
                         editProfilePic?.image_preview_url ?? "/images/punk.png"
@@ -102,7 +108,7 @@ const FirstTimePopup: React.FC<Props> = ({
                     </Link>
                 </div>
 
-                <a
+                <button
                     className="sharebutton twitter-share-button"
                     data-show-count="false"
                     style={{ cursor: "pointer" }}
@@ -123,7 +129,7 @@ const FirstTimePopup: React.FC<Props> = ({
                     }}
                 >
                     Tell your Twitter frens <FontAwesomeIcon icon={faTwitter} />
-                </a>
+                </button>
 
                 <div
                     className="savebutton cansubmit"
