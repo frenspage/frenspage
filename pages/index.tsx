@@ -17,7 +17,7 @@ const Home: NextPage = () => {
     } = useMoralis();
     const [userEns, setUserEns] = useState(user?.get("ensusername") ?? "");
 
-    useEffect(() => {
+    useEffect(() => {        
         if (user) {
             setUserEns(user?.get("ensusername"));
             if (!user.get("ensusername")) {

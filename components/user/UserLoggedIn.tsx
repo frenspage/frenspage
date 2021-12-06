@@ -32,7 +32,15 @@ const UserLoggedIn: FC<Props> = ({
 
     const { setShowEditProfilePopup } = usePopup();
 
-    const { user, logout, Moralis, setUserData } = useMoralis();
+    const {
+        authenticate,
+        isAuthenticated,
+        user,
+        isInitialized,
+        logout,
+        Moralis,
+        setUserData,
+    } = useMoralis();
 
     const [disconnectIsShown, setDisconnectIsShown] = useState(false);
 
@@ -65,6 +73,12 @@ const UserLoggedIn: FC<Props> = ({
         }
     };
 
+    /**
+     * Loads the page information from the DB
+     * When there's no page saved in the DB with the given ens
+     * this function will create a new page
+     * --> for first time sign up --> page will be created
+     */
     const loadPage = async () => {
         if (user) {
             //const slug = user?.get("ensusername") ?? user?.get("username");

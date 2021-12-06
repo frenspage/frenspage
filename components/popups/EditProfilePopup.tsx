@@ -115,24 +115,19 @@ const EditProfilePopup: React.FC<Props> = ({
 
     const saveProfile = () => {
         let hasClaimed: boolean = user?.get("hasClaimed");
-        console.log(hasClaimed);
+        console.log("hasClaimed: ", hasClaimed);
 
         saveChangeProfilePic()
             .then(() =>
                 saveChangeENS().then(() => {
                     if (hasClaimed) {
-                        console.log("** SAVED **");
                         setShowEditProfilePopup(false);
-                        user?.set("hasClaimed", hasClaimed);
                     } else {
-                        console.log("** SAVED ** -- CONFETTI");
                         setShowFirstTimePopup(true);
                         setShowEditProfilePopup(false);
-                        user?.set("hasClaimed", hasClaimed);
-
-                        console.log("claimed", user?.get("hasClaimed"));
+                        user?.set("hasClaimed", true);
+                        router.push(ENS.name);
                     }
-                    router.push(ENS.name);
                 }),
             )
             .catch((err: any) =>
