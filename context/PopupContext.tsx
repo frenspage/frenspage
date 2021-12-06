@@ -9,6 +9,8 @@ interface ContextProps {
     readonly setShowEditProfilePicPopup: (value: boolean) => void;
     readonly showFirstTimePopup: boolean;
     readonly setShowFirstTimePopup: (value: boolean) => void;
+    readonly frenPopup: boolean;
+    readonly setFrenPopup: (value: boolean) => void;
 }
 
 export const PopupContext = createContext<ContextProps>({
@@ -20,13 +22,17 @@ export const PopupContext = createContext<ContextProps>({
     setShowEditProfilePicPopup: () => null,
     showFirstTimePopup: false,
     setShowFirstTimePopup: () => null,
+    frenPopup: false,
+    setFrenPopup: () => null,
 });
 
 export const PopupProvider: React.FC = ({ children }) => {
     const [showEditProfilePopup, setShowEditProfilePopup] = useState(false);
     const [showEditENSPopup, setShowEditENSPopup] = useState(false);
-    const [showEditProfilePicPopup, setShowEditProfilePicPopup] = useState(false);
+    const [showEditProfilePicPopup, setShowEditProfilePicPopup] =
+        useState(false);
     const [showFirstTimePopup, setShowFirstTimePopup] = useState(false);
+    const [frenPopup, setFrenPopup] = useState(false);
 
     return (
         <PopupContext.Provider
@@ -39,6 +45,8 @@ export const PopupProvider: React.FC = ({ children }) => {
                 setShowEditProfilePicPopup,
                 showFirstTimePopup,
                 setShowFirstTimePopup,
+                frenPopup,
+                setFrenPopup,
             }}
         >
             {children}

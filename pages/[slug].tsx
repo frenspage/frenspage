@@ -6,6 +6,8 @@ import Layout from "../components/global/Layout";
 import { useMoralis, useMoralisQuery } from "react-moralis";
 import PostitCanvas from "../components/canvas/PostitCanvas";
 import UserLoggedIn from "../components/user/UserLoggedIn";
+import FrenPopup from "../components/popups/FrenPopup";
+import { usePopup } from "../context/PopupContext";
 
 interface Props {
     slug: string;
@@ -20,6 +22,7 @@ const UserPage: NextPage<Props> = ({ slug }) => {
     const [doesExist, setDoesExist] = useState(true);
     const [error, setError] = useState<any>(null);
     const { isInitialized, Moralis, isAuthenticated, user } = useMoralis();
+    const { frenPopup, setFrenPopup } = usePopup();
 
     /***** INITIAL LOAD *****/
     useEffect(() => {
@@ -146,9 +149,12 @@ const UserPage: NextPage<Props> = ({ slug }) => {
                 <img
                     src={pfp?.image_preview_url ?? "/images/punk.png"}
                     className="profilepic"
+                    onClick={() => setFrenPopup(true)}
+                    style={{ cursor: "pointer" }}
                 />
                 <p style={{ textAlign: "center" }}>{slug}</p>
             </div>
+            <FrenPopup pageData={page} profilePic={pfp} />
             {showCanvas && <PostitCanvas />}
         </Layout>
     );
