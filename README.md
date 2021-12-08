@@ -31,3 +31,21 @@ stack:
 * typescript
 * prettier
 * eslint
+
+
+## ContextAPI
+### Popup Context
+Use the popup-context for popup-states/lifecycles
+
+```js
+const {
+	showEditProfilePopup, setShowEditProfilePopup,          // EditProfilePopup-component
+	showEditENSPopup, setShowEditENSPopup,                  // EditENSPopup-component
+	showEditProfilePicPopup, setShowEditProfilePicPopup,    // EditProfilePicPopup-component
+	showFirstTimePopup, setShowFirstTimePopup,              // FirstTypePopup-component
+	frenPopup, setFrenPopup                                 // FrenPopup-component
+} = usePopup();
+```
+
+## Copyright
+This is a project by Neon Luxembourg (Misch Strotz) and Daniel Wahl
