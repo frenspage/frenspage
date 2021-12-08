@@ -4,6 +4,22 @@
 //      Profile NFT Styling        -
 //----------------------------------
 
+#profilepic
+	background: #eee
+	border-radius: 100px
+	height: 200px
+	width: 200px
+	background-size:  contain
+	margin: auto
+	border: 1px solid #ddd
+	cursor: pointer
+	transition:  opacity 0.2s ease
+	display: inline-block
+	overflow: hidden
+
+	&:hover
+		opacity: 0.7
+
 .profilepic
 	background: #eee
 	border-radius: 100px
@@ -15,6 +31,13 @@
 	transition:  opacity 0.2s ease
 	display: inline-block
 	overflow: hidden
+
+.profilepic:hover
+	text-decoration: none
+	opacity:0.7
+
+.ethname:hover
+	opacity:0.7 !important
 
 .profilepicselect_nfts
 	overflow-y: scroll

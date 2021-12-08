@@ -155,12 +155,13 @@ const UserLoggedIn: FC<Props> = ({
                                 className="myprofilepic"
                                 onClick={() => setShowEditProfilePopup(true)}
                             />
-                            <div
+                            <br />
+                            <h3
                                 id="profilename"
                                 className="username myprofilename"
                             >
                                 {username}
-                            </div>
+                            </h3>
                         </div>
                     </div>
 
@@ -172,7 +173,7 @@ const UserLoggedIn: FC<Props> = ({
                             onMouseLeave={() => setDisconnectIsShown(false)}
                         >
                             <div>
-                                {disconnectIsShown ? "disconnect" : username}
+                                {disconnectIsShown ? "disconnect" : "connected as " + username}
                             </div>
                         </div>
                     </div>

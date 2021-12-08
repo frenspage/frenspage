@@ -123,7 +123,7 @@ const UserPage: NextPage<Props> = ({ slug }) => {
                     <br />
                     <p>
                         <Link href="/">
-                            <a>go back home</a>
+                            <a >go back home</a>
                         </Link>
                     </p>
                 </div>
@@ -148,12 +148,39 @@ const UserPage: NextPage<Props> = ({ slug }) => {
                     className="profilepic"
                     onClick={() => setFrenPopup(true)}
                     style={{ cursor: "pointer" }}
+                    id="profilepic"
                 />
-                <p style={{ textAlign: "center" }}>{slug}</p>
+                <br />
+                <h3
+                onClick={() => setFrenPopup(true)}
+                style={{ cursor: "pointer" }}
+                className="centertext ethname"
+                >
+                    {slug}
+                </h3>
             </div>
             <FrenPopup pageData={page} profilePic={pfp} />
             {showCanvas && <PostitCanvas />}
+
+            {/* @DANIEL this should be visible also if I'm on another user's page. Best put it into a Context I'd say? */ }
+            {user ?
+            <div className="walletinfo" id="walletinfo">
+                <div
+                    id="connectedwallet"
+                    onClick={logoutUser}
+                    onMouseEnter={() => setDisconnectIsShown(true)}
+                    onMouseLeave={() => setDisconnectIsShown(false)}
+                >
+                    <div>
+                        {disconnectIsShown ? "disconnect" : "connected as" + username}
+                    </div>
+                </div>
+            </div>
+            : ""
+            }
+
         </Layout>
+        
     );
 };
 

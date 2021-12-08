@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useMoralis } from "react-moralis";
 import { usePopup } from "../../context/PopupContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSave } from "@fortawesome/free-solid-svg-icons";
 
 interface Props {
     ENS: string;
@@ -96,17 +98,17 @@ const EditENSPopup: React.FC<Props> = ({ ENS, setENS, setEditUsername }) => {
                     </div>
 
                     <h1>Anon, select your .eth name</h1>
-                    <h4>Can be changed later</h4>
-
-                    <div id="ensselect_nfts_loading">
+                    <h4>(Can be changed later)</h4>
+                    
+                    {isLoading && <div id="ensselect_nfts_loading">
                         <div className="lds-ellipsis">
                             <div></div>
                             <div></div>
                             <div></div>
                             <div></div>
                         </div>
-                    </div>
-                    {isLoading && <p>Loading...</p>}
+                    </div>}
+
                     {!isLoading && ensNames && ensNames.length > 0 ? (
                         <div className="profilepicselect_nfts">
                             <div className="content flex flex--gap--big paddingTop--big">
@@ -171,7 +173,7 @@ const EditENSPopup: React.FC<Props> = ({ ENS, setENS, setEditUsername }) => {
                             if (currentSelected) changeENS(currentSelected);
                         }}
                     >
-                        Save
+                        <FontAwesomeIcon icon={faSave} />
                     </div>
                 </div>
             </div>

@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useMoralis } from "react-moralis";
 import { usePopup } from "../../context/PopupContext";
 import { useRouter } from "next/router";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSave, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 
 interface Props {
     profilePic: any;
@@ -39,7 +41,6 @@ const EditProfilePopup: React.FC<Props> = ({
         setShowFirstTimePopup,
     } = usePopup();
 
-    /** Save new Profile Pic to DB **/
     const saveChangeProfilePic = async () => {
         let data = editProfilePic;
 
@@ -57,6 +58,8 @@ const EditProfilePopup: React.FC<Props> = ({
                 setProfilePic(data);
             })
             .catch((error: any) => {
+                // Execute any logic that should take place if the save fails.
+                // error is a Moralis.Error with an error code and message.
                 alert(
                     "Failed to create new object, with error code: " +
                         error.message,
@@ -64,11 +67,6 @@ const EditProfilePopup: React.FC<Props> = ({
             });
     };
 
-    /**
-     * Save new ENS to DB
-     * If the page doesn't exist yet,
-     * it will create a new page with the user.username id
-     * **/
     const saveChangeENS = async () => {
         let data: any = ENS;
         if (!ENS || !user) return;
@@ -114,25 +112,41 @@ const EditProfilePopup: React.FC<Props> = ({
     };
 
     const saveProfile = () => {
-        let hasClaimed: any = user?.get("hasClaimed");
-        //console.log("hasClaimed: ", hasClaimed);
+        let hasClaimed: boolean = user?.get("hasClaimed");
+        console.log(hasClaimed);
 
-        saveChangeProfilePic()
-            .then(() =>
-                saveChangeENS().then(() => {
-                    if (hasClaimed) {
+        if (false && hasClaimed) {
+            alert("No confetti");
+            //if he already had a page, no confetti for u
+            saveChangeProfilePic()
+                .then(() =>
+                    saveChangeENS().then(() => {
+                        console.log("** SAVED **");
                         setShowEditProfilePopup(false);
-                    } else {
+                        user?.set("hasClaimed", false);
+                    }),
+                )
+                .catch((err: any) =>
+                    console.error("saveProfile ERROR: ", err.message),
+                );
+        } else {
+            //if the user creates his first page: show confetti
+            saveChangeProfilePic()
+                .then(() =>
+                    saveChangeENS().then(() => {
+                        console.log("** SAVED **");
                         setShowFirstTimePopup(true);
                         setShowEditProfilePopup(false);
                         user?.set("hasClaimed", true);
-                        router.push(ENS.name);
-                    }
-                }),
-            )
-            .catch((err: any) =>
-                console.error("saveProfile ERROR: ", err.message),
-            );
+
+                        console.log("claimed");
+                        console.log(user?.get("hasClaimed"));
+                    }),
+                )
+                .catch((err: any) =>
+                    console.error("saveProfile ERROR: ", err.message),
+                );
+        }
     };
 
     return (
@@ -141,58 +155,54 @@ const EditProfilePopup: React.FC<Props> = ({
             className={"popupbg" + (!showEditProfilePopup ? " hidden" : "")}
         >
             <div className="popup">
-                <div className="content">
-                    <div
-                        className="closepopup"
-                        onClick={() => setShowEditProfilePopup(false)}
-                    >
-                        <span>&times;</span>
-                    </div>
+                <div
+                    className="closepopup"
+                    onClick={() => setShowEditProfilePopup(false)}
+                >
+                    <span>&times;</span>
+                </div>
 
-                    <img
-                        src={
-                            editProfilePic?.image_preview_url ??
-                            "/images/punk.png"
-                        }
-                        className="profilepicselect myprofilepic"
-                        onClick={() => setShowEditProfilePicPopup(true)}
-                        alt="Profile Picture"
+                <img
+                    src={
+                        editProfilePic?.image_preview_url ?? "/images/punk.png"
+                    }
+                    className="profilepicselect myprofilepic"
+                    onClick={() => setShowEditProfilePicPopup(true)}
+                    alt="Profile Picture"
+                />
+
+                <div
+                    className={"ensselect"}
+                    onClick={() => setShowEditENSPopup(true)}
+                >
+                    <div
+                        id="ensname"
+                        className={!ensSelectInput ? " dontdisplay" : ""}
                     />
 
                     <div
-                        className={"ensselect"}
-                        onClick={() => setShowEditENSPopup(true)}
+                        id="selectensname"
+                        className={ensSelectInput ? " dontdisplay" : ""}
                     >
-                        <div
-                            id="ensname"
-                            className={!ensSelectInput ? " dontdisplay" : ""}
-                        />
-
-                        <div
-                            id="selectensname"
-                            className={ensSelectInput ? " dontdisplay" : ""}
-                        >
-                            Select ENS name
-                        </div>
+                        Select ENS name <FontAwesomeIcon icon={faArrowRight} />
                     </div>
+                </div>
 
-                    <div
-                        className={
-                            "hoverfont smallfont greyfont paddingTop" +
-                            (ensSelectInput ? " hidden" : "")
-                        }
-                        onClick={() => setShowEditENSPopup(true)}
-                    >
-                        username: {editUsername}
-                    </div>
+                <div
+                    className={
+                        "smallfont greyfont paddingTop" +
+                        (ensSelectInput ? " hidden" : "")
+                    }
+                 >
+                    current username: {editUsername}
+                </div>
 
-                    <div
-                        id="savesettings"
-                        className="savebutton cansubmit"
-                        onClick={() => saveProfile()}
-                    >
-                        Save
-                    </div>
+                <div
+                    id="savesettings"
+                    className="savebutton cansubmit"
+                    onClick={() => saveProfile()}
+                >
+                    <FontAwesomeIcon icon={faSave} />
                 </div>
             </div>
         </div>

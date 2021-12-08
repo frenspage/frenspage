@@ -5,6 +5,7 @@ import { useMoralis } from "react-moralis";
 import { useRouter } from "next/router";
 import UserLoggedIn from "../components/user/UserLoggedIn";
 import Loader from "../components/global/Loader";
+import { faLongArrowAltUp } from "@fortawesome/free-solid-svg-icons";
 
 const Home: NextPage = () => {
     const router = useRouter();
@@ -30,8 +31,9 @@ const Home: NextPage = () => {
     }, [user, Moralis.Web3API.account, isAuthenticated]);
 
     useEffect(() => {
+        
         if (user && userEns) {
-            console.log(userEns);
+            
             router.push("/" + userEns);
         }
     }, [userEns, user]);
@@ -39,16 +41,17 @@ const Home: NextPage = () => {
     if (!isInitialized) return <Loader />;
 
     if (!isAuthenticated)
+    
         return (
             <Layout>
                 <div className="container">
                     <div id="loggedoutcontent" className="content">
-                        plz sign in to make page
+                        gm fren<br /><br /> plz sign in to your page
                         <br />
                         <br />
                         <button
                             className="connectwallet"
-                            onClick={() => authenticate()}
+                            onClick={() => authenticate({ signingMessage: "gm fren" })}
                         >
                             Connect wallet
                         </button>
@@ -58,16 +61,17 @@ const Home: NextPage = () => {
         );
 
     if (isAuthenticated && user)
+    
         return (
             <Layout addClass="root-user">
-                <p>gm</p>
+                {/*There was a gm in here, but I removed it? I think this part here does nothing? */}                
             </Layout>
         );
     //return <UserLoggedIn setRedirectName={setUserEns} />;
 
     return (
         <Layout>
-            <h1>Error</h1>
+            <h1>Errorrrrrr sry fren</h1>
         </Layout>
     );
 };
