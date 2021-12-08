@@ -9,6 +9,7 @@ import UserLoggedIn from "../components/user/UserLoggedIn";
 import FrenPopup from "../components/popups/FrenPopup";
 import { usePopup } from "../context/PopupContext";
 import { punify, punifyCode } from "../lib/lib";
+import Loader from "../components/global/Loader";
 
 interface Props {
     slug: string;
@@ -111,12 +112,7 @@ const UserPage: NextPage<Props> = ({ slug }) => {
     if (error) return <p>Error {error.message}</p>;
 
     /**** IF LOADING *****/
-    if (isLoading)
-        return (
-            <Layout addClass="root-user">
-                <p>gm</p>
-            </Layout>
-        );
+    if (isLoading) return <Loader />;
 
     /**** IF NO USER *****/
     if (!isLoading && !doesExist)
