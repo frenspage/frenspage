@@ -4,6 +4,7 @@ import Layout from "../components/global/Layout";
 import { useMoralis } from "react-moralis";
 import { useRouter } from "next/router";
 import UserLoggedIn from "../components/user/UserLoggedIn";
+import Loader from "../components/global/Loader";
 
 const Home: NextPage = () => {
     const router = useRouter();
@@ -35,19 +36,7 @@ const Home: NextPage = () => {
         }
     }, [userEns, user]);
 
-    if (!isInitialized)
-        return (
-            <Layout>
-                <div id="loading">
-                    <div className="lds-ellipsis">
-                        gm<div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                    </div>
-                </div>
-            </Layout>
-        );
+    if (!isInitialized) return <Loader />;
 
     if (!isAuthenticated)
         return (
