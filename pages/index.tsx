@@ -4,6 +4,7 @@ import Layout from "../components/global/Layout";
 import { useMoralis } from "react-moralis";
 import { useRouter } from "next/router";
 import UserLoggedIn from "../components/user/UserLoggedIn";
+import { punify } from "../lib/lib";
 
 const Home: NextPage = () => {
     const router = useRouter();
@@ -22,13 +23,17 @@ const Home: NextPage = () => {
             setUserEns(user?.get("ensusername"));
             if (!user.get("ensusername")) {
                 let ens = user.get("username")?.toLowerCase();
+
                 setUserData({ ensusername: ens });
             }
         }
     }, [user, Moralis.Web3API.account, isAuthenticated]);
 
     useEffect(() => {
-        if (user && userEns) router.push("/" + userEns);
+        if (user && userEns) {
+            console.log(userEns);
+            router.push("/" + userEns);
+        }
     }, [userEns, user]);
 
     if (!isInitialized)
