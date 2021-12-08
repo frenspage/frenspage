@@ -4,7 +4,6 @@ import Layout from "../components/global/Layout";
 import { useMoralis } from "react-moralis";
 import { useRouter } from "next/router";
 import UserLoggedIn from "../components/user/UserLoggedIn";
-import { punify } from "../lib/lib";
 
 const Home: NextPage = () => {
     const router = useRouter();

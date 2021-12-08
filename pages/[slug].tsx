@@ -46,10 +46,7 @@ const UserPage: NextPage<Props> = ({ slug }) => {
             let PageObject = Moralis.Object.extend("Page");
 
             let checkUserHasPage = new Moralis.Query(PageObject);
-            //console.log("slug: ", slug);
-            //console.log("slug: ", punify(slug));
-            //console.log("punifyCode slug: ", punifyCode(slug));
-            checkUserHasPage.equalTo("slug", punifyCode(slug));
+            checkUserHasPage.equalTo("slug", slug);
             checkUserHasPage.descending("createdAt");
             const userPage = await checkUserHasPage.first();
 
@@ -166,9 +163,10 @@ const UserPage: NextPage<Props> = ({ slug }) => {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const slug: string = context.params?.slug as string;
+    const lowercase = slug.toLowerCase();
     return {
         props: {
-            slug: slug.toLowerCase(),
+            slug: punifyCode(slug),
         },
     };
 };
