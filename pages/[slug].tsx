@@ -8,6 +8,7 @@ import PostitCanvas from "../components/canvas/PostitCanvas";
 import UserLoggedIn from "../components/user/UserLoggedIn";
 import FrenPopup from "../components/popups/FrenPopup";
 import { usePopup } from "../context/PopupContext";
+import { punify, punifyCode } from "../lib/lib";
 
 interface Props {
     slug: string;
@@ -45,7 +46,10 @@ const UserPage: NextPage<Props> = ({ slug }) => {
             let PageObject = Moralis.Object.extend("Page");
 
             let checkUserHasPage = new Moralis.Query(PageObject);
-            checkUserHasPage.equalTo("slug", slug);
+            //console.log("slug: ", slug);
+            //console.log("slug: ", punify(slug));
+            //console.log("punifyCode slug: ", punifyCode(slug));
+            checkUserHasPage.equalTo("slug", punifyCode(slug));
             checkUserHasPage.descending("createdAt");
             const userPage = await checkUserHasPage.first();
 
