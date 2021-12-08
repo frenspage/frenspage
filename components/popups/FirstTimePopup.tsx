@@ -6,7 +6,10 @@ import { usePopup } from "../../context/PopupContext";
 import { useRouter } from "next/router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTwitter } from "@fortawesome/free-brands-svg-icons";
-import { faArrowRight, faExternalLinkAlt } from "@fortawesome/free-solid-svg-icons";
+import {
+    faArrowRight,
+    faExternalLinkAlt,
+} from "@fortawesome/free-solid-svg-icons";
 
 import Confetti from "react-confetti";
 
@@ -71,39 +74,42 @@ const FirstTimePopup: React.FC<Props> = ({
                 <div className="paddingTop paddingBottom">
                     <h2>gm {editUsername}</h2>
                 </div>
-                    <br />
+                <br />
                 <div className="smallfont">Here is your new frens page:</div>
 
-                    <a
-                        onClick={(e: any) => {
-                            e.preventDefault();
-                            navigator.clipboard.writeText(
-                                process.env.NEXT_PUBLIC_URL +
-                                    window.location.pathname,
-                            );
-                            setShowTooltip(true);
-                        }}
-                        className={
-                            "gm2 tooltip--copied" + (showTooltip ? " show" : "")
-                        }
-                    >
-                        {process.env.NEXT_PUBLIC_URL?.substring(
-                            8,
-                            process.env.NEXT_PUBLIC_URL.length,
-                        ) + window.location.pathname}
-                    </a>
-
-                
+                <a
+                    onClick={(e: any) => {
+                        e.preventDefault();
+                        navigator.clipboard.writeText(
+                            process.env.NEXT_PUBLIC_URL +
+                                window.location.pathname,
+                        );
+                        setShowTooltip(true);
+                    }}
+                    className={
+                        "gm2 tooltip--copied" + (showTooltip ? " show" : "")
+                    }
+                >
+                    {process.env.NEXT_PUBLIC_URL?.substring(
+                        8,
+                        process.env.NEXT_PUBLIC_URL.length,
+                    ) + window.location.pathname}
+                </a>
 
                 <div className="gm3 paddingBottom">
                     <Link href="/">
                         <a
                             className="greyfont smallfont"
                             data-show-count="false"
-                            href={"https://etherscan.io/address/"+user?.attributes?.ethAddress}
+                            href={
+                                "https://etherscan.io/address/" +
+                                user?.attributes?.ethAddress
+                            }
                             target="_blank"
+                            rel="noreferrer"
                         >
-                            wallet: {user?.attributes?.ethAddress} <FontAwesomeIcon icon={faExternalLinkAlt} />
+                            wallet: {user?.attributes?.ethAddress}{" "}
+                            <FontAwesomeIcon icon={faExternalLinkAlt} />
                         </a>
                     </Link>
                 </div>
@@ -130,8 +136,9 @@ const FirstTimePopup: React.FC<Props> = ({
                 >
                     Tell your Twitter frens <FontAwesomeIcon icon={faTwitter} />
                 </button>
-                
-                <br /><br />
+
+                <br />
+                <br />
                 <h5>and put your link in your bio </h5>
 
                 <div

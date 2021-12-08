@@ -10,6 +10,8 @@ import FrenPopup from "../components/popups/FrenPopup";
 import { usePopup } from "../context/PopupContext";
 import { punify, punifyCode } from "../lib/lib";
 import Loader from "../components/global/Loader";
+import { useUser } from "../context/UserContext";
+import { log } from "util";
 
 interface Props {
     slug: string;
@@ -23,8 +25,10 @@ const UserPage: NextPage<Props> = ({ slug }) => {
     const [isLoading, setIsLoading] = useState(true);
     const [doesExist, setDoesExist] = useState(true);
     const [error, setError] = useState<any>(null);
-    const { isInitialized, Moralis, isAuthenticated, user } = useMoralis();
+    const { isInitialized, Moralis, isAuthenticated, user, logout } =
+        useMoralis();
     const { frenPopup, setFrenPopup } = usePopup();
+    const { disconnectIsShown, setDisconnectIsShown } = useUser();
 
     /***** INITIAL LOAD *****/
     useEffect(() => {
@@ -123,7 +127,7 @@ const UserPage: NextPage<Props> = ({ slug }) => {
                     <br />
                     <p>
                         <Link href="/">
-                            <a >go back home</a>
+                            <a>go back home</a>
                         </Link>
                     </p>
                 </div>
@@ -152,9 +156,9 @@ const UserPage: NextPage<Props> = ({ slug }) => {
                 />
                 <br />
                 <h3
-                onClick={() => setFrenPopup(true)}
-                style={{ cursor: "pointer" }}
-                className="centertext ethname"
+                    onClick={() => setFrenPopup(true)}
+                    style={{ cursor: "pointer" }}
+                    className="centertext ethname"
                 >
                     {slug}
                 </h3>
@@ -162,25 +166,26 @@ const UserPage: NextPage<Props> = ({ slug }) => {
             <FrenPopup pageData={page} profilePic={pfp} />
             {showCanvas && <PostitCanvas />}
 
-            {/* @DANIEL this should be visible also if I'm on another user's page. Best put it into a Context I'd say? */ }
-            {user ?
-            <div className="walletinfo" id="walletinfo">
-                <div
-                    id="connectedwallet"
-                    onClick={logoutUser}
-                    onMouseEnter={() => setDisconnectIsShown(true)}
-                    onMouseLeave={() => setDisconnectIsShown(false)}
-                >
-                    <div>
-                        {disconnectIsShown ? "disconnect" : "connected as" + username}
+            {/* @DANIEL this should be visible also if I'm on another user's page. Best put it into a Context I'd say? */}
+            {user ? (
+                <div className="walletinfo" id="walletinfo">
+                    <div
+                        id="connectedwallet"
+                        onClick={() => logout()}
+                        onMouseEnter={() => setDisconnectIsShown(true)}
+                        onMouseLeave={() => setDisconnectIsShown(false)}
+                    >
+                        <div>
+                            {disconnectIsShown
+                                ? "disconnect"
+                                : "connected as" + user?.getUsername()}
+                        </div>
                     </div>
                 </div>
-            </div>
-            : ""
-            }
-
+            ) : (
+                ""
+            )}
         </Layout>
-        
     );
 };
 

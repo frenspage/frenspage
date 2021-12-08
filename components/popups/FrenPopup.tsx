@@ -10,7 +10,6 @@ interface Props {
     profilePic: any;
 }
 
-
 const sendDonation = async () => {
     /*
     @DANIEL PLEASE FIX THIS AND TEST IT
@@ -21,13 +20,12 @@ const sendDonation = async () => {
 
     const options = {type: "native", amount: Moralis.Units.ETH("0.1"), receiver: "0x.."}
     let result = await Moralis.transfer(options)*/
-}
+};
 
 const FrenPopup: React.FC<Props> = ({ pageData, profilePic }) => {
     const { frenPopup, setFrenPopup } = usePopup();
 
     /* @DANIEL PLEASE RETRIEVE THE OWNER OF THE PAGE HERE AND GRAB HIS ETHADDRESS SO WE CAN ADD THE DONATION THROUGH THE FUNCTION ABOVE" */
-
 
     if (!pageData) return null;
 
@@ -37,39 +35,40 @@ const FrenPopup: React.FC<Props> = ({ pageData, profilePic }) => {
                 <div className="closepopup" onClick={() => setFrenPopup(false)}>
                     <span>&times;</span>
                 </div>
-                    <a
-                        href="" /*@DANIEL LINK TO NFT ON OPENSEA*/
-                        target="_blank"
-                    >
+                <a href="" /*@DANIEL LINK TO NFT ON OPENSEA*/ target="_blank">
                     <img
-                        src={profilePic?.image_preview_url ?? "/images/punk.png"}
+                        src={
+                            profilePic?.image_preview_url ?? "/images/punk.png"
+                        }
                         className="profilepic"
                         alt="Profile Picture"
                     />
-                    </a>
+                </a>
                 <br />
                 <div className="gm paddingTop paddingBottom">
                     <a
-                        href=""/*@DANIEL LINK TO ENS DOMAIN ON OPENSEA*/
+                        href="" /*@DANIEL LINK TO ENS DOMAIN ON OPENSEA*/
                         target="_blank"
                         className="ethname"
+                        rel="noreferrer"
                     >
-                        <h3>{pageData?.get("slug")}</h3> 
+                        <h3>{pageData?.get("slug")}</h3>
                     </a>
 
                     <a
-                    className="centertext smallfont greyfont ethname"
-                    href={"https://etherscan.io/address/"}
-                    target="_blank" /*@DANIEL SHOW WALLET ADDRESS CORRECTLY AND CENTERED BELOW*/
+                        className="centertext smallfont greyfont ethname"
+                        href={"https://etherscan.io/address/"}
+                        rel="noreferrer"
+                        target="_blank" /*@DANIEL SHOW WALLET ADDRESS CORRECTLY AND CENTERED BELOW*/
                     >
-                    0x{pageData?.get("ethAddress")} <FontAwesomeIcon icon={faExternalLinkAlt} />
+                        0x{pageData?.get("ethAddress")}{" "}
+                        <FontAwesomeIcon icon={faExternalLinkAlt} />
                     </a>
-                    
                 </div>
                 <br />
-                <button 
-                className="sharebutton"
-                /*onClick={sendDonation()}*/
+                <button
+                    className="sharebutton"
+                    /*onClick={sendDonation()}*/
                 >
                     Send donation <FontAwesomeIcon icon={faEthereum} />
                 </button>
