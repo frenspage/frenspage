@@ -6,8 +6,9 @@ import EditENSPopup from "../popups/EditENSPopup";
 import FirstTimePopup from "../popups/FirstTimePopup";
 import { useMoralis } from "react-moralis";
 import { usePopup } from "../../context/PopupContext";
-import PostitCanvas from "../canvas/PostitCanvas";
+import FrenCanvas from "../canvas/FrenCanvas";
 import { useRouter } from "next/router";
+import LoggedInCanvas from "../canvas/LoggedInCanvas";
 
 interface Props {
     showCanvas?: boolean;
@@ -215,7 +216,7 @@ const UserLoggedIn: FC<Props> = ({
                     />
                 </div>
             </div>
-            {showCanvas && <PostitCanvas />}
+            {showCanvas && <LoggedInCanvas />}
         </Layout>
     );
 };

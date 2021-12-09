@@ -1,23 +1,20 @@
 import type { NextPage, GetServerSideProps } from "next";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { init as initCanvas } from "../canvas/main";
 import Layout from "../components/global/Layout";
 import { useMoralis, useMoralisQuery } from "react-moralis";
-import PostitCanvas from "../components/canvas/PostitCanvas";
+import FrenCanvas from "../components/canvas/FrenCanvas";
 import UserLoggedIn from "../components/user/UserLoggedIn";
 import FrenPopup from "../components/popups/FrenPopup";
 import { usePopup } from "../context/PopupContext";
 import { punify, punifyCode } from "../lib/lib";
 import Loader from "../components/global/Loader";
-import { useUser } from "../context/UserContext";
-import { log } from "util";
 
 interface Props {
     slug: string;
 }
 
-const showCanvas = false;
+const showCanvas = true;
 
 const UserPage: NextPage<Props> = ({ slug }) => {
     const [pfp, setPfp] = useState<any>(null);
@@ -40,7 +37,6 @@ const UserPage: NextPage<Props> = ({ slug }) => {
 
     /** Initial load function **/
     const load = async () => {
-        if (showCanvas) await initCanvas();
         await loadData().then(() => {});
     };
 
@@ -144,7 +140,7 @@ const UserPage: NextPage<Props> = ({ slug }) => {
         isAuthenticated &&
         user?.id === page?.get("owner")?.id
     )
-        return <UserLoggedIn />;
+        return <UserLoggedIn showCanvas={showCanvas} />;
 
     /**** IF PAGE *****/
     return (
@@ -185,7 +181,7 @@ const UserPage: NextPage<Props> = ({ slug }) => {
                 </div>
             )}
 
-            {showCanvas && <PostitCanvas />}
+            {showCanvas && <FrenCanvas />}
         </Layout>
     );
 };

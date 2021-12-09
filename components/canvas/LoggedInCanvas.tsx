@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { NextPage } from "next";
+import { initLoggedInCanvas } from "../../canvas/main";
 
-const PostitCanvas: NextPage = () => {
+const LoggedInCanvas: NextPage = () => {
+    useEffect(() => {
+        initLoggedInCanvas().then(() => {
+            console.log("*** INIT CANVAS ***");
+        });
+    }, []);
+
     return (
         <>
             <div id="main-canvas-container" className="canvas-container" />
@@ -12,4 +19,4 @@ const PostitCanvas: NextPage = () => {
         </>
     );
 };
-export default PostitCanvas;
+export default LoggedInCanvas;
