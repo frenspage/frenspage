@@ -168,7 +168,6 @@ const UserPage: NextPage<Props> = ({ slug }) => {
             </div>
             <FrenPopup pageData={page} profilePic={pfp} />
 
-            {/* @DANIEL this should be visible also if I'm on another user's page. Best put it into a Context I'd say? */}
             {user && (
                 <div className="walletinfo">
                     <div
