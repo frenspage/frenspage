@@ -67,7 +67,7 @@ const FirstTimePopup: React.FC<Props> = ({
                     src={
                         editProfilePic?.image_preview_url ?? "/images/punk.png"
                     }
-                    className="profilepicselect myprofilepic"
+                    className="profilepicselect myprofilepic noHover"
                     alt="Profile Picture"
                 />
 

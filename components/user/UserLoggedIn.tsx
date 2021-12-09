@@ -171,19 +171,17 @@ const UserLoggedIn: FC<Props> = ({
                         </div>
                     </div>
 
-                    <div className="walletinfo" id="walletinfo">
-                        <div
-                            id="connectedwallet"
-                            onClick={logoutUser}
-                            onMouseEnter={() => setDisconnectIsShown(true)}
-                            onMouseLeave={() => setDisconnectIsShown(false)}
-                        >
-                            <div>
-                                {disconnectIsShown
-                                    ? "disconnect"
-                                    : "connected as " + username}
-                            </div>
-                        </div>
+                    <div
+                        className="walletinfo"
+                        onClick={() => logout()}
+                        onMouseEnter={() => setDisconnectIsShown(true)}
+                        onMouseLeave={() => setDisconnectIsShown(false)}
+                    >
+                        <p>
+                            {disconnectIsShown
+                                ? "disconnect"
+                                : "connected as " + username}
+                        </p>
                     </div>
 
                     <EditProfilePopup

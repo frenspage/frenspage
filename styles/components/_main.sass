@@ -146,24 +146,27 @@ a:-webkit-any-link
 
 
 .walletinfo
-	padding:  15px
-	border-radius:  10px
+	width: 250px
+	height: 3.5rem
+	padding:  1rem
+	border-radius: .75rem
 	max-width: 520px
 	margin: 0 auto 25px
 	backdrop-filter:  blur(10px)
 	position: fixed
 	bottom: 10px
 	left: calc(50% - 125px)
-	width: 250px
 	color: #000
 	z-index: 100
 	font-size: 12px
 	cursor: pointer
 	text-align: center
-	height: 3.5rem
 	display: flex
 	justify-content: center
-	align-items: center
+
+	p
+		text-overflow:  ellipsis
+		overflow: hidden
 
 
 .nftimage
@@ -248,7 +251,9 @@ a:-webkit-any-link
 
 	&:hover
 		opacity: 0.7
-
+	&.noHover
+		&:hover
+			opacity: 1
 
 #profilepicbox
 	position: fixed

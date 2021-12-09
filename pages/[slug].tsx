@@ -169,19 +169,17 @@ const UserPage: NextPage<Props> = ({ slug }) => {
             <FrenPopup pageData={page} profilePic={pfp} />
 
             {user && (
-                <div className="walletinfo">
-                    <div
-                        id="connectedwallet"
-                        onClick={() => logout()}
-                        onMouseEnter={() => setDisconnectIsShown(true)}
-                        onMouseLeave={() => setDisconnectIsShown(false)}
-                    >
-                        <p>
-                            {disconnectIsShown
-                                ? "disconnect"
-                                : "connected as " + user?.getUsername()}
-                        </p>
-                    </div>
+                <div
+                    className="walletinfo"
+                    onClick={() => logout()}
+                    onMouseEnter={() => setDisconnectIsShown(true)}
+                    onMouseLeave={() => setDisconnectIsShown(false)}
+                >
+                    <p>
+                        {disconnectIsShown
+                            ? "disconnect"
+                            : "connected as " + user?.getUsername()}
+                    </p>
                 </div>
             )}
 
