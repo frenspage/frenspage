@@ -136,6 +136,7 @@ const EditProfilePopup: React.FC<Props> = ({
                     saveChangeENS().then(() => {
                         setShowFirstTimePopup(true);
                         setShowEditProfilePopup(false);
+                        user?.set("hasClaimed", false);
                         router.push(ENS?.name);
                     }),
                 )
