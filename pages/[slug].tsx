@@ -26,11 +26,12 @@ const UserPage: NextPage<Props> = ({ slug }) => {
     const [isLoading, setIsLoading] = useState(true);
     const [doesExist, setDoesExist] = useState(true);
     const [error, setError] = useState<any>(null);
+    const [disconnectIsShown, setDisconnectIsShown] = useState(false);
+
     const { isInitialized, Moralis, isAuthenticated, user, logout } =
         useMoralis();
 
     const { frenPopup, setFrenPopup } = usePopup();
-    const { disconnectIsShown, setDisconnectIsShown } = useUser();
 
     /***** INITIAL LOAD *****/
     useEffect(() => {
@@ -166,27 +167,26 @@ const UserPage: NextPage<Props> = ({ slug }) => {
                 </h3>
             </div>
             <FrenPopup pageData={page} profilePic={pfp} />
-            {showCanvas && <PostitCanvas />}
 
             {/* @DANIEL this should be visible also if I'm on another user's page. Best put it into a Context I'd say? */}
-            {user ? (
-                <div className="walletinfo" id="walletinfo">
+            {user && (
+                <div className="walletinfo">
                     <div
                         id="connectedwallet"
                         onClick={() => logout()}
                         onMouseEnter={() => setDisconnectIsShown(true)}
                         onMouseLeave={() => setDisconnectIsShown(false)}
                     >
-                        <div>
+                        <p>
                             {disconnectIsShown
                                 ? "disconnect"
-                                : "connected as" + user?.getUsername()}
-                        </div>
+                                : "connected as " + user?.getUsername()}
+                        </p>
                     </div>
                 </div>
-            ) : (
-                ""
             )}
+
+            {showCanvas && <PostitCanvas />}
         </Layout>
     );
 };
