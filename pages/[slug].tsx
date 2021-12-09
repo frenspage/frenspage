@@ -12,6 +12,7 @@ import { punify, punifyCode } from "../lib/lib";
 import Loader from "../components/global/Loader";
 import { useUser } from "../context/UserContext";
 import { log } from "util";
+import DonatePopup from "../components/popups/DonatePopup";
 
 interface Props {
     slug: string;
@@ -31,7 +32,7 @@ const UserPage: NextPage<Props> = ({ slug }) => {
     const { isInitialized, Moralis, isAuthenticated, user, logout } =
         useMoralis();
 
-    const { frenPopup, setFrenPopup } = usePopup();
+    const { setFrenPopup, setTransferPopup } = usePopup();
 
     /***** INITIAL LOAD *****/
     useEffect(() => {
@@ -156,6 +157,7 @@ const UserPage: NextPage<Props> = ({ slug }) => {
                     onClick={() => setFrenPopup(true)}
                     style={{ cursor: "pointer" }}
                     id="profilepic"
+                    tabIndex={0}
                 />
                 <br />
                 <h3
@@ -167,6 +169,7 @@ const UserPage: NextPage<Props> = ({ slug }) => {
                 </h3>
             </div>
             <FrenPopup pageData={page} profilePic={pfp} />
+            <DonatePopup ethAddress={page?.get("ethAddress")} />
 
             {user && (
                 <div
@@ -174,6 +177,7 @@ const UserPage: NextPage<Props> = ({ slug }) => {
                     onClick={() => logout()}
                     onMouseEnter={() => setDisconnectIsShown(true)}
                     onMouseLeave={() => setDisconnectIsShown(false)}
+                    tabIndex={0}
                 >
                     <p>
                         {disconnectIsShown

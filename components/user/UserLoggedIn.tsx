@@ -160,6 +160,11 @@ const UserLoggedIn: FC<Props> = ({
                                 id="profilepic"
                                 className="myprofilepic"
                                 onClick={() => setShowEditProfilePopup(true)}
+                                tabIndex={0}
+                                onKeyPress={(e) => {
+                                    if (e.key === "Enter")
+                                        setShowEditProfilePopup(true);
+                                }}
                             />
                             <br />
                             <h3
@@ -176,6 +181,10 @@ const UserLoggedIn: FC<Props> = ({
                         onClick={() => logout()}
                         onMouseEnter={() => setDisconnectIsShown(true)}
                         onMouseLeave={() => setDisconnectIsShown(false)}
+                        tabIndex={0}
+                        onKeyPress={(e) => {
+                            if (e.key === "Enter") logout();
+                        }}
                     >
                         <p>
                             {disconnectIsShown

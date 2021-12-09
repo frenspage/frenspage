@@ -32,9 +32,13 @@
 	display: inline-block
 	overflow: hidden
 
-.profilepic:hover
-	text-decoration: none
-	opacity: 0.7
+	&:hover
+		text-decoration: none
+		opacity: 0.7
+	&.noHover
+		&:hover
+			text-decoration: none
+			opacity: 1
 
 .ethname:hover
 	opacity: 0.7 !important
