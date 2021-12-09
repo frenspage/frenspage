@@ -85,6 +85,7 @@ const DonatePopup: FC<Props> = ({ ethAddress }) => {
                         className="sharebutton marginTop"
                         onClick={() => sendDonation()}
                         disabled={isFetching}
+                        tabIndex={0}
                     >
                         Send donation <FontAwesomeIcon icon={faEthereum} />
                     </button>
