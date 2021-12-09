@@ -5,8 +5,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave } from "@fortawesome/free-solid-svg-icons";
 
 interface Props {
-    ENS: string;
-    setENS: (val: string) => void;
+    ENS: any;
+    setENS: (val: any) => void;
     setEditUsername: (val: string) => void;
 }
 
@@ -61,7 +61,7 @@ const EditENSPopup: React.FC<Props> = ({ ENS, setENS, setEditUsername }) => {
 
     const changeENS = async (data: any) => {
         if (!data) return;
-
+        console.log("ENS DATA: ", data);
         let name = data.name?.toLowerCase();
 
         let PageObject = Moralis.Object.extend("Page");
@@ -99,15 +99,17 @@ const EditENSPopup: React.FC<Props> = ({ ENS, setENS, setEditUsername }) => {
 
                     <h1>Anon, select your .eth name</h1>
                     <h4>(Can be changed later)</h4>
-                    
-                    {isLoading && <div id="ensselect_nfts_loading">
-                        <div className="lds-ellipsis">
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
+
+                    {isLoading && (
+                        <div id="ensselect_nfts_loading">
+                            <div className="lds-ellipsis">
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                            </div>
                         </div>
-                    </div>}
+                    )}
 
                     {!isLoading && ensNames && ensNames.length > 0 ? (
                         <div className="profilepicselect_nfts">

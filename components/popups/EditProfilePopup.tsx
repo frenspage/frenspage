@@ -80,6 +80,7 @@ const EditProfilePopup: React.FC<Props> = ({
 
         if (userPage) {
             userPage.set("slug", ENS?.name);
+            userPage.set("ensTokenId", ENS?.token_id);
             userPage
                 .save()
                 .then(() => {
@@ -97,6 +98,7 @@ const EditProfilePopup: React.FC<Props> = ({
 
             page.set("owner", user);
             page.set("slug", ENS?.name);
+            page.set("ensTokenId", ENS?.token_id);
             page.save()
                 .then(() => {
                     setPage(data);
@@ -113,17 +115,15 @@ const EditProfilePopup: React.FC<Props> = ({
 
     const saveProfile = () => {
         let hasClaimed: boolean = user?.get("hasClaimed");
-        console.log(hasClaimed);
 
-        if (false && hasClaimed) {
-            alert("No confetti");
+        if (hasClaimed) {
             //if he already had a page, no confetti for u
             saveChangeProfilePic()
                 .then(() =>
                     saveChangeENS().then(() => {
-                        console.log("** SAVED **");
                         setShowEditProfilePopup(false);
                         user?.set("hasClaimed", false);
+                        router.push(ENS?.name);
                     }),
                 )
                 .catch((err: any) =>
@@ -134,13 +134,9 @@ const EditProfilePopup: React.FC<Props> = ({
             saveChangeProfilePic()
                 .then(() =>
                     saveChangeENS().then(() => {
-                        console.log("** SAVED **");
                         setShowFirstTimePopup(true);
                         setShowEditProfilePopup(false);
-                        user?.set("hasClaimed", true);
-
-                        console.log("claimed");
-                        console.log(user?.get("hasClaimed"));
+                        router.push(ENS?.name);
                     }),
                 )
                 .catch((err: any) =>
@@ -193,7 +189,7 @@ const EditProfilePopup: React.FC<Props> = ({
                         "smallfont greyfont paddingTop" +
                         (ensSelectInput ? " hidden" : "")
                     }
-                 >
+                >
                     current username: {editUsername}
                 </div>
 

@@ -31,9 +31,7 @@ const Home: NextPage = () => {
     }, [user, Moralis.Web3API.account, isAuthenticated]);
 
     useEffect(() => {
-        
         if (user && userEns) {
-            
             router.push("/" + userEns);
         }
     }, [userEns, user]);
@@ -41,17 +39,20 @@ const Home: NextPage = () => {
     if (!isInitialized) return <Loader />;
 
     if (!isAuthenticated)
-    
         return (
             <Layout>
                 <div className="container">
                     <div id="loggedoutcontent" className="content">
-                        gm fren<br /><br /> plz sign in to your page
+                        gm fren
+                        <br />
+                        <br /> plz sign in to your page
                         <br />
                         <br />
                         <button
                             className="connectwallet"
-                            onClick={() => authenticate({ signingMessage: "gm fren" })}
+                            onClick={() =>
+                                authenticate({ signingMessage: "gm fren" })
+                            }
                         >
                             Connect wallet
                         </button>
@@ -61,13 +62,7 @@ const Home: NextPage = () => {
         );
 
     if (isAuthenticated && user)
-    
-        return (
-            <Layout addClass="root-user">
-                {/*There was a gm in here, but I removed it? I think this part here does nothing? */}                
-            </Layout>
-        );
-    //return <UserLoggedIn setRedirectName={setUserEns} />;
+        return <UserLoggedIn setRedirectName={setUserEns} />;
 
     return (
         <Layout>

@@ -22,11 +22,13 @@ const showCanvas = false;
 const UserPage: NextPage<Props> = ({ slug }) => {
     const [pfp, setPfp] = useState<any>(null);
     const [page, setPage] = useState<any>(null);
+    const [owner, setOwner] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [doesExist, setDoesExist] = useState(true);
     const [error, setError] = useState<any>(null);
     const { isInitialized, Moralis, isAuthenticated, user, logout } =
         useMoralis();
+
     const { frenPopup, setFrenPopup } = usePopup();
     const { disconnectIsShown, setDisconnectIsShown } = useUser();
 
@@ -58,14 +60,14 @@ const UserPage: NextPage<Props> = ({ slug }) => {
             /*** CHECK IF PAGE EXISTS ***/
             if (userPage) {
                 setPage(userPage);
-                const owner = userPage.get("owner");
+                const pageOwner = userPage.get("owner");
 
                 /*** CHECK IF OWNER EXISTS (to prevent errors) ***/
-                if (owner) {
+                if (pageOwner) {
+                    /*** Fetch ProfilePic from DB ***/
                     const PFPObject = Moralis.Object.extend("ProfilePic");
                     const pfpQuery = await new Moralis.Query(PFPObject);
-
-                    pfpQuery.equalTo("owner", owner);
+                    pfpQuery.equalTo("owner", pageOwner);
                     pfpQuery.descending("createdAt");
                     const pfp = await pfpQuery.first();
 
@@ -192,9 +194,11 @@ const UserPage: NextPage<Props> = ({ slug }) => {
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const slug: string = context.params?.slug as string;
     const lowercase = slug.toLowerCase();
+    const punifiedSlug = punifyCode(lowercase);
+
     return {
         props: {
-            slug: punifyCode(slug),
+            slug: punifiedSlug,
         },
     };
 };

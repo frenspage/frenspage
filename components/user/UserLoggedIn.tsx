@@ -26,7 +26,7 @@ const UserLoggedIn: FC<Props> = ({
     const [profilePic, setProfilePic] = useState<any>(null);
     const [editProfilePic, setEditProfilePic] = useState<any>(null); // this is the profile pic that is displayed in the preview/edit box
 
-    const [ENS, setENS] = useState<any>(null); // this is the ENS domain OBJECT, here we may need to check if the user still owns the domain or check for the reverse record
+    const [ENS, setENS] = useState<any>({ slug: null, tokenId: null }); // this is the ENS domain OBJECT, here we may need to check if the user still owns the domain or check for the reverse record
     const [username, setUsername] = useState<any>(null); // this is the actual username, which can also be just a random string
     const [editUsername, setEditUsername] = useState<any>(null); // this is the username that is displayed in the preview/edit box
 
@@ -99,6 +99,7 @@ const UserLoggedIn: FC<Props> = ({
 
                 page.set("owner", user);
                 page.set("slug", slug);
+                page.set("ethAddress", user?.get("ethAddress"));
                 page.save()
                     .then((res: any) => {
                         setPage(res);
@@ -173,7 +174,9 @@ const UserLoggedIn: FC<Props> = ({
                             onMouseLeave={() => setDisconnectIsShown(false)}
                         >
                             <div>
-                                {disconnectIsShown ? "disconnect" : "connected as " + username}
+                                {disconnectIsShown
+                                    ? "disconnect"
+                                    : "connected as " + username}
                             </div>
                         </div>
                     </div>
