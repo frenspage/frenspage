@@ -118,11 +118,16 @@ const UserLoggedIn: FC<Props> = ({
     };
 
     const loadENS = async (newName: string, newENS: any) => {
+        let tokenId = newENS?.token_id ?? newENS?.attributes?.ensTokenId ?? "";
         let ensusername =
             newName?.toLowerCase() ??
             user?.get("ensusername") ??
             user?.get("username");
-        await setENS(newENS);
+
+        await setENS({
+            name: ensusername,
+            token_id: tokenId,
+        });
 
         setUserData({ ensusername: ensusername.toLowerCase() });
 

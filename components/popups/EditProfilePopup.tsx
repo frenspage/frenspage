@@ -69,7 +69,7 @@ const EditProfilePopup: React.FC<Props> = ({
 
     const saveChangeENS = async () => {
         let data: any = ENS;
-        if (!ENS || !user) return;
+        if (!ENS) return;
 
         let PageObject = Moralis.Object.extend("Page");
 
@@ -80,7 +80,7 @@ const EditProfilePopup: React.FC<Props> = ({
 
         if (userPage) {
             userPage.set("slug", ENS?.name);
-            userPage.set("ensTokenId", ENS?.token_id);
+            userPage.set("ensTokenId", ENS?.token_id ?? "");
             userPage
                 .save()
                 .then(() => {
@@ -98,7 +98,7 @@ const EditProfilePopup: React.FC<Props> = ({
 
             page.set("owner", user);
             page.set("slug", ENS?.name);
-            page.set("ensTokenId", ENS?.token_id);
+            page.set("ensTokenId", ENS?.token_id ?? "");
             page.save()
                 .then(() => {
                     setPage(data);
@@ -114,29 +114,17 @@ const EditProfilePopup: React.FC<Props> = ({
     };
 
     const saveProfile = () => {
-        let hasClaimed: boolean = user?.get("hasClaimed");
+        if (user) {
+            let hasClaimed: boolean = user?.get("hasClaimed");
 
-        if (hasClaimed) {
-            //if he already had a page, no confetti for u
             saveChangeProfilePic()
                 .then(() =>
                     saveChangeENS().then(() => {
+                        if (!hasClaimed) {
+                            setShowFirstTimePopup(true);
+                        }
                         setShowEditProfilePopup(false);
-                        user?.set("hasClaimed", false);
-                        router.push(ENS?.name);
-                    }),
-                )
-                .catch((err: any) =>
-                    console.error("saveProfile ERROR: ", err.message),
-                );
-        } else {
-            //if the user creates his first page: show confetti
-            saveChangeProfilePic()
-                .then(() =>
-                    saveChangeENS().then(() => {
-                        setShowFirstTimePopup(true);
-                        setShowEditProfilePopup(false);
-                        user?.set("hasClaimed", false);
+                        user?.set("hasClaimed", true);
                         router.push(ENS?.name);
                     }),
                 )
