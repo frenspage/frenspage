@@ -10,6 +10,8 @@ import FrenPopup from "../components/popups/FrenPopup";
 import { usePopup } from "../context/PopupContext";
 import { punify, punifyCode } from "../lib/lib";
 import Loader from "../components/global/Loader";
+import { useUser } from "../context/UserContext";
+import { log } from "util";
 
 interface Props {
     slug: string;
@@ -20,10 +22,15 @@ const showCanvas = false;
 const UserPage: NextPage<Props> = ({ slug }) => {
     const [pfp, setPfp] = useState<any>(null);
     const [page, setPage] = useState<any>(null);
+    const [owner, setOwner] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [doesExist, setDoesExist] = useState(true);
     const [error, setError] = useState<any>(null);
-    const { isInitialized, Moralis, isAuthenticated, user } = useMoralis();
+    const [disconnectIsShown, setDisconnectIsShown] = useState(false);
+
+    const { isInitialized, Moralis, isAuthenticated, user, logout } =
+        useMoralis();
+
     const { frenPopup, setFrenPopup } = usePopup();
 
     /***** INITIAL LOAD *****/
@@ -54,14 +61,14 @@ const UserPage: NextPage<Props> = ({ slug }) => {
             /*** CHECK IF PAGE EXISTS ***/
             if (userPage) {
                 setPage(userPage);
-                const owner = userPage.get("owner");
+                const pageOwner = userPage.get("owner");
 
                 /*** CHECK IF OWNER EXISTS (to prevent errors) ***/
-                if (owner) {
+                if (pageOwner) {
+                    /*** Fetch ProfilePic from DB ***/
                     const PFPObject = Moralis.Object.extend("ProfilePic");
                     const pfpQuery = await new Moralis.Query(PFPObject);
-
-                    pfpQuery.equalTo("owner", owner);
+                    pfpQuery.equalTo("owner", pageOwner);
                     pfpQuery.descending("createdAt");
                     const pfp = await pfpQuery.first();
 
@@ -148,10 +155,36 @@ const UserPage: NextPage<Props> = ({ slug }) => {
                     className="profilepic"
                     onClick={() => setFrenPopup(true)}
                     style={{ cursor: "pointer" }}
+                    id="profilepic"
                 />
-                <p style={{ textAlign: "center" }}>{slug}</p>
+                <br />
+                <h3
+                    onClick={() => setFrenPopup(true)}
+                    style={{ cursor: "pointer" }}
+                    className="centertext ethname"
+                >
+                    {slug}
+                </h3>
             </div>
             <FrenPopup pageData={page} profilePic={pfp} />
+
+            {user && (
+                <div className="walletinfo">
+                    <div
+                        id="connectedwallet"
+                        onClick={() => logout()}
+                        onMouseEnter={() => setDisconnectIsShown(true)}
+                        onMouseLeave={() => setDisconnectIsShown(false)}
+                    >
+                        <p>
+                            {disconnectIsShown
+                                ? "disconnect"
+                                : "connected as " + user?.getUsername()}
+                        </p>
+                    </div>
+                </div>
+            )}
+
             {showCanvas && <PostitCanvas />}
         </Layout>
     );
@@ -160,9 +193,11 @@ const UserPage: NextPage<Props> = ({ slug }) => {
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const slug: string = context.params?.slug as string;
     const lowercase = slug.toLowerCase();
+    const punifiedSlug = punifyCode(lowercase);
+
     return {
         props: {
-            slug: punifyCode(slug),
+            slug: punifiedSlug,
         },
     };
 };

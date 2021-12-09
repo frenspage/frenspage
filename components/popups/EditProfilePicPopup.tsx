@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useMoralis } from "react-moralis";
 import { usePopup } from "../../context/PopupContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSave } from "@fortawesome/free-solid-svg-icons";
 
 interface Props {
     setEditProfilePic: (val: boolean) => void;
@@ -60,18 +62,17 @@ const EditProfilePicPopup: React.FC<Props> = ({ setEditProfilePic }) => {
 
                     <h1>Select your pfp</h1>
 
-                    <h4>Can be changed later</h4>
+                    <h4>(Can be changed later)</h4>
 
-                    <div id="profilepicselect_nfts_loading">
+                    {isLoading && <div id="profilepicselect_nfts_loading">
                         <div className="lds-ellipsis">
                             <div></div>
                             <div></div>
                             <div></div>
                             <div></div>
                         </div>
-                    </div>
+                    </div>}
 
-                    {isLoading && <p>Loading...</p>}
                     {!isLoading && nfts?.assets && nfts.assets.length > 0 ? (
                         <div className="profilepicselect_nfts">
                             <div className="content flex flex--gap--big paddingTop--big">
@@ -138,7 +139,7 @@ const EditProfilePicPopup: React.FC<Props> = ({ setEditProfilePic }) => {
                                 changeProfilePic(currentSelected);
                         }}
                     >
-                        Save
+                        <FontAwesomeIcon icon={faSave} />
                     </div>
                 </div>
             </div>
