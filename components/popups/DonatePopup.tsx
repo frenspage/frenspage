@@ -27,7 +27,7 @@ const DonatePopup: FC<Props> = ({ ethAddress }) => {
         error,
         isFetching,
     } = useWeb3Transfer({
-        amount: Moralis.Units.ETH(price),
+        amount: Moralis.Units.ETH(price && price > 0 ? price : 0.1),
         receiver: ethAddress,
         type: "native",
     });
