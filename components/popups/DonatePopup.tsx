@@ -75,12 +75,16 @@ const DonatePopup: FC<Props> = ({ ethAddress }) => {
                             <p>{transferMessage}</p>
                         </div>
                     )}
+
                     <input
                         className="input width--s center"
                         value={price}
                         onChange={(val) => onChange(val.target.value)}
                         type="number"
+                        step={0.1}
+                        min={0.1}
                     />
+
                     <button
                         className="sharebutton marginTop"
                         onClick={() => sendDonation()}
