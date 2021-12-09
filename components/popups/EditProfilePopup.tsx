@@ -60,10 +60,7 @@ const EditProfilePopup: React.FC<Props> = ({
             .catch((error: any) => {
                 // Execute any logic that should take place if the save fails.
                 // error is a Moralis.Error with an error code and message.
-                alert(
-                    "Failed to create new object, with error code: " +
-                        error.message,
-                );
+                alert("Failed to save pfp, with error code: " + error.message);
             });
     };
 
