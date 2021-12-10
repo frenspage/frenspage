@@ -13,37 +13,7 @@ interface Props {
 }
 
 const FrenPopup: React.FC<Props> = ({ pageData, profilePic }) => {
-    const [transferMessage, setTransferMessage] = useState("");
-    const { frenPopup, setFrenPopup } = usePopup();
-    const { Moralis } = useMoralis();
-    const {
-        web3,
-        enableWeb3,
-        isWeb3Enabled,
-        isWeb3EnableLoading,
-        web3EnableError,
-    } = useMoralis();
-
-    const {
-        fetch: transfer,
-        error,
-        isFetching,
-    } = useWeb3Transfer({
-        amount: Moralis.Units.ETH(0.1),
-        receiver: pageData?.get("ethAddress"),
-        type: "native",
-    });
-
-    const sendDonation = async () => {
-        if (isWeb3Enabled) {
-            await transfer().then((data: any) => {
-                setTransferMessage(data?.message);
-            });
-        }
-    };
-    useEffect(() => {
-        enableWeb3();
-    }, []);
+    const { frenPopup, setFrenPopup, setTransferPopup } = usePopup();
 
     if (!pageData) return null;
 
@@ -73,7 +43,7 @@ const FrenPopup: React.FC<Props> = ({ pageData, profilePic }) => {
                         src={
                             profilePic?.image_preview_url ?? "/images/punk.png"
                         }
-                        className="profilepic"
+                        className="profilepic noHover"
                         alt="Profile Picture"
                     />
                 )}
@@ -110,23 +80,9 @@ const FrenPopup: React.FC<Props> = ({ pageData, profilePic }) => {
                     )}
                 </div>
                 <br />
-                {error && (
-                    <div
-                        style={{ textAlign: "center" }}
-                        className="paddingBottom"
-                    >
-                        <p className="c--red">Error: {error?.message ?? ""}</p>
-                    </div>
-                )}
-                {transferMessage && transferMessage !== "" && (
-                    <div className="paddingBottom">
-                        <p>{transferMessage}</p>
-                    </div>
-                )}
                 <button
                     className="sharebutton"
-                    onClick={() => sendDonation()}
-                    disabled={isFetching}
+                    onClick={() => setTransferPopup(true)}
                 >
                     Send donation <FontAwesomeIcon icon={faEthereum} />
                 </button>

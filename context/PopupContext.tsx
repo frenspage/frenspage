@@ -11,6 +11,8 @@ interface ContextProps {
     readonly setShowFirstTimePopup: (value: boolean) => void;
     readonly frenPopup: boolean;
     readonly setFrenPopup: (value: boolean) => void;
+    readonly transferPopup: boolean;
+    readonly setTransferPopup: (value: boolean) => void;
 }
 
 export const PopupContext = createContext<ContextProps>({
@@ -24,6 +26,8 @@ export const PopupContext = createContext<ContextProps>({
     setShowFirstTimePopup: () => null,
     frenPopup: false,
     setFrenPopup: () => null,
+    transferPopup: false,
+    setTransferPopup: () => null,
 });
 
 export const PopupProvider: React.FC = ({ children }) => {
@@ -33,6 +37,7 @@ export const PopupProvider: React.FC = ({ children }) => {
         useState(false);
     const [showFirstTimePopup, setShowFirstTimePopup] = useState(false);
     const [frenPopup, setFrenPopup] = useState(false);
+    const [transferPopup, setTransferPopup] = useState(false);
 
     return (
         <PopupContext.Provider
@@ -47,6 +52,8 @@ export const PopupProvider: React.FC = ({ children }) => {
                 setShowFirstTimePopup,
                 frenPopup,
                 setFrenPopup,
+                transferPopup,
+                setTransferPopup,
             }}
         >
             {children}
