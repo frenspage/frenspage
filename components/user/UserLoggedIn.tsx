@@ -1,5 +1,6 @@
 import React, { FC, useEffect, useState } from "react";
 import Layout from "../global/Layout";
+import Link from "next/link";
 import EditProfilePopup from "../popups/EditProfilePopup";
 import EditProfilePicPopup from "../popups/EditProfilePicPopup";
 import EditENSPopup from "../popups/EditENSPopup";
@@ -176,22 +177,36 @@ const UserLoggedIn: FC<Props> = ({
                         </div>
                     </div>
 
-                    <div
-                        className="walletinfo"
-                        onClick={() => logout()}
-                        onMouseEnter={() => setDisconnectIsShown(true)}
-                        onMouseLeave={() => setDisconnectIsShown(false)}
-                        tabIndex={0}
-                        onKeyPress={(e) => {
-                            if (e.key === "Enter") logout();
-                        }}
-                    >
-                        <p>
-                            {disconnectIsShown
-                                ? "disconnect"
-                                : "connected as " + username}
-                        </p>
-                    </div>
+                    {user && (
+                        <div className="walletinfo" tabIndex={0}>
+                            <Link href={"/" + username}>
+                                <a className="address">
+                                    connected as {user?.get("ethAddress")}
+                                </a>
+                            </Link>
+                            <div
+                                className="disconnect"
+                                onClick={() => logout()}
+                            >
+                                disconnect
+                            </div>
+                        </div>
+                    )}
+
+                    {!user && (
+                        <div className="walletinfo" tabIndex={0}>
+                            <div
+                                className="address"
+                                onClick={() =>
+                                    authenticate({
+                                        signingMessage: "gm fren",
+                                    })
+                                }
+                            >
+                                connect wallet
+                            </div>
+                        </div>
+                    )}
 
                     <EditProfilePopup
                         profilePic={profilePic}
@@ -219,6 +234,7 @@ const UserLoggedIn: FC<Props> = ({
                         editProfilePic={editProfilePic}
                         editUsername={editUsername}
                         setPage={setPage}
+                        ENS={ENS}
                     />
                 </div>
             </div>

@@ -21,6 +21,10 @@ interface Props {
 const showCanvas = false;
 
 const UserPage: NextPage<Props> = ({ slug }) => {
+    const {
+        authenticate
+    } = useMoralis();
+
     const [pfp, setPfp] = useState<any>(null);
     const [page, setPage] = useState<any>(null);
     const [owner, setOwner] = useState<any>(null);
@@ -41,7 +45,7 @@ const UserPage: NextPage<Props> = ({ slug }) => {
 
     /** Initial load function **/
     const load = async () => {
-        if (showCanvas) await initCanvas();
+        if (false) await initCanvas(); //this was causing an error with the connect wallet button
         await loadData().then(() => {});
     };
 
@@ -174,16 +178,31 @@ const UserPage: NextPage<Props> = ({ slug }) => {
             {user && (
                 <div
                     className="walletinfo"
-                    onClick={() => logout()}
-                    onMouseEnter={() => setDisconnectIsShown(true)}
-                    onMouseLeave={() => setDisconnectIsShown(false)}
                     tabIndex={0}
                 >
-                    <p>
-                        {disconnectIsShown
-                            ? "disconnect"
-                            : "connected as " + user?.getUsername()}
-                    </p>
+                    <Link href={"/" + slug} >
+                        <a className="address">
+                            connected as  {user?.get("ethAddress")}
+                        </a>
+                    </Link>
+                    <div className="disconnect" onClick={() => logout()}>
+                        disconnect
+                    </div>
+                </div>
+            )}
+
+            {!user && (
+                <div
+                    className="walletinfo"
+                    tabIndex={0}
+                >
+                    <div className="address" onClick={() =>
+                                        authenticate({
+                                            signingMessage: "gm fren",
+                                        })
+                                    } >
+                            connect wallet
+                    </div>
                 </div>
             )}
 
