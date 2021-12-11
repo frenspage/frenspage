@@ -14,6 +14,7 @@ import {
 import Confetti from "react-confetti";
 
 interface Props {
+    ENS: any;
     editProfilePic: any;
     editUsername: string;
     setPage: (val: any) => void;
@@ -26,12 +27,14 @@ const FirstTimePopup: React.FC<Props> = ({
     editProfilePic,
     editUsername,
     setPage,
+    ENS,
 }) => {
     const router = useRouter();
     const { user, Moralis } = useMoralis();
     const [showTooltip, setShowTooltip] = useState(false);
 
     const { showFirstTimePopup, setShowFirstTimePopup } = usePopup();
+    console.log(ENS);
 
     useEffect(() => {
         let closeTooltip = setInterval(function () {
@@ -71,22 +74,37 @@ const FirstTimePopup: React.FC<Props> = ({
                     alt="Profile Picture"
                 />
 
-                <div className="paddingTop paddingBottom">
+                <div className="paddingTop paddingBottom ellipsis">
                     <h2>gm {editUsername}</h2>
                 </div>
 
-                    {/* @DANIEL */}
-                {true ? (
-                   <div class="smallfont">
-                       Bro, why don't you buy an <a href="https://ens.domains/" target="_blank"><b>ENS Domain</b></a> and set a proper username?
-                   </div>
+                {ENS.token_id && ENS.token_id !== "" ? (
+                    <div className="smallfont">
+                        Nice{" "}
+                        <a
+                            href="https://ens.domains/"
+                            target="_blank"
+                            rel="noreferrer"
+                        >
+                            <b>ENS Domain</b>
+                        </a>{" "}
+                        bro!
+                    </div>
                 ) : (
-                    <div class="smallfont">
-                        Nice <a href="https://ens.domains/" target="_blank"><b>ENS Domain</b></a> bro!
+                    <div className="smallfont">
+                        Bro, why don't you buy an{" "}
+                        <a
+                            href="https://ens.domains/"
+                            target="_blank"
+                            rel="noreferrer"
+                        >
+                            <b>ENS Domain</b>
+                        </a>{" "}
+                        and set a proper username?
                     </div>
                 )}
                 <br />
-                <hr className="smallhr"/>
+                <hr className="smallhr" />
                 <br />
                 <div className="smallfont">Here is your new frens page:</div>
 
@@ -100,7 +118,8 @@ const FirstTimePopup: React.FC<Props> = ({
                         setShowTooltip(true);
                     }}
                     className={
-                        "gm2 tooltip--copied" + (showTooltip ? " show" : "")
+                        "gm2 ellipsis tooltip--copied" +
+                        (showTooltip ? " show" : "")
                     }
                 >
                     {process.env.NEXT_PUBLIC_URL?.substring(
@@ -109,10 +128,10 @@ const FirstTimePopup: React.FC<Props> = ({
                     ) + window.location.pathname}
                 </a>
 
-                <div className="gm3 paddingBottom">
+                <div className="gm3 paddingBottom ellipsis">
                     <Link href="/">
                         <a
-                            className="greyfont smallfont"
+                            className="greyfont smallfont "
                             data-show-count="false"
                             href={
                                 "https://etherscan.io/address/" +

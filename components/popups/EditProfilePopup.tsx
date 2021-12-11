@@ -117,8 +117,7 @@ const EditProfilePopup: React.FC<Props> = ({
             saveChangeProfilePic()
                 .then(() =>
                     saveChangeENS().then(() => {
-                        /* @DANIEL - remove the true */
-                        if (true || !hasClaimed) {
+                        if (!hasClaimed) {
                             setShowFirstTimePopup(true);
                         }
                         setShowEditProfilePopup(false);
@@ -155,7 +154,7 @@ const EditProfilePopup: React.FC<Props> = ({
                 />
 
                 <div
-                    className={"ensselect"}
+                    className={"ensselect ellipsis"}
                     onClick={() => setShowEditENSPopup(true)}
                 >
                     <div
@@ -173,7 +172,7 @@ const EditProfilePopup: React.FC<Props> = ({
 
                 <div
                     className={
-                        "smallfont greyfont paddingTop" +
+                        "smallfont greyfont paddingTopm ellipsis" +
                         (ensSelectInput ? " hidden" : "")
                     }
                 >

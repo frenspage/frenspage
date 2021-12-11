@@ -178,32 +178,32 @@ const UserLoggedIn: FC<Props> = ({
                     </div>
 
                     {user && (
-                        <div
-                            className="walletinfo"
-                            tabIndex={0}
-                        >
-                            <Link href={"/" + username} >
+                        <div className="walletinfo" tabIndex={0}>
+                            <Link href={"/" + username}>
                                 <a className="address">
-                                    connected as  {user?.get("ethAddress")}
+                                    connected as {user?.get("ethAddress")}
                                 </a>
                             </Link>
-                            <div className="disconnect" onClick={() => logout()}>
+                            <div
+                                className="disconnect"
+                                onClick={() => logout()}
+                            >
                                 disconnect
                             </div>
                         </div>
                     )}
 
                     {!user && (
-                        <div
-                            className="walletinfo"
-                            tabIndex={0}
-                        >
-                            <div className="address" onClick={() =>
-                                                authenticate({
-                                                    signingMessage: "gm fren",
-                                                })
-                                            } >
-                                    connect wallet
+                        <div className="walletinfo" tabIndex={0}>
+                            <div
+                                className="address"
+                                onClick={() =>
+                                    authenticate({
+                                        signingMessage: "gm fren",
+                                    })
+                                }
+                            >
+                                connect wallet
                             </div>
                         </div>
                     )}
@@ -234,6 +234,7 @@ const UserLoggedIn: FC<Props> = ({
                         editProfilePic={editProfilePic}
                         editUsername={editUsername}
                         setPage={setPage}
+                        ENS={ENS}
                     />
                 </div>
             </div>

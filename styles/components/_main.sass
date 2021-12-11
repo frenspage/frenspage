@@ -39,9 +39,12 @@ hr
 
 .smallhr
 	border-top: 1px solid #ddd
+	border-right: none
 	border-bottom: none
+	border-left: none
 	width: 100px
 	margin: auto
+
 
 button
 	text-decoration:  none !important
@@ -169,7 +172,7 @@ a:-webkit-any-link
 
 	.address
 		color: #fff
-		max-width:80%
+		max-width: 80%
 		text-overflow:  ellipsis
 		overflow: hidden
 		white-space: nowrap
@@ -181,7 +184,7 @@ a:-webkit-any-link
 			opacity: 0.7
 
 	.disconnect
-		max-width:100%
+		max-width: 100%
 
 		&:hover
 			opacity: 0.7
@@ -301,8 +304,7 @@ a:-webkit-any-link
 .ensselect
 	border-bottom: 3px solid #ddd
 	width: 300px
-	margin: auto
-	margin-top: 30px
+	margin: 2rem auto 1rem 0
 	padding: 5px
 	transition:  opacity 0.2s ease
 	cursor: pointer
@@ -407,9 +409,10 @@ a:-webkit-any-link
 	background: #eee
 	border-radius: 10px
 	display: inline-block
-	padding: 15px
-	margin: 15px
+	padding: 1rem
+	margin: 1rem
 	font-weight: bold
+	max-width: 100%
 
 	&:hover
 		cursor: pointer !important
@@ -417,6 +420,10 @@ a:-webkit-any-link
 	&:focus-visible
 		cursor: pointer !important
 		opacity: 0.7 !important
+
+	@include media-below(phone)
+		margin: 1rem 0
+
 
 
 
