@@ -117,7 +117,8 @@ const EditProfilePopup: React.FC<Props> = ({
             saveChangeProfilePic()
                 .then(() =>
                     saveChangeENS().then(() => {
-                        if (!hasClaimed) {
+                        /* @DANIEL - remove the true */
+                        if (true || !hasClaimed) {
                             setShowFirstTimePopup(true);
                         }
                         setShowEditProfilePopup(false);

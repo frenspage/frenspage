@@ -74,6 +74,19 @@ const FirstTimePopup: React.FC<Props> = ({
                 <div className="paddingTop paddingBottom">
                     <h2>gm {editUsername}</h2>
                 </div>
+
+                    {/* @DANIEL */}
+                {true ? (
+                   <div class="smallfont">
+                       Bro, why don't you buy an <a href="https://ens.domains/" target="_blank"><b>ENS Domain</b></a> and set a proper username?
+                   </div>
+                ) : (
+                    <div class="smallfont">
+                        Nice <a href="https://ens.domains/" target="_blank"><b>ENS Domain</b></a> bro!
+                    </div>
+                )}
+                <br />
+                <hr className="smallhr"/>
                 <br />
                 <div className="smallfont">Here is your new frens page:</div>
 

@@ -37,7 +37,11 @@ hr
 	border-top: 1px solid #333
 	border-bottom: none
 
-
+.smallhr
+	border-top: 1px solid #ddd
+	border-bottom: none
+	width: 100px
+	margin: auto
 
 button
 	text-decoration:  none !important
@@ -146,28 +150,41 @@ a:-webkit-any-link
 
 
 .walletinfo
-	width: 250px
-	height: 3.5rem
-	padding:  1rem
-	border-radius: .75rem
+	width: 320px
+	padding:  10px 5px 10px 5px
+	border-radius: 25px 25px 0px 0
 	max-width: 520px
-	margin: 0 auto 25px
+	margin: 0 auto
 	backdrop-filter:  blur(10px)
 	position: fixed
-	bottom: 10px
-	left: calc(50% - 125px)
-	color: #000
+	bottom: -2px
+	left: calc(50% - 150px)
+	color: #fff
+	background: #000
 	z-index: 100
 	font-size: 12px
 	cursor: pointer
 	text-align: center
-	display: flex
-	justify-content: center
+	border: 2px solid #000
 
-	p
+	.address
+		color: #fff
+		max-width:80%
 		text-overflow:  ellipsis
 		overflow: hidden
+		white-space: nowrap
+		margin: 5px auto
+		display: block
+		
 
+		&:hover
+			opacity: 0.7
+
+	.disconnect
+		max-width:100%
+
+		&:hover
+			opacity: 0.7
 
 .nftimage
 	float: left
