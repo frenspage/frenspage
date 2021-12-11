@@ -21,9 +21,7 @@ interface Props {
 const showCanvas = false;
 
 const UserPage: NextPage<Props> = ({ slug }) => {
-    const {
-        authenticate
-    } = useMoralis();
+    const { authenticate } = useMoralis();
 
     const [pfp, setPfp] = useState<any>(null);
     const [page, setPage] = useState<any>(null);
@@ -41,7 +39,7 @@ const UserPage: NextPage<Props> = ({ slug }) => {
     /***** INITIAL LOAD *****/
     useEffect(() => {
         load();
-    }, [isInitialized]);
+    }, [isInitialized, slug]);
 
     /** Initial load function **/
     const load = async () => {
@@ -176,13 +174,10 @@ const UserPage: NextPage<Props> = ({ slug }) => {
             <DonatePopup ethAddress={page?.get("ethAddress")} />
 
             {user && (
-                <div
-                    className="walletinfo"
-                    tabIndex={0}
-                >
-                    <Link href={"/" + slug} >
+                <div className="walletinfo" tabIndex={0}>
+                    <Link href={"/" + user?.get("ensusername")}>
                         <a className="address">
-                            connected as  {user?.get("ethAddress")}
+                            connected as {user?.get("ethAddress")}
                         </a>
                     </Link>
                     <div className="disconnect" onClick={() => logout()}>
@@ -192,16 +187,16 @@ const UserPage: NextPage<Props> = ({ slug }) => {
             )}
 
             {!user && (
-                <div
-                    className="walletinfo"
-                    tabIndex={0}
-                >
-                    <div className="address" onClick={() =>
-                                        authenticate({
-                                            signingMessage: "gm fren",
-                                        })
-                                    } >
-                            connect wallet
+                <div className="walletinfo" tabIndex={0}>
+                    <div
+                        className="address"
+                        onClick={() =>
+                            authenticate({
+                                signingMessage: "gm fren",
+                            })
+                        }
+                    >
+                        connect wallet
                     </div>
                 </div>
             )}
