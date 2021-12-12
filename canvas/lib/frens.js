@@ -179,7 +179,7 @@ export const loadFrens = (Moralis) => {
 
         if (firstlogin && !hasPFP && !hasENS) {
             //clog("Show first logged in ");
-            showEditPopup();
+            showEditProfilePopup();
         }
 
         document.querySelector("connectedwallet")?.innerHTML = userAddress
@@ -191,7 +191,7 @@ export const loadFrens = (Moralis) => {
         endLoadingIn();
     }
 
-    function showEditPopup() {
+    function showEditProfilePopup() {
         document.querySelector("#editprofile")?.style.display = "block";
 
     }

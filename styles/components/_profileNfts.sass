@@ -6,7 +6,7 @@
 
 .profilepic
 	background: #eee
-	border-radius: 100px
+	border-radius: 50%
 	height: 200px
 	width: 200px
 	background-size:  contain
@@ -15,6 +15,51 @@
 	transition:  opacity 0.2s ease
 	display: inline-block
 	overflow: hidden
+	cursor: pointer
+
+	&:hover
+		text-decoration: none
+		opacity: 0.7
+
+	&.noHover
+		&:hover
+			text-decoration: none
+			opacity: 1
+
+	@include media-below(phone)
+		max-width: 70vw
+		aspect-ratio: 1 / 1
+	@media screen and (max-width: 300px)
+		width: auto
+		height: auto
+
+
+.ethname
+	text-overflow: ellipsis
+	max-width: 300px
+	white-space: nowrap
+	overflow: hidden
+	position: relative
+	display: block
+
+	&:hover
+		opacity: 0.7 !important
+
+	@media screen and (max-width: 400px)
+		max-width: 70vw
+
+.gm
+
+	h3, a
+		text-overflow: ellipsis
+		max-width: 400px
+		white-space: nowrap
+		overflow: hidden
+
+		@include media-below(phone)
+			max-width: calc(100vw - 5rem)
+
+
 
 .profilepicselect_nfts
 	overflow-y: scroll
@@ -45,15 +90,20 @@
 			position: relative
 
 			.pfp__nft__image
-				transition:  all 0.4s ease
+				transition:  box-shadow 0.4s ease, filter 0.4s ease
 				height: 10rem
 				width: 10rem
 				border-radius: 5rem
+
 				object-fit: cover
-				&:hover
-					box-shadow:  0px 0px 25px -7px rgba(0,0,0,1)
-					cursor: pointer
-					filter: brightness(1.5)
+				&.hover
+					&:hover, &:focus-visible, &.active
+						box-shadow:  0px 0px 25px -7px rgba(0,0,0,1)
+						cursor: pointer
+						filter: brightness(1.5)
+
+				&.active
+					border: 2px solid black
 
 			.pfp__nft__title, .pfp__nft__permalink, .pfp__nft__permalink span
 				max-width: 150px

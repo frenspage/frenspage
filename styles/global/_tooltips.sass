@@ -1,0 +1,25 @@
+@use "../abstracts/index" as *
+
+//----------------------------------
+//             TOOLTIPS            -
+//----------------------------------
+
+
+.tooltip
+	&--copied
+		@include pseudo($loc: before, $left: 0, $top: 0)
+			content: "copied!"
+			background: $black
+			color: $white
+			height: 1rem
+			padding: .5rem
+			border-radius: 3px
+			transform: translate(-100%, -25%)
+			opacity: 0
+			visibility: hidden
+			transition: $transition-default
+
+		&.show
+			&::before
+				opacity: 1
+				visibility: visible
