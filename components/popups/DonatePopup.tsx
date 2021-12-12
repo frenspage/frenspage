@@ -66,7 +66,7 @@ const DonatePopup: FC<Props> = ({ ethAddress }) => {
                             <p>{transferMessage}</p>
                         </div>
                     )}
-                    How much ETH, ser?
+                    <p>How much ETH, ser?</p>
                     <input
                         className="input width--s center"
                         value={price}
