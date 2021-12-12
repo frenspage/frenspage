@@ -1,27 +1,25 @@
-import type { NextPage, GetServerSideProps } from "next";
+import type { NextPage } from "next";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { init as initCanvas } from "../canvas/main";
 import Layout from "../components/global/Layout";
-import { useMoralis, useMoralisQuery } from "react-moralis";
+import { useMoralis } from "react-moralis";
 import PostitCanvas from "../components/canvas/PostitCanvas";
 import UserLoggedIn from "../components/user/UserLoggedIn";
 import FrenPopup from "../components/popups/FrenPopup";
 import { usePopup } from "../context/PopupContext";
-import { punify, punifyCode } from "../lib/lib";
+import { punifyCode } from "../lib/lib";
 import Loader from "../components/global/Loader";
-import { useUser } from "../context/UserContext";
-import { log } from "util";
 import DonatePopup from "../components/popups/DonatePopup";
+import { useRouter } from "next/router";
 
-interface Props {
-    slug: string;
-}
+interface Props {}
 
 const showCanvas = false;
 
-const UserPage: NextPage<Props> = ({ slug }) => {
+const UserPage: NextPage<Props> = ({}) => {
     const { authenticate } = useMoralis();
+    const router = useRouter();
 
     const [pfp, setPfp] = useState<any>(null);
     const [page, setPage] = useState<any>(null);
@@ -31,6 +29,10 @@ const UserPage: NextPage<Props> = ({ slug }) => {
     const [error, setError] = useState<any>(null);
     const [disconnectIsShown, setDisconnectIsShown] = useState(false);
 
+    const routeredSlug: string = router?.query?.slug as string;
+    const lowercasedSlug = routeredSlug?.toLowerCase();
+    const slug = punifyCode(lowercasedSlug);
+
     const { isInitialized, Moralis, isAuthenticated, user, logout } =
         useMoralis();
 
@@ -38,7 +40,7 @@ const UserPage: NextPage<Props> = ({ slug }) => {
 
     /***** INITIAL LOAD *****/
     useEffect(() => {
-        load();
+        if (slug) load();
     }, [isInitialized, slug]);
 
     /** Initial load function **/
@@ -203,18 +205,6 @@ const UserPage: NextPage<Props> = ({ slug }) => {
             {showCanvas && <PostitCanvas />}
         </Layout>
     );
-};
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-    const slug: string = context.params?.slug as string;
-    const lowercase = slug.toLowerCase();
-    const punifiedSlug = punifyCode(lowercase);
-
-    return {
-        props: {
-            slug: punifiedSlug,
-        },
-    };
 };
 
 export default UserPage;
