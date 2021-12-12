@@ -64,14 +64,16 @@ const EditProfilePicPopup: React.FC<Props> = ({ setEditProfilePic }) => {
 
                     <h4>(Can be changed later)</h4>
 
-                    {isLoading && <div id="profilepicselect_nfts_loading">
-                        <div className="lds-ellipsis">
-                            <div></div>
-                            <div></div>
-                            <div></div>
-                            <div></div>
+                    {isLoading && (
+                        <div id="profilepicselect_nfts_loading">
+                            <div className="lds-ellipsis">
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                            </div>
                         </div>
-                    </div>}
+                    )}
 
                     {!isLoading && nfts?.assets && nfts.assets.length > 0 ? (
                         <div className="profilepicselect_nfts">
@@ -88,7 +90,7 @@ const EditProfilePicPopup: React.FC<Props> = ({ setEditProfilePic }) => {
                                                 }
                                                 alt=""
                                                 className={
-                                                    "pfp__nft__image" +
+                                                    "pfp__nft__image hover" +
                                                     (currentSelected &&
                                                     currentSelected?.name ===
                                                         nft?.name

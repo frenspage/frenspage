@@ -144,7 +144,7 @@ const UserLoggedIn: FC<Props> = ({
 
     const logoutUser = async () => {
         await logout();
-        router.push("/");
+        router.reload();
     };
 
     return (
@@ -158,8 +158,7 @@ const UserLoggedIn: FC<Props> = ({
                                     profilePic?.image_preview_url ??
                                     "/images/punk.png"
                                 }
-                                id="profilepic"
-                                className="myprofilepic"
+                                className="profilepic myprofilepic"
                                 onClick={() => setShowEditProfilePopup(true)}
                                 tabIndex={0}
                                 onKeyPress={(e) => {
@@ -168,12 +167,11 @@ const UserLoggedIn: FC<Props> = ({
                                 }}
                             />
                             <br />
-                            <h3
-                                id="profilename"
-                                className="username myprofilename"
-                            >
-                                {username}
-                            </h3>
+                            <div className="ellipsis">
+                                <h3 className="username profilename">
+                                    {username}
+                                </h3>
+                            </div>
                         </div>
                     </div>
 
@@ -186,7 +184,7 @@ const UserLoggedIn: FC<Props> = ({
                             </Link>
                             <div
                                 className="disconnect"
-                                onClick={() => logout()}
+                                onClick={() => logoutUser()}
                             >
                                 disconnect
                             </div>

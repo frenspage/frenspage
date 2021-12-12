@@ -158,7 +158,6 @@ const UserPage: NextPage<Props> = ({ slug }) => {
                     className="profilepic"
                     onClick={() => setFrenPopup(true)}
                     style={{ cursor: "pointer" }}
-                    id="profilepic"
                     tabIndex={0}
                 />
                 <br />

@@ -34,7 +34,6 @@ const FirstTimePopup: React.FC<Props> = ({
     const [showTooltip, setShowTooltip] = useState(false);
 
     const { showFirstTimePopup, setShowFirstTimePopup } = usePopup();
-    console.log(ENS);
 
     useEffect(() => {
         let closeTooltip = setInterval(function () {

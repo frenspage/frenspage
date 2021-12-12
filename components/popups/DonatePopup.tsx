@@ -3,6 +3,7 @@ import { useMoralis, useWeb3Transfer } from "react-moralis";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEthereum } from "@fortawesome/free-brands-svg-icons";
 import { usePopup } from "../../context/PopupContext";
+import DonateError from "../errors/DonateError";
 
 interface Props {
     ethAddress: string;
@@ -60,23 +61,12 @@ const DonatePopup: FC<Props> = ({ ethAddress }) => {
                     <span>&times;</span>
                 </div>
                 <div className="content flex flex-column-center">
-                    {error && (
-                        <div
-                            style={{ textAlign: "center" }}
-                            className="paddingBottom"
-                        >
-                            <p className="c--red">
-                                Error: {error?.message ?? ""}
-                            </p>
-                        </div>
-                    )}
                     {transferMessage && transferMessage !== "" && (
                         <div className="paddingBottom">
                             <p>{transferMessage}</p>
                         </div>
                     )}
-                    
-                    How much ETH, ser?
+                    <p>How much ETH, ser?</p>
                     <input
                         className="input width--s center"
                         value={price}
@@ -85,7 +75,12 @@ const DonatePopup: FC<Props> = ({ ethAddress }) => {
                         step={0.1}
                         min={0.1}
                     />
-
+                    {error && (
+                        <DonateError
+                            errorCode={(error as any).code ?? 400}
+                            errorMessage={error.message ?? ""}
+                        />
+                    )}
                     <button
                         className="sharebutton marginTop"
                         onClick={() => sendDonation()}
