@@ -27,7 +27,7 @@ const UserPage: NextPage<Props> = ({}) => {
     const [isLoading, setIsLoading] = useState(true);
     const [doesExist, setDoesExist] = useState(true);
     const [error, setError] = useState<any>(null);
-    const [isClickAuth, setIsClickAuth] = useState(false)
+    const [isClickAuth, setIsClickAuth] = useState(false);
 
     const routeredSlug: string = router?.query?.slug as string;
     const lowercasedSlug = routeredSlug?.toLowerCase();
@@ -45,10 +45,12 @@ const UserPage: NextPage<Props> = ({}) => {
 
     /***** CHECK IF USER has page claimed after connect *****/
     useEffect(() => {
-        if(user && isClickAuth && !user.get("hasClaimed")) {
-            router.push("/"+user.get("ensusername"))
+        if (user && isClickAuth && !user.get("hasClaimed")) {
+            setTimeout(() => {
+                router.push("/" + user.get("ensusername"));
+            }, 1000);
         }
-    }, [user])
+    }, [user]);
 
     const load = async () => {
         /** Initial load function **/
@@ -199,12 +201,11 @@ const UserPage: NextPage<Props> = ({}) => {
                     <div
                         className="address"
                         onClick={() => {
-                                setIsClickAuth(true);
-                                authenticate({
-                                    signingMessage: "gm fren",
-                                });
-                            }
-                        }
+                            setIsClickAuth(true);
+                            authenticate({
+                                signingMessage: "gm fren",
+                            });
+                        }}
                     >
                         connect wallet
                     </div>
