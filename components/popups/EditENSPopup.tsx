@@ -199,7 +199,10 @@ const EditENSPopup: React.FC<Props> = ({ ENS, setENS, setEditUsername }) => {
                             if (currentSelected) changeENS(currentSelected);
                         }}
                     >
-                        <FontAwesomeIcon icon={faSave} />
+                        <FontAwesomeIcon
+                            icon={faSave}
+                            style={{ fontSize: "1rem", height: "1rem" }}
+                        />
                     </div>
                 </div>
             </div>

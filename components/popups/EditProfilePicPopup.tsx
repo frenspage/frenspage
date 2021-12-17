@@ -141,7 +141,10 @@ const EditProfilePicPopup: React.FC<Props> = ({ setEditProfilePic }) => {
                                 changeProfilePic(currentSelected);
                         }}
                     >
-                        <FontAwesomeIcon icon={faSave} />
+                        <FontAwesomeIcon
+                            icon={faSave}
+                            style={{ fontSize: "1rem", height: "1rem" }}
+                        />
                     </div>
                 </div>
             </div>

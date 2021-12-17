@@ -141,7 +141,10 @@ const FirstTimePopup: React.FC<Props> = ({
                             rel="noreferrer"
                         >
                             wallet: {user?.attributes?.ethAddress}{" "}
-                            <FontAwesomeIcon icon={faExternalLinkAlt} />
+                            <FontAwesomeIcon
+                                icon={faExternalLinkAlt}
+                                style={{ fontSize: "1rem", height: "1rem" }}
+                            />
                         </a>
                     </Link>
                 </div>
@@ -177,7 +180,10 @@ const FirstTimePopup: React.FC<Props> = ({
                     className="savebutton cansubmit"
                     onClick={() => setShowFirstTimePopup(false)}
                 >
-                    <FontAwesomeIcon icon={faArrowRight} />
+                    <FontAwesomeIcon
+                        icon={faArrowRight}
+                        style={{ fontSize: "1rem", height: "1rem" }}
+                    />
                 </div>
             </div>
         </div>

@@ -166,7 +166,11 @@ const EditProfilePopup: React.FC<Props> = ({
                         id="selectensname"
                         className={ensSelectInput ? " dontdisplay" : ""}
                     >
-                        Select ENS name <FontAwesomeIcon icon={faArrowRight} />
+                        Select ENS name{" "}
+                        <FontAwesomeIcon
+                            icon={faArrowRight}
+                            style={{ fontSize: "1rem", height: "1rem" }}
+                        />
                     </div>
                 </div>
 
@@ -184,7 +188,10 @@ const EditProfilePopup: React.FC<Props> = ({
                     className="savebutton cansubmit"
                     onClick={() => saveProfile()}
                 >
-                    <FontAwesomeIcon icon={faSave} />
+                    <FontAwesomeIcon
+                        icon={faSave}
+                        style={{ fontSize: "1rem", height: "1rem" }}
+                    />
                 </div>
             </div>
         </div>

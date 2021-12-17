@@ -82,7 +82,10 @@ const FrenPopup: React.FC<Props> = ({ pageData, profilePic }) => {
                                 <span style={{ paddingRight: ".5rem" }}>
                                     {pageData?.get("ethAddress")}
                                 </span>
-                                <FontAwesomeIcon icon={faExternalLinkAlt} />
+                                <FontAwesomeIcon
+                                    icon={faExternalLinkAlt}
+                                    style={{ fontSize: "1rem", height: "1rem" }}
+                                />
                             </a>
                         )}
                     </div>
@@ -92,7 +95,11 @@ const FrenPopup: React.FC<Props> = ({ pageData, profilePic }) => {
                         className="sharebutton"
                         onClick={() => setTransferPopup(true)}
                     >
-                        Send donation <FontAwesomeIcon icon={faEthereum} />
+                        Send donation{" "}
+                        <FontAwesomeIcon
+                            icon={faEthereum}
+                            style={{ fontSize: "1rem", height: "1rem" }}
+                        />
                     </button>
                 </div>
             </div>

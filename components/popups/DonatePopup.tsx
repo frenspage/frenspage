@@ -87,7 +87,11 @@ const DonatePopup: FC<Props> = ({ ethAddress }) => {
                         disabled={isFetching}
                         tabIndex={0}
                     >
-                        Send donation <FontAwesomeIcon icon={faEthereum} />
+                        Send donation{" "}
+                        <FontAwesomeIcon
+                            icon={faEthereum}
+                            style={{ fontSize: "1rem", height: "1rem" }}
+                        />
                     </button>
                 </div>
             </div>
