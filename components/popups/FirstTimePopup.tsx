@@ -41,7 +41,6 @@ const FirstTimePopup: React.FC<Props> = ({
                 setShowTooltip(false);
             }
         }, 2000);
-        console.log("showTooltip: ", showTooltip);
 
         return () => {
             clearInterval(closeTooltip);
