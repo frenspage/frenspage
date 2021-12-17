@@ -46,11 +46,13 @@ const UserPage: NextPage<Props> = ({}) => {
     /***** CHECK IF USER has page claimed after connect *****/
     useEffect(() => {
         if (user && isClickAuth && !user.get("hasClaimed")) {
+            console.log("user_: ", user);
             setTimeout(() => {
-                router.push("/" + user.get("ensusername"));
+                setIsClickAuth(false);
+                router.push("/");
             }, 1000);
         }
-    }, [user]);
+    }, [user, isAuthenticated, Moralis.Web3API.account]);
 
     const load = async () => {
         /** Initial load function **/
