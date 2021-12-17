@@ -37,8 +37,9 @@ const Home: NextPage = () => {
             userEns !== "undefined" &&
             userEns !== undefined
         ) {
-            console.log("User: ", user);
-            router.push("/" + userEns);
+            setTimeout(function () {
+                router.push("/" + userEns);
+            }, 1000);
         }
     }, [userEns, user]);
 
