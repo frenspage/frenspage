@@ -167,7 +167,7 @@ const UserLoggedIn: FC<Props> = ({
                                 }}
                             />
                             <br />
-                            <div className="ellipsis">
+                            <div className="ellipsis flex flex-center--horizontal">
                                 <h3 className="username profilename">
                                     {username}
                                 </h3>
