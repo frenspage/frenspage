@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
 import Script from "next/script";
-import Head from "next/Head";
+import Head from "next/head";
 
 interface Props {
     addClass?: string;
