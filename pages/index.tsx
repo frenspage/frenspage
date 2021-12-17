@@ -32,8 +32,7 @@ const Home: NextPage = () => {
 
     useEffect(() => {
         if (user && userEns) {
-            console.log("user: ", user)
-            //router.push("/" + userEns);
+            router.push("/" + userEns);
         }
     }, [userEns, user]);
 
