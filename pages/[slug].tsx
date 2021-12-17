@@ -199,11 +199,11 @@ const UserPage: NextPage<Props> = ({}) => {
                     <div
                         className="address"
                         onClick={() => {
-                            setIsClickAuth(true)
-                            authenticate({
-                                signingMessage: "gm fren",
-                            })
-                        }
+                                setIsClickAuth(true);
+                                authenticate({
+                                    signingMessage: "gm fren",
+                                });
+                            }
                         }
                     >
                         connect wallet
