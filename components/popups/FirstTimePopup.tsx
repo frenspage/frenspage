@@ -86,8 +86,8 @@ const FirstTimePopup: React.FC<Props> = ({
                             rel="noreferrer"
                         >
                             <b>ENS Domain</b>
-                        </a>{" "}
-                        bro!
+                        </a>
+                        , looks rare!
                     </div>
                 ) : (
                     <div className="smallfont">
@@ -117,14 +117,15 @@ const FirstTimePopup: React.FC<Props> = ({
                         setShowTooltip(true);
                     }}
                     className={
-                        "gm2 ellipsis tooltip--copied" +
-                        (showTooltip ? " show" : "")
+                        "gm2 tooltip--copied" + (showTooltip ? " show" : "")
                     }
                 >
-                    {process.env.NEXT_PUBLIC_URL?.substring(
-                        8,
-                        process.env.NEXT_PUBLIC_URL.length,
-                    ) + window.location.pathname}
+                    <span className="ellipsis">
+                        {process.env.NEXT_PUBLIC_URL?.substring(
+                            8,
+                            process.env.NEXT_PUBLIC_URL.length,
+                        ) + window.location.pathname}
+                    </span>
                 </a>
 
                 <div className="gm3 paddingBottom ellipsis">
