@@ -46,7 +46,6 @@ const UserPage: NextPage<Props> = ({}) => {
     /***** CHECK IF USER has page claimed after connect *****/
     useEffect(() => {
         if (user && isClickAuth && !user.get("hasClaimed")) {
-            console.log("user_: ", user);
             setTimeout(() => {
                 setIsClickAuth(false);
                 router.push("/");
