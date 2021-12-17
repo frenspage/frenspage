@@ -177,13 +177,12 @@ const EditENSPopup: React.FC<Props> = ({ ENS, setENS, setEditUsername }) => {
                         <div className="paddingTop--big">
                             It seems that you don't have any ENS domains yet.{" "}
                             <br />
-                            Buy one{" "}
                             <a
                                 href="https://ens.domains"
                                 target="_blank"
                                 rel="noreferrer"
                             >
-                                here
+                                Buy one here
                             </a>
                         </div>
                     )}
