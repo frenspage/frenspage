@@ -1,4 +1,4 @@
-import type { NextPage, GetServerSideProps } from "next";
+import type { NextPage } from "next";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Layout from "../components/global/Layout";
@@ -7,35 +7,48 @@ import FrenCanvas from "../components/canvas/FrenCanvas";
 import UserLoggedIn from "../components/user/UserLoggedIn";
 import FrenPopup from "../components/popups/FrenPopup";
 import { usePopup } from "../context/PopupContext";
-import { punify, punifyCode } from "../lib/lib";
+import { punifyCode } from "../lib/lib";
 import Loader from "../components/global/Loader";
+import DonatePopup from "../components/popups/DonatePopup";
+import { useRouter } from "next/router";
 
-interface Props {
-    slug: string;
-}
+interface Props {}
 
 const showCanvas = true;
 
-const UserPage: NextPage<Props> = ({ slug }) => {
+const UserPage: NextPage<Props> = ({}) => {
+    const { authenticate } = useMoralis();
+    const router = useRouter();
+
     const [pfp, setPfp] = useState<any>(null);
     const [page, setPage] = useState<any>(null);
     const [owner, setOwner] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [doesExist, setDoesExist] = useState(true);
     const [error, setError] = useState<any>(null);
-    const [disconnectIsShown, setDisconnectIsShown] = useState(false);
+    const [isClickAuth, setIsClickAuth] = useState(false);
+
+    const routeredSlug: string = router?.query?.slug as string;
+    const lowercasedSlug = routeredSlug?.toLowerCase();
+    const slug = punifyCode(lowercasedSlug);
 
     const { isInitialized, Moralis, isAuthenticated, user, logout } =
         useMoralis();
 
-    const { frenPopup, setFrenPopup } = usePopup();
+    const { setFrenPopup, setTransferPopup } = usePopup();
 
     /***** INITIAL LOAD *****/
     useEffect(() => {
-        load();
-    }, [isInitialized]);
+        if (slug) load();
+    }, [isInitialized, slug]);
 
-    /** Initial load function **/
+    /***** CHECK IF USER has page claimed after connect *****/
+    useEffect(() => {
+        if (user && isClickAuth && !user.get("hasClaimed")) {
+            router.push("/" + user.get("ensusername"));
+        }
+    }, [user]);
+
     const load = async () => {
         await loadData().then(() => {});
     };
@@ -151,7 +164,7 @@ const UserPage: NextPage<Props> = ({ slug }) => {
                     className="profilepic"
                     onClick={() => setFrenPopup(true)}
                     style={{ cursor: "pointer" }}
-                    id="profilepic"
+                    tabIndex={0}
                 />
                 <br />
                 <h3
@@ -163,20 +176,33 @@ const UserPage: NextPage<Props> = ({ slug }) => {
                 </h3>
             </div>
             <FrenPopup pageData={page} profilePic={pfp} />
+            <DonatePopup ethAddress={page?.get("ethAddress")} />
 
             {user && (
-                <div className="walletinfo">
+                <div className="walletinfo" tabIndex={0}>
+                    <Link href={"/" + user?.get("ensusername")}>
+                        <a className="address">
+                            connected as {user?.get("ethAddress")}
+                        </a>
+                    </Link>
+                    <div className="disconnect" onClick={() => logout()}>
+                        disconnect
+                    </div>
+                </div>
+            )}
+
+            {!user && (
+                <div className="walletinfo" tabIndex={0}>
                     <div
-                        id="connectedwallet"
-                        onClick={() => logout()}
-                        onMouseEnter={() => setDisconnectIsShown(true)}
-                        onMouseLeave={() => setDisconnectIsShown(false)}
+                        className="address"
+                        onClick={() => {
+                            setIsClickAuth(true);
+                            authenticate({
+                                signingMessage: "gm fren",
+                            });
+                        }}
                     >
-                        <p>
-                            {disconnectIsShown
-                                ? "disconnect"
-                                : "connected as " + user?.getUsername()}
-                        </p>
+                        connect wallet
                     </div>
                 </div>
             )}
@@ -184,18 +210,6 @@ const UserPage: NextPage<Props> = ({ slug }) => {
             {showCanvas && <FrenCanvas />}
         </Layout>
     );
-};
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-    const slug: string = context.params?.slug as string;
-    const lowercase = slug.toLowerCase();
-    const punifiedSlug = punifyCode(lowercase);
-
-    return {
-        props: {
-            slug: punifiedSlug,
-        },
-    };
 };
 
 export default UserPage;

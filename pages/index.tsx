@@ -48,14 +48,26 @@ const Home: NextPage = () => {
                         <br /> plz sign in to your page
                         <br />
                         <br />
-                        <button
-                            className="connectwallet"
-                            onClick={() =>
-                                authenticate({ signingMessage: "gm fren" })
-                            }
-                        >
-                            Connect wallet
-                        </button>
+                        {
+                            //@ts-ignore
+                            window?.ethereum ? (
+                                <button
+                                    className="connectwallet"
+                                    onClick={() =>
+                                        authenticate({
+                                            signingMessage: "gm fren",
+                                        })
+                                    }
+                                >
+                                    Connect wallet
+                                </button>
+                            ) : (
+                                <div>
+                                    <span>----</span>
+                                    <p>no web3 wallet found</p>
+                                </div>
+                            )
+                        }
                     </div>
                 </div>
             </Layout>

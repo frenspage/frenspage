@@ -4,25 +4,9 @@
 //      Profile NFT Styling        -
 //----------------------------------
 
-#profilepic
-	background: #eee
-	border-radius: 100px
-	height: 200px
-	width: 200px
-	background-size:  contain
-	margin: auto
-	border: 1px solid #ddd
-	cursor: pointer
-	transition:  opacity 0.2s ease
-	display: inline-block
-	overflow: hidden
-
-	&:hover
-		opacity: 0.7
-
 .profilepic
 	background: #eee
-	border-radius: 100px
+	border-radius: 50%
 	height: 200px
 	width: 200px
 	background-size:  contain
@@ -31,13 +15,52 @@
 	transition:  opacity 0.2s ease
 	display: inline-block
 	overflow: hidden
+	cursor: pointer
+	object-fit: cover
 
-.profilepic:hover
-	text-decoration: none
-	opacity: 0.7
+	&:hover
+		text-decoration: none
+		opacity: 0.7
 
-.ethname:hover
-	opacity: 0.7 !important
+	&.noHover
+		&:hover
+			text-decoration: none
+			opacity: 1
+
+	@include media-below(phone)
+		max-width: 70vw
+		aspect-ratio: 1 / 1
+	@media screen and (max-width: 300px)
+		width: auto
+		height: auto
+
+
+.ethname
+	text-overflow: ellipsis
+	max-width: 300px
+	white-space: nowrap
+	overflow: hidden
+	position: relative
+	display: block
+
+	&:hover
+		opacity: 0.7 !important
+
+	@media screen and (max-width: 400px)
+		max-width: 70vw
+
+.gm
+
+	h3, a
+		text-overflow: ellipsis
+		max-width: 400px
+		white-space: nowrap
+		overflow: hidden
+
+		@include media-below(phone)
+			max-width: calc(100vw - 5rem)
+
+
 
 .profilepicselect_nfts
 	overflow-y: scroll
@@ -74,10 +97,11 @@
 				border-radius: 5rem
 
 				object-fit: cover
-				&:hover, &:focus-visible, &.active
-					box-shadow:  0px 0px 25px -7px rgba(0,0,0,1)
-					cursor: pointer
-					filter: brightness(1.5)
+				&.hover
+					&:hover, &:focus-visible, &.active
+						box-shadow:  0px 0px 25px -7px rgba(0,0,0,1)
+						cursor: pointer
+						filter: brightness(1.5)
 
 				&.active
 					border: 2px solid black

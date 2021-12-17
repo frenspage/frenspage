@@ -154,7 +154,7 @@ const EditProfilePopup: React.FC<Props> = ({
                 />
 
                 <div
-                    className={"ensselect"}
+                    className={"ensselect ellipsis"}
                     onClick={() => setShowEditENSPopup(true)}
                 >
                     <div
@@ -172,7 +172,7 @@ const EditProfilePopup: React.FC<Props> = ({
 
                 <div
                     className={
-                        "smallfont greyfont paddingTop" +
+                        "smallfont greyfont paddingTopm ellipsis" +
                         (ensSelectInput ? " hidden" : "")
                     }
                 >

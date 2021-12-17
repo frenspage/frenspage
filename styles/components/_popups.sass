@@ -15,7 +15,7 @@
 	z-index: 101
 	opacity: 1
 	visibility: visible
-	transition: all .2s ease
+	transition: opacity .3s ease
 
 
 .popup
@@ -45,16 +45,26 @@
 		opacity: 1
 		visibility: visible
 
+	&.transferPopup
+		width: auto
+		min-width: 360px
+		max-width: 80%
+		min-height: auto
+		padding: 2rem
+
+
+
 .popupbg
 	&.hidden
 		opacity: 0
 		visibility: hidden
-		transition: all .2s ease .1s
+		//transition: all .3s ease
 		.popup
-			width: 200px
-			border-radius: 100%
+			//width: 200px
+			//border-radius: 100%
 			opacity: 0
-			transition: all .3s ease .1s
+			visibility: hidden
+			//transition: all .3s ease .1s
 
 			.content
 				transition: all .2s ease
@@ -94,12 +104,11 @@
 	display: flex
 	align-items: center
 	justify-content: center
-	line-height: 22px
 	background: #000
 	color: #fff
 	padding: 5px
 	border-radius: 50px
-	border: 2px solid rgba(0,0,0,0)
+
 	cursor: pointer
 	font-size: 22px
 
@@ -110,5 +119,6 @@
 
 	span
 		text-align: center
-		padding-top: 4px
+		padding-top: 6px
+		line-height: 32px
 

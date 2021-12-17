@@ -21,7 +21,7 @@ const EditENSPopup: React.FC<Props> = ({ ENS, setENS, setEditUsername }) => {
 
     const fetcher = async () => {
         if (user) {
-            let ethAddress = "0x80f0ae4e0b80544330Fc5257fc32c69A4dB6e630"; //"0x6871D1a603fEb9Cc2aA8213B9ab16B33e418cD8F";//user.get("ethAddress"); //
+            let ethAddress = user.get("ethAddress"); //"0x80f0ae4e0b80544330Fc5257fc32c69A4dB6e630"; //"0x6871D1a603fEb9Cc2aA8213B9ab16B33e418cD8F";//
             const options = {
                 method: "GET",
                 headers: {
@@ -49,6 +49,7 @@ const EditENSPopup: React.FC<Props> = ({ ENS, setENS, setEditUsername }) => {
                         }
                     });
                     setEnsNames(domains);
+                    //console.log(domains);
                 })
 
                 .catch((err) => console.error(err));
@@ -61,7 +62,7 @@ const EditENSPopup: React.FC<Props> = ({ ENS, setENS, setEditUsername }) => {
 
     const changeENS = async (data: any) => {
         if (!data) return;
-        console.log("ENS DATA: ", data);
+        //console.log("ENS DATA: ", data);
         let name = data.name?.toLowerCase();
 
         let PageObject = Moralis.Object.extend("Page");
@@ -103,10 +104,10 @@ const EditENSPopup: React.FC<Props> = ({ ENS, setENS, setEditUsername }) => {
                     {isLoading && (
                         <div id="ensselect_nfts_loading">
                             <div className="lds-ellipsis">
-                                <div></div>
-                                <div></div>
-                                <div></div>
-                                <div></div>
+                                <div />
+                                <div />
+                                <div />
+                                <div />
                             </div>
                         </div>
                     )}
@@ -122,19 +123,33 @@ const EditENSPopup: React.FC<Props> = ({ ENS, setENS, setEditUsername }) => {
                                         >
                                             <img
                                                 src={
-                                                    nft?.image_preview_url ?? ""
+                                                    nft?.traits &&
+                                                    nft?.traits?.length > 0
+                                                        ? nft?.image_preview_url ??
+                                                          ""
+                                                        : "/images/punk.png"
                                                 }
                                                 alt=""
                                                 className={
-                                                    "pfp__nft__image" +
-                                                    (currentSelected &&
+                                                    "pfp__nft__image overflow-hidden" +
+                                                    (nft?.traits &&
+                                                    nft?.traits?.length > 0
+                                                        ? " hover"
+                                                        : "") +
+                                                    (nft?.traits &&
+                                                    nft?.traits?.length > 0 &&
+                                                    currentSelected &&
                                                     currentSelected?.name ===
                                                         nft?.name
                                                         ? " active"
                                                         : "")
                                                 }
                                                 onClick={() => {
-                                                    changeENS(nft);
+                                                    if (
+                                                        nft?.traits &&
+                                                        nft?.traits?.length > 0
+                                                    )
+                                                        changeENS(nft);
                                                 }}
                                             />
                                             <h3 className="pfp__nft__title">
@@ -160,7 +175,16 @@ const EditENSPopup: React.FC<Props> = ({ ENS, setENS, setEditUsername }) => {
                         </div>
                     ) : (
                         <div className="paddingTop--big">
-                            It seems that u don't have any nfts yet.
+                            It seems that you don't have any ENS domains yet.{" "}
+                            <br />
+                            Buy one{" "}
+                            <a
+                                href="https://ens.domains"
+                                target="_blank"
+                                rel="noreferrer"
+                            >
+                                here
+                            </a>
                         </div>
                     )}
 

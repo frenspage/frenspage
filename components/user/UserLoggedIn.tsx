@@ -1,5 +1,6 @@
 import React, { FC, useEffect, useState } from "react";
 import Layout from "../global/Layout";
+import Link from "next/link";
 import EditProfilePopup from "../popups/EditProfilePopup";
 import EditProfilePicPopup from "../popups/EditProfilePicPopup";
 import EditENSPopup from "../popups/EditENSPopup";
@@ -144,7 +145,7 @@ const UserLoggedIn: FC<Props> = ({
 
     const logoutUser = async () => {
         await logout();
-        router.push("/");
+        router.reload();
     };
 
     return (
@@ -158,34 +159,53 @@ const UserLoggedIn: FC<Props> = ({
                                     profilePic?.image_preview_url ??
                                     "/images/punk.png"
                                 }
-                                id="profilepic"
-                                className="myprofilepic"
+                                className="profilepic myprofilepic"
                                 onClick={() => setShowEditProfilePopup(true)}
+                                tabIndex={0}
+                                onKeyPress={(e) => {
+                                    if (e.key === "Enter")
+                                        setShowEditProfilePopup(true);
+                                }}
                             />
                             <br />
-                            <h3
-                                id="profilename"
-                                className="username myprofilename"
-                            >
-                                {username}
-                            </h3>
-                        </div>
-                    </div>
-
-                    <div className="walletinfo" id="walletinfo">
-                        <div
-                            id="connectedwallet"
-                            onClick={logoutUser}
-                            onMouseEnter={() => setDisconnectIsShown(true)}
-                            onMouseLeave={() => setDisconnectIsShown(false)}
-                        >
-                            <div>
-                                {disconnectIsShown
-                                    ? "disconnect"
-                                    : "connected as " + username}
+                            <div className="ellipsis">
+                                <h3 className="username profilename">
+                                    {username}
+                                </h3>
                             </div>
                         </div>
                     </div>
+
+                    {user && (
+                        <div className="walletinfo" tabIndex={0}>
+                            <Link href={"/" + username}>
+                                <a className="address">
+                                    connected as {user?.get("ethAddress")}
+                                </a>
+                            </Link>
+                            <div
+                                className="disconnect"
+                                onClick={() => logoutUser()}
+                            >
+                                disconnect
+                            </div>
+                        </div>
+                    )}
+
+                    {!user && (
+                        <div className="walletinfo" tabIndex={0}>
+                            <div
+                                className="address"
+                                onClick={() =>
+                                    authenticate({
+                                        signingMessage: "gm fren",
+                                    })
+                                }
+                            >
+                                connect wallet
+                            </div>
+                        </div>
+                    )}
 
                     <EditProfilePopup
                         profilePic={profilePic}
@@ -213,6 +233,7 @@ const UserLoggedIn: FC<Props> = ({
                         editProfilePic={editProfilePic}
                         editUsername={editUsername}
                         setPage={setPage}
+                        ENS={ENS}
                     />
                 </div>
             </div>

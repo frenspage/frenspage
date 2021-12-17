@@ -14,6 +14,7 @@ import {
 import Confetti from "react-confetti";
 
 interface Props {
+    ENS: any;
     editProfilePic: any;
     editUsername: string;
     setPage: (val: any) => void;
@@ -26,6 +27,7 @@ const FirstTimePopup: React.FC<Props> = ({
     editProfilePic,
     editUsername,
     setPage,
+    ENS,
 }) => {
     const router = useRouter();
     const { user, Moralis } = useMoralis();
@@ -67,13 +69,41 @@ const FirstTimePopup: React.FC<Props> = ({
                     src={
                         editProfilePic?.image_preview_url ?? "/images/punk.png"
                     }
-                    className="profilepicselect myprofilepic"
+                    className="profilepicselect myprofilepic noHover"
                     alt="Profile Picture"
                 />
 
-                <div className="paddingTop paddingBottom">
+                <div className="paddingTop paddingBottom ellipsis">
                     <h2>gm {editUsername}</h2>
                 </div>
+
+                {ENS.token_id && ENS.token_id !== "" ? (
+                    <div className="smallfont">
+                        Nice{" "}
+                        <a
+                            href="https://ens.domains/"
+                            target="_blank"
+                            rel="noreferrer"
+                        >
+                            <b>ENS Domain</b>
+                        </a>
+                        , looks rare!
+                    </div>
+                ) : (
+                    <div className="smallfont">
+                        Bro, why don't you buy an{" "}
+                        <a
+                            href="https://ens.domains/"
+                            target="_blank"
+                            rel="noreferrer"
+                        >
+                            <b>ENS Domain</b>
+                        </a>{" "}
+                        and set a proper username?
+                    </div>
+                )}
+                <br />
+                <hr className="smallhr" />
                 <br />
                 <div className="smallfont">Here is your new frens page:</div>
 
@@ -90,16 +120,18 @@ const FirstTimePopup: React.FC<Props> = ({
                         "gm2 tooltip--copied" + (showTooltip ? " show" : "")
                     }
                 >
-                    {process.env.NEXT_PUBLIC_URL?.substring(
-                        8,
-                        process.env.NEXT_PUBLIC_URL.length,
-                    ) + window.location.pathname}
+                    <span className="ellipsis">
+                        {process.env.NEXT_PUBLIC_URL?.substring(
+                            8,
+                            process.env.NEXT_PUBLIC_URL.length,
+                        ) + window.location.pathname}
+                    </span>
                 </a>
 
-                <div className="gm3 paddingBottom">
+                <div className="gm3 paddingBottom ellipsis">
                     <Link href="/">
                         <a
-                            className="greyfont smallfont"
+                            className="greyfont smallfont "
                             data-show-count="false"
                             href={
                                 "https://etherscan.io/address/" +
