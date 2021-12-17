@@ -31,7 +31,12 @@ const Home: NextPage = () => {
     }, [user, Moralis.Web3API.account, isAuthenticated]);
 
     useEffect(() => {
-        if (user && userEns) {
+        if (
+            user &&
+            userEns &&
+            userEns !== "undefined" &&
+            userEns !== undefined
+        ) {
             console.log("User: ", user);
             router.push("/" + userEns);
         }
