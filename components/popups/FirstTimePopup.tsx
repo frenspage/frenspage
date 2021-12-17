@@ -169,7 +169,11 @@ const FirstTimePopup: React.FC<Props> = ({
                             );
                     }}
                 >
-                    Tell your Twitter frens <FontAwesomeIcon icon={faTwitter} />
+                    Tell your Twitter frens{" "}
+                    <FontAwesomeIcon
+                        icon={faTwitter}
+                        style={{ fontSize: "1rem", height: "1rem" }}
+                    />
                 </button>
 
                 <br />
