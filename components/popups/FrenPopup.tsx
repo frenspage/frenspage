@@ -87,6 +87,7 @@ const FrenPopup: React.FC<Props> = ({ pageData, profilePic }) => {
                         )}
                     </div>
                     <br />
+
                     <button
                         className="sharebutton"
                         onClick={() => setTransferPopup(true)}
