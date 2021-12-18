@@ -2,7 +2,7 @@
 
 gm frens
 
-This project is based on Next.js using the Moralis.io-API and the OpenSea API.
+This project is based on Next.js using the Moralis.io API and the OpenSea API.
 
 
 
