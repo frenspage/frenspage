@@ -34,7 +34,6 @@ const EditENSPopup: React.FC<Props> = ({ setEditUsername }) => {
             )
                 .then((response) => response.json())
                 .then((response) => {
-                    console.log("OpenSea response: ", response);
                     if (!response || response.length <= 0)
                         console.log(
                             "You have no nfts, neither .eth names in your wallet!",

@@ -73,7 +73,9 @@ const EditProfilePopup: React.FC<Props> = ({
             userPage.set("ensTokenId", ensDomain?.token_id ?? "");
             userPage
                 .save()
-                .then(() => {})
+                .then(() => {
+
+                })
                 .catch((err: any) =>
                     console.error(
                         "Save new ens slug for page ERROR: ",
