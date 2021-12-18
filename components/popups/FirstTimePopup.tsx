@@ -12,28 +12,23 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 import Confetti from "react-confetti";
+import { useUser } from "../../context/UserContext";
 
 interface Props {
-    ENS: any;
     editProfilePic: any;
     editUsername: string;
-    setPage: (val: any) => void;
 }
 
 /*
 FirstTimePopup is the popup that opens when the user saves his page for the first time, and thus claims his domain
 */
-const FirstTimePopup: React.FC<Props> = ({
-    editProfilePic,
-    editUsername,
-    setPage,
-    ENS,
-}) => {
+const FirstTimePopup: React.FC<Props> = ({ editProfilePic, editUsername }) => {
     const router = useRouter();
-    const { user, Moralis } = useMoralis();
-    const [showTooltip, setShowTooltip] = useState(false);
-
+    const { Moralis } = useMoralis();
+    const { user, ensDomain, setPage } = useUser();
     const { showFirstTimePopup, setShowFirstTimePopup } = usePopup();
+
+    const [showTooltip, setShowTooltip] = useState(false);
 
     useEffect(() => {
         let closeTooltip = setInterval(function () {
@@ -46,6 +41,8 @@ const FirstTimePopup: React.FC<Props> = ({
             clearInterval(closeTooltip);
         };
     }, [showTooltip, setShowTooltip]);
+
+    if (!user || user?.get("hasClaimed")) return null;
 
     return (
         <div
@@ -77,7 +74,7 @@ const FirstTimePopup: React.FC<Props> = ({
                     <h2>gm {editUsername}</h2>
                 </div>
 
-                {ENS.token_id && ENS.token_id !== "" ? (
+                {ensDomain?.token_id && ensDomain?.token_id !== "" ? (
                     <div className="smallfont">
                         Nice{" "}
                         <a

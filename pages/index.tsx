@@ -6,42 +6,22 @@ import { useRouter } from "next/router";
 import UserLoggedIn from "../components/user/UserLoggedIn";
 import Loader from "../components/global/Loader";
 import { faLongArrowAltUp } from "@fortawesome/free-solid-svg-icons";
+import { useUser } from "../context/UserContext";
 
 const Home: NextPage = () => {
     const router = useRouter();
-    const {
-        authenticate,
-        isAuthenticated,
-        user,
-        isInitialized,
-        Moralis,
-        setUserData,
-    } = useMoralis();
-    const [userEns, setUserEns] = useState(user?.get("ensusername") ?? "");
+    const { isInitialized } = useMoralis();
+    const { user, ensDomain, isAuthenticated, authenticate } = useUser();
+    const [loadBeforeRedirect, setLoadBeforeRedirect] = useState(false);
 
     useEffect(() => {
-        if (user) {
-            setUserEns(user?.get("ensusername"));
-            if (!user.get("ensusername")) {
-                let ens = user.get("username")?.toLowerCase();
-
-                setUserData({ ensusername: ens });
-            }
-        }
-    }, [user, Moralis.Web3API.account, isAuthenticated]);
-
-    useEffect(() => {
-        if (
-            user &&
-            userEns &&
-            userEns !== "undefined" &&
-            userEns !== undefined
-        ) {
+        if (user && ensDomain) {
             setTimeout(() => {
-                router.push("/" + userEns);
+                setLoadBeforeRedirect(false);
+                router.push("/" + ensDomain);
             }, 1000);
         }
-    }, [userEns, user]);
+    }, [user, ensDomain]);
 
     if (!isInitialized) return <Loader />;
 
@@ -60,11 +40,7 @@ const Home: NextPage = () => {
                             window?.ethereum ? (
                                 <button
                                     className="connectwallet"
-                                    onClick={() =>
-                                        authenticate({
-                                            signingMessage: "gm fren",
-                                        })
-                                    }
+                                    onClick={authenticate}
                                 >
                                     Connect wallet
                                 </button>
@@ -81,7 +57,7 @@ const Home: NextPage = () => {
         );
 
     if (isAuthenticated && user)
-        return <UserLoggedIn setRedirectName={setUserEns} />;
+        return <UserLoggedIn loadBeforeRedirect={loadBeforeRedirect} />;
 
     return (
         <Layout>

@@ -9,41 +9,40 @@ import { useMoralis } from "react-moralis";
 import { usePopup } from "../../context/PopupContext";
 import PostitCanvas from "../canvas/PostitCanvas";
 import { useRouter } from "next/router";
+import Loader from "../global/Loader";
+import { useUser } from "../../context/UserContext";
 
 interface Props {
     showCanvas?: boolean;
-    setRedirectName?: (val: string) => void;
+    loadBeforeRedirect?: boolean;
 }
 
 const UserLoggedIn: FC<Props> = ({
     showCanvas = false,
-    setRedirectName = () => null,
+    loadBeforeRedirect = false,
 }) => {
     const router = useRouter();
-    const [profile, setProfile] = useState<any>(null);
-    const [page, setPage] = useState<any>(null);
-    const [isLoading, setIsLoading] = useState(true);
+    const {
+        user,
+        ensDomain,
+        setEnsDomain,
+        username,
+        setUsername,
+        pfp,
+        setPfp,
+        page,
+        setPage,
+        isAuthenticated,
+        authenticate,
+        saveEnsDomain,
+    } = useUser();
 
-    const [profilePic, setProfilePic] = useState<any>(null);
     const [editProfilePic, setEditProfilePic] = useState<any>(null); // this is the profile pic that is displayed in the preview/edit box
-
-    const [ENS, setENS] = useState<any>({ slug: null, tokenId: null }); // this is the ENS domain OBJECT, here we may need to check if the user still owns the domain or check for the reverse record
-    const [username, setUsername] = useState<any>(null); // this is the actual username, which can also be just a random string
     const [editUsername, setEditUsername] = useState<any>(null); // this is the username that is displayed in the preview/edit box
 
     const { setShowEditProfilePopup } = usePopup();
 
-    const {
-        authenticate,
-        isAuthenticated,
-        user,
-        isInitialized,
-        logout,
-        Moralis,
-        setUserData,
-    } = useMoralis();
-
-    const [disconnectIsShown, setDisconnectIsShown] = useState(false);
+    const { logout, Moralis, setUserData } = useMoralis();
 
     const loadPFP = async () => {
         if (user) {
@@ -63,8 +62,7 @@ const UserLoggedIn: FC<Props> = ({
                 )
                     .then((response) => response.json())
                     .then((response) => {
-                        setProfile(response);
-                        setProfilePic(response);
+                        setPfp(response);
                         setEditProfilePic(response);
                     })
                     .catch((err) => console.error(err));
@@ -92,7 +90,7 @@ const UserLoggedIn: FC<Props> = ({
 
             if (object) {
                 setPage(object);
-                loadENS(object.get("slug"), object);
+                saveEnsDomain(object.get("slug"), object);
             } else {
                 let slug = user?.get("username").toLowerCase();
                 let PageObject = Moralis.Object.extend("Page");
@@ -104,7 +102,7 @@ const UserLoggedIn: FC<Props> = ({
                 page.save()
                     .then((res: any) => {
                         setPage(res);
-                        loadENS(user?.get("username"), {
+                        saveEnsDomain(user?.get("username"), {
                             name: user?.get("username"),
                         });
                     })
@@ -118,34 +116,16 @@ const UserLoggedIn: FC<Props> = ({
         }
     };
 
-    const loadENS = async (newName: string, newENS: any) => {
-        let tokenId = newENS?.token_id ?? newENS?.attributes?.ensTokenId ?? "";
-        let ensusername =
-            newName?.toLowerCase() ??
-            user?.get("ensusername") ??
-            user?.get("username");
-
-        await setENS({
-            name: ensusername,
-            token_id: tokenId,
-        });
-
-        setUserData({ ensusername: ensusername.toLowerCase() });
-
-        await setUsername(ensusername);
-        await setEditUsername(ensusername); //yes, for now, both values are the same, but this may change in the future
-        await setRedirectName(ensusername);
-    };
-
     useEffect(() => {
-        if (user)
-            loadPFP().then(() => loadPage().then(() => setIsLoading(false)));
+        if (user) loadPFP().then(() => loadPage().then(() => {}));
     }, [user, Moralis.Web3API.account]);
 
     const logoutUser = async () => {
         await logout();
         router.reload();
     };
+
+    if (loadBeforeRedirect) return <Loader />;
 
     return (
         <Layout>
@@ -155,8 +135,7 @@ const UserLoggedIn: FC<Props> = ({
                         <div id="profilepicbox">
                             <img
                                 src={
-                                    profilePic?.image_preview_url ??
-                                    "/images/punk.png"
+                                    pfp?.image_preview_url ?? "/images/punk.png"
                                 }
                                 className="profilepic myprofilepic"
                                 onClick={() => setShowEditProfilePopup(true)}
@@ -195,11 +174,7 @@ const UserLoggedIn: FC<Props> = ({
                         <div className="walletinfo" tabIndex={0}>
                             <div
                                 className="address"
-                                onClick={() =>
-                                    authenticate({
-                                        signingMessage: "gm fren",
-                                    })
-                                }
+                                onClick={() => authenticate()}
                             >
                                 connect wallet
                             </div>
@@ -207,32 +182,19 @@ const UserLoggedIn: FC<Props> = ({
                     )}
 
                     <EditProfilePopup
-                        profilePic={profilePic}
-                        ENS={ENS}
-                        setENS={(val: any) => {
-                            loadENS(val?.name, val);
-                        }}
-                        setProfilePic={setProfilePic}
                         editProfilePic={editProfilePic}
                         editUsername={editUsername}
-                        setPage={setPage}
                     />
 
                     <EditProfilePicPopup
                         setEditProfilePic={setEditProfilePic}
                     />
 
-                    <EditENSPopup
-                        ENS={ENS}
-                        setENS={setENS}
-                        setEditUsername={setEditUsername}
-                    />
+                    <EditENSPopup setEditUsername={setEditUsername} />
 
                     <FirstTimePopup
                         editProfilePic={editProfilePic}
                         editUsername={editUsername}
-                        setPage={setPage}
-                        ENS={ENS}
                     />
                 </div>
             </div>

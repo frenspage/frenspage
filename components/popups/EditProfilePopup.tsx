@@ -4,16 +4,12 @@ import { usePopup } from "../../context/PopupContext";
 import { useRouter } from "next/router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { useUser } from "../../context/UserContext";
 
 interface Props {
-    profilePic: any;
     editProfilePic: any;
-    ENS: any;
-    setENS: (val: any) => void;
-    setProfilePic: (val: string) => void;
     ensSelectInput?: boolean;
     editUsername: string;
-    setPage: (val: any) => void;
 }
 
 /*
@@ -22,17 +18,14 @@ EditProfilePopup is the popup that opens when the user clicks on his profile pic
 editProfilePic and editUsername are the names which are displayed in the popup, but which may not be saved yet. Maybe rename to "previewProfilePic"?
 */
 const EditProfilePopup: React.FC<Props> = ({
-    profilePic,
-    ENS,
-    setENS,
-    setProfilePic,
     editProfilePic,
     ensSelectInput,
     editUsername,
-    setPage,
 }) => {
     const router = useRouter();
-    const { user, Moralis } = useMoralis();
+    const { Moralis } = useMoralis();
+    const { user, ensDomain, setEnsDomain, pfp, setPfp, page, setPage } =
+        useUser();
     const {
         showEditProfilePopup,
         setShowEditProfilePopup,
@@ -55,7 +48,7 @@ const EditProfilePopup: React.FC<Props> = ({
 
         pfp.save()
             .then((res: any) => {
-                setProfilePic(data);
+                setPfp(data);
             })
             .catch((error: any) => {
                 // Execute any logic that should take place if the save fails.
@@ -65,8 +58,8 @@ const EditProfilePopup: React.FC<Props> = ({
     };
 
     const saveChangeENS = async () => {
-        let data: any = ENS;
-        if (!ENS) return;
+        let data: any = ensDomain;
+        if (!ensDomain) return;
 
         let PageObject = Moralis.Object.extend("Page");
 
@@ -76,14 +69,11 @@ const EditProfilePopup: React.FC<Props> = ({
         const userPage = await checkUserHasPage.first();
 
         if (userPage) {
-            userPage.set("slug", ENS?.name);
-            userPage.set("ensTokenId", ENS?.token_id ?? "");
+            userPage.set("slug", ensDomain?.name);
+            userPage.set("ensTokenId", ensDomain?.token_id ?? "");
             userPage
                 .save()
-                .then(() => {
-                    setPage(ENS);
-                    setENS(ENS);
-                })
+                .then(() => {})
                 .catch((err: any) =>
                     console.error(
                         "Save new ens slug for page ERROR: ",
@@ -94,12 +84,11 @@ const EditProfilePopup: React.FC<Props> = ({
             let page = new PageObject();
 
             page.set("owner", user);
-            page.set("slug", ENS?.name);
-            page.set("ensTokenId", ENS?.token_id ?? "");
+            page.set("slug", ensDomain?.name);
+            page.set("ensTokenId", ensDomain?.token_id ?? "");
             page.save()
                 .then(() => {
                     setPage(data);
-                    setENS(ENS);
                 })
                 .catch((error: any) => {
                     alert(
@@ -122,7 +111,7 @@ const EditProfilePopup: React.FC<Props> = ({
                         }
                         setShowEditProfilePopup(false);
                         user?.set("hasClaimed", true);
-                        router.push(ENS?.name);
+                        router.push(ensDomain?.name);
                     }),
                 )
                 .catch((err: any) =>
