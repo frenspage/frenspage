@@ -22,9 +22,14 @@
 
 .container
 	margin: auto
-	top: 100px
+	//top: 100px
 	position: relative
 	text-align: center
+	display: flex
+	justify-content: center
+	align-content: center
+	height: 100%
+	width: 100%
 
 
 h1
@@ -74,10 +79,15 @@ a:-webkit-any-link
 
 
 #loggedoutcontent
-	position: fixed
-	top: 50%
-	left: 50%
-	transform:  translate(-50%,-50%)
+	//position: fixed
+	//top: 50%
+	//left: 50%
+	//transform:  translate(-50%,-50%)
+	height: 100%
+	display: flex
+	justify-content: center
+	align-content: center
+	flex-direction: column
 
 
 #connectedwallet
@@ -440,20 +450,6 @@ a:-webkit-any-link
 
 
 
-.footer
-	position: fixed
-	bottom: 15px
-	font-size: 10px
-	text-align: center
-	z-index: 2
-	width: 100%
-	opacity: 0.6
-	color: #fff !important
-
-
-	a
-		color: #fff !important
-		font-weight:  bold
 
 
 

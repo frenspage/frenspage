@@ -47,34 +47,36 @@ const Home: NextPage = () => {
 
     if (!isAuthenticated)
         return (
-            <Layout>
+            <Layout showFooter={true}>
                 <div className="container">
                     <div id="loggedoutcontent" className="content">
-                        gm fren
-                        <br />
-                        <br /> plz sign in to your page
-                        <br />
-                        <br />
-                        {
-                            //@ts-ignore
-                            window?.ethereum ? (
-                                <button
-                                    className="connectwallet"
-                                    onClick={() =>
-                                        authenticate({
-                                            signingMessage: "gm fren",
-                                        })
-                                    }
-                                >
-                                    Connect wallet
-                                </button>
-                            ) : (
-                                <div>
-                                    <span>----</span>
-                                    <p>no web3 wallet found</p>
-                                </div>
-                            )
-                        }
+                        <div>
+                            gm fren
+                            <br />
+                            <br /> plz sign in to your page
+                            <br />
+                            <br />
+                            {
+                                //@ts-ignore
+                                window?.ethereum ? (
+                                    <button
+                                        className="connectwallet"
+                                        onClick={() =>
+                                            authenticate({
+                                                signingMessage: "gm fren",
+                                            })
+                                        }
+                                    >
+                                        Connect wallet
+                                    </button>
+                                ) : (
+                                    <div>
+                                        <span>----</span>
+                                        <p>no web3 wallet found</p>
+                                    </div>
+                                )
+                            }
+                        </div>
                     </div>
                 </div>
             </Layout>
