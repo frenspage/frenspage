@@ -67,6 +67,7 @@ export const UserProvider: React.FC = ({ children }) => {
             setIsAuthenticated(true);
             setUser(moralisUser);
             setEnsDomain(moralisUser?.get("ensusername"));
+            setUsername(moralisUser?.get("ensusername"));
             if (!moralisUser.get("ensusername")) {
                 let ens = moralisUser.get("username")?.toLowerCase();
                 setEnsDomain({ name: ens });
@@ -77,13 +78,13 @@ export const UserProvider: React.FC = ({ children }) => {
             setUser(null);
             setIsAuthenticated(false);
             setEnsDomain(null);
-            setUsername("ens");
+            setUsername("");
         }
         return () => {
             setUser(null);
             setIsAuthenticated(false);
             setEnsDomain(null);
-            setUsername("ens");
+            setUsername("");
         };
     }, [
         moralisUser,

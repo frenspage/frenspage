@@ -11,17 +11,22 @@ import { useUser } from "../context/UserContext";
 const Home: NextPage = () => {
     const router = useRouter();
     const { isInitialized } = useMoralis();
-    const { user, ensDomain, isAuthenticated, authenticate } = useUser();
+    const { user, username, isAuthenticated, authenticate } = useUser();
     const [loadBeforeRedirect, setLoadBeforeRedirect] = useState(false);
 
     useEffect(() => {
-        if (user && ensDomain) {
-            setTimeout(() => {
+        let timer: any = null;
+        if (user && username) {
+            timer = setTimeout(() => {
                 setLoadBeforeRedirect(false);
-                router.push("/" + ensDomain);
+                router.push("/" + username);
             }, 1000);
         }
-    }, [user, ensDomain]);
+
+        return () => {
+            clearTimeout(timer);
+        };
+    }, [user, username]);
 
     if (!isInitialized) return <Loader />;
 
@@ -30,17 +35,19 @@ const Home: NextPage = () => {
             <Layout>
                 <div className="container">
                     <div id="loggedoutcontent" className="content">
-                        gm fren
+                        <p>gm fren</p>
                         <br />
-                        <br /> plz sign in to your page
-                        <br />
+                        <p>plz sign in to your page</p>
                         <br />
                         {
                             //@ts-ignore
                             window?.ethereum ? (
                                 <button
                                     className="connectwallet"
-                                    onClick={authenticate}
+                                    onClick={() => {
+                                        authenticate();
+                                        setLoadBeforeRedirect(true);
+                                    }}
                                 >
                                     Connect wallet
                                 </button>
@@ -56,8 +63,7 @@ const Home: NextPage = () => {
             </Layout>
         );
 
-    if (isAuthenticated && user)
-        return <UserLoggedIn loadBeforeRedirect={loadBeforeRedirect} />;
+    if (isAuthenticated && user) return <Loader />;
 
     return (
         <Layout>
