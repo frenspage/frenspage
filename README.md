@@ -46,6 +46,3 @@ const {
 	frenPopup, setFrenPopup                                 // FrenPopup-component
 } = usePopup();
 ```
-
-## Copyright
-This is a project by Neon Luxembourg (Misch Strotz) and Daniel Wahl
