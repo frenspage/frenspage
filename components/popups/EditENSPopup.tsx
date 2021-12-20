@@ -43,7 +43,6 @@ const EditENSPopup: React.FC<Props> = ({ ENS, setENS, setEditUsername }) => {
                         console.log(
                             "You have no nfts, neither .eth names in your wallet!",
                         );
-                    console.log("ens fetch opensea", response);
 
                     setEnsNames(response?.assets);
                     //console.log(domains);
