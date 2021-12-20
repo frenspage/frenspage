@@ -43,6 +43,7 @@ const {
 	showEditENSPopup, setShowEditENSPopup,                  // EditENSPopup-component
 	showEditProfilePicPopup, setShowEditProfilePicPopup,    // EditProfilePicPopup-component
 	showFirstTimePopup, setShowFirstTimePopup,              // FirstTypePopup-component
-	frenPopup, setFrenPopup                                 // FrenPopup-component
+	frenPopup, setFrenPopup,                                // FrenPopup-component
+        transferPopup, setTransferPopup,                        // DonatePopup-component
 } = usePopup();
 ```

@@ -128,9 +128,7 @@ const EditProfilePicPopup: React.FC<Props> = ({ setEditProfilePic }) => {
                         </div>
                     )}
 
-                    <div className="clearfix"></div>
-
-                    <div
+                    {/** <div
                         id="savepfp"
                         className={
                             "savebutton" + (currentSelected ? " cansubmit" : "")
@@ -145,7 +143,7 @@ const EditProfilePicPopup: React.FC<Props> = ({ setEditProfilePic }) => {
                             icon={faSave}
                             style={{ fontSize: "1rem", height: "1rem" }}
                         />
-                    </div>
+                    </div>**/}
                 </div>
             </div>
         </div>

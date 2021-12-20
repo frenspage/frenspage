@@ -182,9 +182,7 @@ const EditENSPopup: React.FC<Props> = ({ setEditUsername }) => {
                         </div>
                     )}
 
-                    <div className="clearfix"></div>
-
-                    <div
+                    {/**<div
                         id="saveens"
                         className={
                             "savebutton" + (currentSelected ? " cansubmit" : "")
@@ -197,7 +195,7 @@ const EditENSPopup: React.FC<Props> = ({ setEditUsername }) => {
                             icon={faSave}
                             style={{ fontSize: "1rem", height: "1rem" }}
                         />
-                    </div>
+                    </div>**/}
                 </div>
             </div>
         </div>
