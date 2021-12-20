@@ -28,27 +28,22 @@ const EditENSPopup: React.FC<Props> = ({ setEditUsername }) => {
                     "X-API-KEY": process.env.NEXT_PUBLIC_OPENSEEKEY + "",
                 },
             };
-            fetch(
-                `https://api.opensea.io/api/v1/assets?owner=${ethAddress}&order_direction=desc&offset=0&limit=50`,
-                options,
-            )
+
+            let url = `https://api.opensea.io/api/v1/assets?owner=${ethAddress}&asset_contract_address=${process.env.NEXT_PUBLIC_ENSCONTRACTADDRESS}&offset=0&limit=50`;
+
+            fetch(url, options)
                 .then((response) => response.json())
                 .then((response) => {
-                    if (!response || response.length <= 0)
+                    if (
+                        !response ||
+                        response.length <= 0 ||
+                        response.assets.length <= 0
+                    )
                         console.log(
                             "You have no nfts, neither .eth names in your wallet!",
                         );
 
-                    let domains: any[] = [];
-                    response?.assets?.map((element: any) => {
-                        if (
-                            process.env.NEXT_PUBLIC_ENSCONTRACTADDRESS?.toLowerCase() ===
-                            element.asset_contract.address?.toLowerCase()
-                        ) {
-                            domains = [...domains, element];
-                        }
-                    });
-                    setEnsNames(domains);
+                    setEnsNames(response?.assets);
                     //console.log(domains);
                 })
 

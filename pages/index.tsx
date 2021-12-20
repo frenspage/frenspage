@@ -32,32 +32,32 @@ const Home: NextPage = () => {
 
     if (!isAuthenticated)
         return (
-            <Layout>
+            <Layout showFooter={true}>
                 <div className="container">
                     <div id="loggedoutcontent" className="content">
-                        <p>gm fren</p>
-                        <br />
-                        <p>plz sign in to your page</p>
-                        <br />
-                        {
-                            //@ts-ignore
-                            window?.ethereum ? (
-                                <button
-                                    className="connectwallet"
-                                    onClick={() => {
-                                        authenticate();
-                                        setLoadBeforeRedirect(true);
-                                    }}
-                                >
-                                    Connect wallet
-                                </button>
-                            ) : (
-                                <div>
-                                    <span>----</span>
-                                    <p>no web3 wallet found</p>
-                                </div>
-                            )
-                        }
+                        <div>
+                            gm fren
+                            <br />
+                            <br /> plz sign in to your page
+                            <br />
+                            <br />
+                            {
+                                //@ts-ignore
+                                window?.ethereum ? (
+                                    <button
+                                        className="connectwallet"
+                                        onClick={() => authenticate()}
+                                    >
+                                        Connect wallet
+                                    </button>
+                                ) : (
+                                    <div>
+                                        <span>----</span>
+                                        <p>no web3 wallet found</p>
+                                    </div>
+                                )
+                            }
+                        </div>
                     </div>
                 </div>
             </Layout>
