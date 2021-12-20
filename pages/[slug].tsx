@@ -50,6 +50,7 @@ const UserPage: NextPage<Props> = ({}) => {
             if (user.get("ensusername") !== router?.query?.slug)
                 router.push("/");
         }
+        if (!user) loadData();
     }, [user, isAuthenticated, Moralis.Web3API.account]);
 
     const load = async () => {
@@ -57,11 +58,6 @@ const UserPage: NextPage<Props> = ({}) => {
         if (false) await initCanvas(); //this was causing an error with the connect wallet button
         await loadData().then(() => {});
     };
-
-    useEffect(() => {
-        console.log("PFP: ", pfp);
-        if (!user) loadData();
-    }, [user]);
 
     /**********************************************
      * 1. Check if Moralis is Initialized
