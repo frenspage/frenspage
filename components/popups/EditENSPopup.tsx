@@ -30,7 +30,6 @@ const EditENSPopup: React.FC<Props> = ({ ENS, setENS, setEditUsername }) => {
             };
 
             let url = `https://api.opensea.io/api/v1/assets?owner=${ethAddress}&asset_contract_address=${process.env.NEXT_PUBLIC_ENSCONTRACTADDRESS}&offset=0&limit=50`;
-            console.log("URL:", url);
 
             fetch(url, options)
                 .then((response) => response.json())
