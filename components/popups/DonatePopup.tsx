@@ -14,13 +14,13 @@ const DonatePopup: FC<Props> = ({ ethAddress }) => {
     const [price, setPrice] = useState<number>(0.1);
     const { transferPopup, setTransferPopup } = usePopup();
 
-    const { Moralis } = useMoralis();
     const {
         web3,
         enableWeb3,
         isWeb3Enabled,
         isWeb3EnableLoading,
         web3EnableError,
+        Moralis,
     } = useMoralis();
 
     const {
@@ -40,6 +40,7 @@ const DonatePopup: FC<Props> = ({ ethAddress }) => {
             });
         }
     };
+
     useEffect(() => {
         enableWeb3();
     }, []);

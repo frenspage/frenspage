@@ -24,7 +24,7 @@ const EditProfilePopup: React.FC<Props> = ({
 }) => {
     const router = useRouter();
     const { Moralis } = useMoralis();
-    const { user, ensDomain, setEnsDomain, pfp, setPfp, page, setPage } =
+    const { user, ensDomain, saveEnsDomain, username, setPfp, page, setPage } =
         useUser();
     const {
         showEditProfilePopup,
@@ -74,7 +74,7 @@ const EditProfilePopup: React.FC<Props> = ({
             userPage
                 .save()
                 .then(() => {
-
+                    saveEnsDomain(ensDomain?.name, ensDomain);
                 })
                 .catch((err: any) =>
                     console.error(
@@ -171,7 +171,7 @@ const EditProfilePopup: React.FC<Props> = ({
                         (ensSelectInput ? " hidden" : "")
                     }
                 >
-                    current username: {editUsername}
+                    current username: {editUsername ?? username}
                 </div>
 
                 <div

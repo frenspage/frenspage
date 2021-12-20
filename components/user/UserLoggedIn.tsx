@@ -35,6 +35,7 @@ const UserLoggedIn: FC<Props> = ({
         isAuthenticated,
         authenticate,
         saveEnsDomain,
+        disconnect,
     } = useUser();
 
     const [editProfilePic, setEditProfilePic] = useState<any>(null); // this is the profile pic that is displayed in the preview/edit box
@@ -44,86 +45,16 @@ const UserLoggedIn: FC<Props> = ({
 
     const { logout, Moralis, setUserData } = useMoralis();
 
-    const loadPFP = async () => {
-        if (user) {
-            const PFP = Moralis.Object.extend("ProfilePic");
-            const query = new Moralis.Query(PFP);
-            query.equalTo("owner", user);
-            query.descending("createdAt");
-            const object = await query?.first();
-
-            if (object && object.isDataAvailable()) {
-                let ta = object.get("token_address");
-                let ti = object.get("token_id");
-                const options = { method: "GET" };
-                fetch(
-                    `https://api.opensea.io/api/v1/asset/${ta}/${ti}/`,
-                    options,
-                )
-                    .then((response) => response.json())
-                    .then((response) => {
-                        setPfp(response);
-                        setEditProfilePic(response);
-                    })
-                    .catch((err) => console.error(err));
-            } else {
-                //console.log("No PFP yet");
-            }
-        }
-    };
-
     /**
      * Loads the page information from the DB
      * When there's no page saved in the DB with the given ens
      * this function will create a new page
      * --> for first time sign up --> page will be created
      */
-    const loadPage = async () => {
-        if (user) {
-            //const slug = user?.get("ensusername") ?? user?.get("username");
-
-            const SlugObject = Moralis.Object.extend("Page");
-            const query = new Moralis.Query(SlugObject);
-            query.equalTo("owner", user);
-            query.descending("createdAt");
-            const object: any = await query.first();
-
-            if (object) {
-                setPage(object);
-                saveEnsDomain(object.get("slug"), object);
-            } else {
-                let slug = user?.get("username").toLowerCase();
-                let PageObject = Moralis.Object.extend("Page");
-                let page = new PageObject();
-
-                page.set("owner", user);
-                page.set("slug", slug);
-                page.set("ethAddress", user?.get("ethAddress"));
-                page.save()
-                    .then((res: any) => {
-                        setPage(res);
-                        saveEnsDomain(user?.get("username"), {
-                            name: user?.get("username"),
-                        });
-                    })
-                    .catch((error: any) => {
-                        alert(
-                            "Failed to create new page, with error code: " +
-                                error.message,
-                        );
-                    });
-            }
-        }
-    };
 
     useEffect(() => {
-        if (user) loadPFP().then(() => loadPage().then(() => {}));
-    }, [user, Moralis.Web3API.account]);
-
-    const logoutUser = async () => {
-        await logout();
-        router.reload();
-    };
+        if (pfp) setEditProfilePic(pfp);
+    }, [pfp, setPfp]);
 
     if (loadBeforeRedirect) return <Loader />;
 
@@ -131,7 +62,7 @@ const UserLoggedIn: FC<Props> = ({
         <Layout>
             <div className="container">
                 <div id="loggedincontent" className="content">
-                    <div className="frenpage">
+                    <div className="frenpage user-container">
                         <div id="profilepicbox">
                             <img
                                 src={
@@ -163,7 +94,7 @@ const UserLoggedIn: FC<Props> = ({
                             </Link>
                             <div
                                 className="disconnect"
-                                onClick={() => logoutUser()}
+                                onClick={() => disconnect()}
                             >
                                 disconnect
                             </div>

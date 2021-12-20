@@ -49,6 +49,11 @@ const FrenPopup: React.FC<Props> = ({ pageData, profilePic }) => {
                                 "/images/punk.png"
                             }
                             className="profilepic noHover"
+                            style={{
+                                cursor: profilePic?.image_preview_url
+                                    ? "pointer"
+                                    : "initial",
+                            }}
                             alt="Profile Picture"
                         />
                     )}

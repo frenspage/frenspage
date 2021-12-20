@@ -46,10 +46,9 @@ const UserPage: NextPage<Props> = ({}) => {
     /***** CHECK IF USER has page claimed after connect *****/
     useEffect(() => {
         if (user && isClickAuth && !user.get("hasClaimed")) {
-            setTimeout(() => {
-                setIsClickAuth(false);
+            setIsClickAuth(false);
+            if (user.get("ensusername") !== router?.query?.slug)
                 router.push("/");
-            }, 1000);
         }
     }, [user, isAuthenticated, Moralis.Web3API.account]);
 
@@ -58,6 +57,11 @@ const UserPage: NextPage<Props> = ({}) => {
         if (false) await initCanvas(); //this was causing an error with the connect wallet button
         await loadData().then(() => {});
     };
+
+    useEffect(() => {
+        console.log("PFP: ", pfp);
+        if (!user) loadData();
+    }, [user]);
 
     /**********************************************
      * 1. Check if Moralis is Initialized
@@ -165,21 +169,24 @@ const UserPage: NextPage<Props> = ({}) => {
     return (
         <Layout addClass="root-user">
             <div className="user-container">
-                <img
-                    src={pfp?.image_preview_url ?? "/images/punk.png"}
-                    className="profilepic"
-                    onClick={() => setFrenPopup(true)}
-                    style={{ cursor: "pointer" }}
-                    tabIndex={0}
-                />
-                <br />
-                <h3
-                    onClick={() => setFrenPopup(true)}
-                    style={{ cursor: "pointer" }}
-                    className="centertext ethname"
-                >
-                    {slug}
-                </h3>
+                <div id="profilepicbox">
+                    <img
+                        src={pfp?.image_preview_url ?? "/images/punk.png"}
+                        className="profilepic"
+                        onClick={() => setFrenPopup(true)}
+                        style={{ cursor: "pointer" }}
+                        tabIndex={0}
+                    />
+                    <br />
+                    <div className="ellipsis flex flex-center--horizontal">
+                        <h3
+                            onClick={() => setFrenPopup(true)}
+                            className="username profilename"
+                        >
+                            {slug}
+                        </h3>
+                    </div>
+                </div>
             </div>
             <FrenPopup pageData={page} profilePic={pfp} />
             <DonatePopup ethAddress={page?.get("ethAddress")} />

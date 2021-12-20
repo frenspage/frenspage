@@ -25,6 +25,7 @@ interface ContextProps {
     readonly setPage: (val: any) => void;
     readonly saveEnsDomain: (newName: string, newEns: TEnsDomain) => void;
     readonly authenticate: () => void;
+    readonly disconnect: () => void;
 }
 
 export const UserContext = createContext<ContextProps>({
@@ -42,6 +43,7 @@ export const UserContext = createContext<ContextProps>({
     setPage: () => null,
     saveEnsDomain: () => null,
     authenticate: () => null,
+    disconnect: () => null,
 });
 
 export const UserProvider: React.FC = ({ children }) => {
@@ -53,6 +55,7 @@ export const UserProvider: React.FC = ({ children }) => {
         isInitialized,
         Moralis,
         setUserData: setMoralisUserData,
+        logout: moralisLogout,
     } = useMoralis();
 
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -80,6 +83,7 @@ export const UserProvider: React.FC = ({ children }) => {
             setEnsDomain(null);
             setUsername("");
         }
+
         return () => {
             setUser(null);
             setIsAuthenticated(false);
@@ -93,8 +97,89 @@ export const UserProvider: React.FC = ({ children }) => {
         isMoralisAuthenticating,
     ]);
 
+    useEffect(() => {
+        if (user) {
+            loadPage().then(() => loadPFP().then());
+        }
+    }, [user, Moralis.Web3API.account]);
+
     const authenticate = async () => {
         await moralisAuth();
+    };
+
+    const disconnect = async () => {
+        await moralisLogout();
+        setUser(null);
+        setIsAuthenticated(false);
+        setEnsDomain(null);
+        setUsername("");
+    };
+
+    const loadPage = async () => {
+        if (user) {
+            //const slug = user?.get("ensusername") ?? user?.get("username");
+
+            const SlugObject = Moralis.Object.extend("Page");
+            const query = new Moralis.Query(SlugObject);
+            query.equalTo("owner", user);
+            query.descending("createdAt");
+            const object: any = await query.first();
+
+            if (object) {
+                setPage(object);
+                saveEnsDomain(object.get("slug"), object);
+            } else {
+                let slug = user?.get("username").toLowerCase();
+                let PageObject = Moralis.Object.extend("Page");
+                let page = new PageObject();
+
+                console.log("***create page***");
+
+                page.set("owner", user);
+                page.set("slug", slug);
+                page.set("ethAddress", user?.get("ethAddress"));
+                page.save()
+                    .then((res: any) => {
+                        setPage(res);
+                        saveEnsDomain(user?.get("username"), {
+                            name: user?.get("username"),
+                        });
+                    })
+                    .catch((error: any) => {
+                        alert(
+                            "Failed to create new page, with error code: " +
+                                error.message,
+                        );
+                    });
+            }
+        }
+    };
+
+    const loadPFP = async () => {
+        if (user) {
+            const PFP = Moralis.Object.extend("ProfilePic");
+            const query = new Moralis.Query(PFP);
+            query.equalTo("owner", user);
+            query.descending("createdAt");
+            const object = await query?.first();
+
+            if (object && object.isDataAvailable()) {
+                let ta = object.get("token_address");
+                let ti = object.get("token_id");
+                const options = { method: "GET" };
+                fetch(
+                    `https://api.opensea.io/api/v1/asset/${ta}/${ti}/`,
+                    options,
+                )
+                    .then((response) => response.json())
+                    .then((response) => {
+                        setPfp(response);
+                    })
+                    .catch((err) => console.error(err));
+            } else {
+                //console.log("No PFP yet");
+            }
+        }
     };
 
     const saveEnsDomain = async (newName: string, newENS: TEnsDomain) => {
@@ -108,10 +193,8 @@ export const UserProvider: React.FC = ({ children }) => {
             name: ensusername,
             token_id: tokenId,
         });
-
-        setMoralisUserData({ ensusername: ensusername.toLowerCase() });
-
         await setUsername(ensusername);
+        await setMoralisUserData({ ensusername: ensusername.toLowerCase() });
     };
 
     return (
@@ -131,6 +214,7 @@ export const UserProvider: React.FC = ({ children }) => {
                 setIsAuthenticated,
                 saveEnsDomain,
                 authenticate,
+                disconnect,
             }}
         >
             {children}

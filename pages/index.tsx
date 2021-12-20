@@ -16,7 +16,7 @@ const Home: NextPage = () => {
 
     useEffect(() => {
         let timer: any = null;
-        if (user && username) {
+        if (user && username && username !== "") {
             timer = setTimeout(() => {
                 setLoadBeforeRedirect(false);
                 router.push("/" + username);
