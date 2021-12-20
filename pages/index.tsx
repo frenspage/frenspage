@@ -15,17 +15,10 @@ const Home: NextPage = () => {
     const [loadBeforeRedirect, setLoadBeforeRedirect] = useState(false);
 
     useEffect(() => {
-        let timer: any = null;
         if (user && username && username !== "") {
-            timer = setTimeout(() => {
-                setLoadBeforeRedirect(false);
-                router.push("/" + username);
-            }, 1000);
+            setLoadBeforeRedirect(false);
+            router.push("/" + username);
         }
-
-        return () => {
-            clearTimeout(timer);
-        };
     }, [user, username]);
 
     if (!isInitialized) return <Loader />;
