@@ -290,22 +290,22 @@ a:-webkit-any-link
 		&:hover
 			opacity: 1
 
+
+
+
 #profilepicbox
-	position: fixed
-	top: 50%
-	left: 50%
-	transform:  translate(-50%,-50%)
+	display: flex
+	flex-direction: column
+	justify-content: center
+	align-content: center
 
 
 
 
 .profilename
-	margin-top: 30px
 	height: 25px
 	max-width: 100%
-
-	@include media-below(phone)
-		max-width: 90%
+	text-align: center
 
 
 .cansubmit
@@ -323,8 +323,8 @@ a:-webkit-any-link
 .ensselect
 	border-bottom: 3px solid #ddd
 	width: 300px
-	margin: 2rem auto 1rem auto
-	padding: 5px
+	margin: 0 auto 1rem auto
+	padding: 1rem
 	transition:  opacity 0.2s ease
 	cursor: pointer
 	font-weight: bold

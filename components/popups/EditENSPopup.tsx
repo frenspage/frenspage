@@ -3,21 +3,21 @@ import { useMoralis } from "react-moralis";
 import { usePopup } from "../../context/PopupContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave } from "@fortawesome/free-solid-svg-icons";
+import { useUser } from "../../context/UserContext";
 
 interface Props {
-    ENS: any;
-    setENS: (val: any) => void;
     setEditUsername: (val: string) => void;
 }
 
-const EditENSPopup: React.FC<Props> = ({ ENS, setENS, setEditUsername }) => {
+const EditENSPopup: React.FC<Props> = ({ setEditUsername }) => {
     const [ensNames, setEnsNames] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
     const [currentSelected, setCurrentSelected] = useState<any>(null);
 
     const { showEditENSPopup, setShowEditENSPopup } = usePopup();
-    const { user, Moralis } = useMoralis();
+    const { Moralis } = useMoralis();
+    const { user, ensDomain, setEnsDomain } = useUser();
 
     const fetcher = async () => {
         if (user) {
@@ -67,7 +67,7 @@ const EditENSPopup: React.FC<Props> = ({ ENS, setENS, setEditUsername }) => {
         const isPageAlreadyExists = await checkPageAlreadyExists.first();
 
         if (!isPageAlreadyExists) {
-            setENS(data);
+            setEnsDomain(data);
             setEditUsername(name);
             setShowEditENSPopup(false);
         } else {
@@ -182,9 +182,7 @@ const EditENSPopup: React.FC<Props> = ({ ENS, setENS, setEditUsername }) => {
                         </div>
                     )}
 
-                    <div className="clearfix"></div>
-
-                    <div
+                    {/**<div
                         id="saveens"
                         className={
                             "savebutton" + (currentSelected ? " cansubmit" : "")
@@ -197,7 +195,7 @@ const EditENSPopup: React.FC<Props> = ({ ENS, setENS, setEditUsername }) => {
                             icon={faSave}
                             style={{ fontSize: "1rem", height: "1rem" }}
                         />
-                    </div>
+                    </div>**/}
                 </div>
             </div>
         </div>
