@@ -162,6 +162,7 @@ export const UserProvider: React.FC = ({ children }) => {
 
     const loadPFP = async () => {
         if (user) {
+            setPfp(null);
             const PFP = Moralis.Object.extend("ProfilePic");
             const query = new Moralis.Query(PFP);
             query.equalTo("owner", user);
