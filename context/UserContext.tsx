@@ -85,6 +85,7 @@ export const UserProvider: React.FC = ({ children }) => {
             setIsAuthenticated(false);
             setEnsDomain(null);
             setUsername("");
+            setPfp(null);
         }
 
         return () => {
@@ -92,6 +93,7 @@ export const UserProvider: React.FC = ({ children }) => {
             setIsAuthenticated(false);
             setEnsDomain(null);
             setUsername("");
+            setPfp(null);
         };
     }, [
         moralisUser,

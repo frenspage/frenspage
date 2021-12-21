@@ -58,7 +58,9 @@ const Home: NextPage = () => {
 
     return (
         <Layout>
-            <h1>Errorrrrrr sry fren</h1>
+            <div className="container content">
+                <h1>Errorrrrrr sry fren</h1>
+            </div>
         </Layout>
     );
 };
