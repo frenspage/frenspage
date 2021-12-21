@@ -21,29 +21,12 @@ const UserLoggedIn: FC<Props> = ({
     showCanvas = false,
     loadBeforeRedirect = false,
 }) => {
-    const router = useRouter();
-    const {
-        user,
-        ensDomain,
-        setEnsDomain,
-        username,
-        setUsername,
-        pfp,
-        setPfp,
-        page,
-        setPage,
-        isAuthenticated,
-        authenticate,
-        saveEnsDomain,
-        disconnect,
-    } = useUser();
+    const { user, username, pfp, setPfp, authenticate, disconnect } = useUser();
 
     const [editProfilePic, setEditProfilePic] = useState<any>(null); // this is the profile pic that is displayed in the preview/edit box
     const [editUsername, setEditUsername] = useState<any>(null); // this is the username that is displayed in the preview/edit box
 
     const { setShowEditProfilePopup } = usePopup();
-
-    const { logout, Moralis, setUserData } = useMoralis();
 
     /**
      * Loads the page information from the DB

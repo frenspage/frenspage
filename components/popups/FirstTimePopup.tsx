@@ -23,9 +23,7 @@ interface Props {
 FirstTimePopup is the popup that opens when the user saves his page for the first time, and thus claims his domain
 */
 const FirstTimePopup: React.FC<Props> = ({ editProfilePic, editUsername }) => {
-    const router = useRouter();
-    const { Moralis } = useMoralis();
-    const { user, ensDomain, setPage } = useUser();
+    const { user, ensDomain } = useUser();
     const { showFirstTimePopup, setShowFirstTimePopup } = usePopup();
 
     const [showTooltip, setShowTooltip] = useState(false);
@@ -42,7 +40,7 @@ const FirstTimePopup: React.FC<Props> = ({ editProfilePic, editUsername }) => {
         };
     }, [showTooltip, setShowTooltip]);
 
-    if (!user || user?.get("hasClaimed")) return null;
+    if (!user || !user?.get("hasClaimed")) return null;
 
     return (
         <div

@@ -26,6 +26,7 @@ interface ContextProps {
     readonly saveEnsDomain: (newName: string, newEns: TEnsDomain) => void;
     readonly authenticate: () => void;
     readonly disconnect: () => void;
+    readonly hasClaimed: () => boolean | any;
 }
 
 export const UserContext = createContext<ContextProps>({
@@ -44,6 +45,7 @@ export const UserContext = createContext<ContextProps>({
     saveEnsDomain: () => null,
     authenticate: () => null,
     disconnect: () => null,
+    hasClaimed: () => null,
 });
 
 export const UserProvider: React.FC = ({ children }) => {
@@ -67,8 +69,8 @@ export const UserProvider: React.FC = ({ children }) => {
 
     useEffect(() => {
         if (moralisUser && isMoralisAuthenticated) {
-            setIsAuthenticated(true);
             setUser(moralisUser);
+
             if (moralisUser.get("ensusername")) {
                 setEnsDomain(moralisUser?.get("ensusername"));
                 setUsername(moralisUser?.get("ensusername"));
@@ -130,12 +132,11 @@ export const UserProvider: React.FC = ({ children }) => {
             if (object) {
                 setPage(object);
                 saveEnsDomain(object.get("slug"), object);
+                setIsAuthenticated(true);
             } else {
                 let slug = user?.get("username").toLowerCase();
                 let MoralisPage = Moralis.Object.extend("Page");
                 let pageObject = new MoralisPage();
-
-                console.log("***create page***");
 
                 pageObject.set("owner", user);
                 pageObject.set("slug", slug);
@@ -144,6 +145,7 @@ export const UserProvider: React.FC = ({ children }) => {
                     .save()
                     .then((res: any) => {
                         setPage(res);
+                        setIsAuthenticated(true);
                         saveEnsDomain(user?.get("username"), {
                             name: user?.get("username"),
                         });
@@ -200,6 +202,14 @@ export const UserProvider: React.FC = ({ children }) => {
         await setMoralisUserData({ ensusername: ensusername.toLowerCase() });
     };
 
+    const hasClaimed = () => {
+        if (user && moralisUser) {
+            return moralisUser.get("hasClaimed") ?? false;
+        } else {
+            return false;
+        }
+    };
+
     return (
         <UserContext.Provider
             value={{
@@ -218,6 +228,7 @@ export const UserProvider: React.FC = ({ children }) => {
                 saveEnsDomain,
                 authenticate,
                 disconnect,
+                hasClaimed,
             }}
         >
             {children}

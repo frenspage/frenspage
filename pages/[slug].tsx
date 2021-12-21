@@ -23,7 +23,6 @@ const UserPage: NextPage<Props> = ({}) => {
 
     const [pfp, setPfp] = useState<any>(null);
     const [page, setPage] = useState<any>(null);
-    const [owner, setOwner] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [doesExist, setDoesExist] = useState(true);
     const [error, setError] = useState<any>(null);
@@ -34,10 +33,9 @@ const UserPage: NextPage<Props> = ({}) => {
     const slug = punifyCode(lowercasedSlug);
 
     const { isInitialized, Moralis } = useMoralis();
-    const { user, username, isAuthenticated, authenticate, disconnect } =
-        useUser();
+    const { user, isAuthenticated, authenticate, disconnect } = useUser();
 
-    const { setFrenPopup, setTransferPopup } = usePopup();
+    const { setFrenPopup } = usePopup();
 
     /***** INITIAL LOAD *****/
     useEffect(() => {
@@ -46,7 +44,7 @@ const UserPage: NextPage<Props> = ({}) => {
 
     /***** CHECK IF USER has page claimed after connect *****/
     useEffect(() => {
-        if (user && isClickAuth && !user.get("hasClaimed")) {
+        if (isAuthenticated && user && isClickAuth && !user.get("hasClaimed")) {
             setIsClickAuth(false);
             if (user.get("ensusername") !== router?.query?.slug)
                 router.push("/");

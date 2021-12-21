@@ -12,14 +12,12 @@ const Home: NextPage = () => {
     const router = useRouter();
     const { isInitialized } = useMoralis();
     const { user, username, isAuthenticated, authenticate } = useUser();
-    const [loadBeforeRedirect, setLoadBeforeRedirect] = useState(false);
 
     useEffect(() => {
-        if (user && username && username !== "") {
-            setLoadBeforeRedirect(false);
+        if (isAuthenticated && user && username && username !== "") {
             router.push("/" + username);
         }
-    }, [user, username]);
+    }, [user, username, isAuthenticated]);
 
     if (!isInitialized) return <Loader />;
 
