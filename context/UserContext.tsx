@@ -105,6 +105,7 @@ export const UserProvider: React.FC = ({ children }) => {
 
     const authenticate = async () => {
         await moralisAuth();
+        await loadPage();
     };
 
     const disconnect = async () => {

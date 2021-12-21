@@ -12,13 +12,13 @@ import { punifyCode } from "../lib/lib";
 import Loader from "../components/global/Loader";
 import DonatePopup from "../components/popups/DonatePopup";
 import { useRouter } from "next/router";
+import { useUser } from "../context/UserContext";
 
 interface Props {}
 
 const showCanvas = false;
 
 const UserPage: NextPage<Props> = ({}) => {
-    const { authenticate } = useMoralis();
     const router = useRouter();
 
     const [pfp, setPfp] = useState<any>(null);
@@ -33,8 +33,9 @@ const UserPage: NextPage<Props> = ({}) => {
     const lowercasedSlug = routeredSlug?.toLowerCase();
     const slug = punifyCode(lowercasedSlug);
 
-    const { isInitialized, Moralis, isAuthenticated, user, logout } =
-        useMoralis();
+    const { isInitialized, Moralis } = useMoralis();
+    const { user, username, isAuthenticated, authenticate, disconnect } =
+        useUser();
 
     const { setFrenPopup, setTransferPopup } = usePopup();
 
@@ -194,7 +195,7 @@ const UserPage: NextPage<Props> = ({}) => {
                             connected as {user?.get("ethAddress")}
                         </a>
                     </Link>
-                    <div className="disconnect" onClick={() => logout()}>
+                    <div className="disconnect" onClick={() => disconnect()}>
                         disconnect
                     </div>
                 </div>
@@ -206,9 +207,7 @@ const UserPage: NextPage<Props> = ({}) => {
                         className="address"
                         onClick={() => {
                             setIsClickAuth(true);
-                            authenticate({
-                                signingMessage: "gm fren",
-                            });
+                            authenticate();
                         }}
                     >
                         connect wallet
