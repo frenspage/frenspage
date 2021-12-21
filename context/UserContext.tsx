@@ -69,9 +69,10 @@ export const UserProvider: React.FC = ({ children }) => {
         if (moralisUser && isMoralisAuthenticated) {
             setIsAuthenticated(true);
             setUser(moralisUser);
-            setEnsDomain(moralisUser?.get("ensusername"));
-            setUsername(moralisUser?.get("ensusername"));
-            if (!moralisUser.get("ensusername")) {
+            if (moralisUser.get("ensusername")) {
+                setEnsDomain(moralisUser?.get("ensusername"));
+                setUsername(moralisUser?.get("ensusername"));
+            } else {
                 let ens = moralisUser.get("username")?.toLowerCase();
                 setEnsDomain({ name: ens });
                 setUsername(ens);
@@ -131,15 +132,16 @@ export const UserProvider: React.FC = ({ children }) => {
                 saveEnsDomain(object.get("slug"), object);
             } else {
                 let slug = user?.get("username").toLowerCase();
-                let PageObject = Moralis.Object.extend("Page");
-                let page = new PageObject();
+                let MoralisPage = Moralis.Object.extend("Page");
+                let pageObject = new MoralisPage();
 
                 console.log("***create page***");
 
-                page.set("owner", user);
-                page.set("slug", slug);
-                page.set("ethAddress", user?.get("ethAddress"));
-                page.save()
+                pageObject.set("owner", user);
+                pageObject.set("slug", slug);
+                pageObject.set("ethAddress", user?.get("ethAddress"));
+                pageObject
+                    .save()
                     .then((res: any) => {
                         setPage(res);
                         saveEnsDomain(user?.get("username"), {
