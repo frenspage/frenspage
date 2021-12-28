@@ -187,7 +187,7 @@ const UserPage: NextPage<Props> = ({}) => {
                     </div>
                     {page?.get("twitterName") && (
                         <div className="flex flex-column-center">
-                            <div className="paddingBottom paddingTop greyfont centertext biography">
+                            <div className="marginTop marginBottom greyfont centertext biography">
                                 <NewLineText
                                     text={page?.get("biography")}
                                     addClass="centertext"
