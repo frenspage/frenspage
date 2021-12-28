@@ -33,7 +33,6 @@ const NewLineText: FC<Props> = ({ text, addClass }) => {
         '<a href="mailto:$1">$1</a>',
     );
 
-    console.log(replacedText);
     if (replacedText) {
         const newText = replacedText
             .split("\n")

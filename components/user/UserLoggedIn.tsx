@@ -53,6 +53,10 @@ const UserLoggedIn: FC<Props> = ({
         if (pfp) setEditProfilePic(pfp);
     }, [pfp, setPfp]);
 
+    useEffect(() => {
+        if (biography) setEditBiography(biography);
+    }, [biography]);
+
     if (loadBeforeRedirect) return <Loader />;
 
     return (
