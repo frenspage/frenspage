@@ -16,7 +16,10 @@ const TwitterAuthPopup: FC<Props> = ({}) => {
     const [username, setUsername] = useState<string>("");
 
     const saveTwitter = async () => {
-        setTwitter(username);
+        let editedName = username.startsWith("@")
+            ? username.substring(1)
+            : username;
+        setTwitter(editedName);
         setTwitterAuthPopup(false);
     };
 

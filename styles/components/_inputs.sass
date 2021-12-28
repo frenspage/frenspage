@@ -27,13 +27,18 @@ textarea
 		background: #EEEEEE
 		border: 1px solid #cccccc
 		border-radius: .7rem
-		padding: .5rem
+		padding: 1rem 1rem 0
 		text-align: center
 		font-family: "OCR A Std", sans-serif
 		resize: vertical
-	&.biography
-		min-width: 430px
-		min-height: 120px
+
+		&::placeholder, &::-webkit-input-placeholder, &::-moz-placeholder
+			color: #cccccc
+
+		&--biography
+			min-width: 400px
+			min-height: 100px
+			margin: 1rem 0
 
 		@include media-below(phone)
 			min-width: auto

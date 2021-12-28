@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { useUser } from "../../context/UserContext";
 import TwitterAuthPopup from "./TwitterAuthPopup";
+import { faTwitter } from "@fortawesome/free-brands-svg-icons";
 
 interface Props {
     editProfilePic: any;
@@ -38,6 +39,7 @@ const EditProfilePopup: React.FC<Props> = ({
         page,
         setPage,
         twitter,
+        setTwitter,
         saveProfile,
         biography,
         setBiography,
@@ -69,6 +71,10 @@ const EditProfilePopup: React.FC<Props> = ({
                     console.error("saveProfile ERROR: ", err.message),
                 );
         }
+    };
+
+    const removeTwitter = () => {
+        setTwitter("");
     };
 
     return (
@@ -129,18 +135,30 @@ const EditProfilePopup: React.FC<Props> = ({
                 <div className="flex flex-column-center marginTop">
                     <textarea
                         name="biography"
-                        className="textarea biography"
-                        placeholder="your biography (120 char)"
+                        className="textarea textarea--biography"
+                        placeholder={
+                            "your biography\n& your links\n200 chars & 4 rows max.\nno funny business ser"
+                        }
                         value={editBiography}
                         rows={4}
-                        maxLength={150}
+                        maxLength={200}
+                        cols={50}
+                        wrap="hard"
                         onChange={(val) => setEditBiography(val.target.value)}
                     />
                 </div>
 
                 {!twitter && (
-                    <div className="flex flex-column-center paddingTop--big">
-                        <p className="smallfont">Connect Twitter</p>
+                    <div className="flex flex-column-center paddingTop">
+                        <p className="smallfont">
+                            Add{" "}
+                            <FontAwesomeIcon
+                                icon={faTwitter}
+                                style={{ fontSize: "1rem", height: "1rem" }}
+                            />
+                            {""}
+                            Twitter
+                        </p>
                         <button
                             className="button addIcon marginTop"
                             onClick={() => setTwitterAuthPopup(true)}
@@ -151,15 +169,24 @@ const EditProfilePopup: React.FC<Props> = ({
                 )}
 
                 {twitter && (
-                    <div
-                        className={
-                            "smallfont greyfont hover paddingTop ellipsis cursor--pointer" +
-                            (ensSelectInput ? " hidden" : "")
-                        }
-                        onClick={() => setTwitterAuthPopup(true)}
-                        tabIndex={0}
-                    >
-                        twitter account: {twitter}
+                    <div className="paddingTop flex flex-center--horizontal flex-center--vertical">
+                        <div
+                            className={
+                                "smallfont greyfont hover ellipsis cursor--pointer" +
+                                (ensSelectInput ? " hidden" : "")
+                            }
+                            onClick={() => setTwitterAuthPopup(true)}
+                            tabIndex={0}
+                        >
+                            twitter account: {twitter}
+                        </div>
+                        <span
+                            tabIndex={0}
+                            onClick={removeTwitter}
+                            className="removeTwitter"
+                        >
+                            &times;
+                        </span>
                     </div>
                 )}
 

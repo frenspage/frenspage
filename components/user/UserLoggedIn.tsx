@@ -83,31 +83,35 @@ const UserLoggedIn: FC<Props> = ({
                                     {username}
                                 </h3>
                             </div>
-                            {twitter && (
+                            {(twitter || biography) && (
                                 <div className="flex flex-column-center">
-                                    <div className="marginTop marginBottom greyfont centertext biography">
-                                        <NewLineText
-                                            text={biography}
-                                            addClass="centertext"
-                                        />
-                                    </div>
-                                    <a
-                                        href={`https://twitter.com/${twitter}`}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                        className={
-                                            "button addIcon small tooltip--twitterName"
-                                        }
-                                        data-name={twitter}
-                                    >
-                                        <FontAwesomeIcon
-                                            icon={faTwitter}
-                                            style={{
-                                                fontSize: "1rem",
-                                                height: "1rem",
-                                            }}
-                                        />
-                                    </a>
+                                    {biography && (
+                                        <div className="marginTop marginBottom greyfont centertext biography">
+                                            <NewLineText
+                                                text={biography}
+                                                addClass="centertext"
+                                            />
+                                        </div>
+                                    )}
+                                    {twitter && (
+                                        <a
+                                            href={`https://twitter.com/${twitter}`}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            className={
+                                                "button addIcon small tooltip--twitterName"
+                                            }
+                                            data-name={twitter}
+                                        >
+                                            <FontAwesomeIcon
+                                                icon={faTwitter}
+                                                style={{
+                                                    fontSize: "1rem",
+                                                    height: "1rem",
+                                                }}
+                                            />
+                                        </a>
+                                    )}
                                 </div>
                             )}
                         </div>
