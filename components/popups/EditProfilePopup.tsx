@@ -157,8 +157,8 @@ const EditProfilePopup: React.FC<Props> = ({
                                 style={{
                                     fontSize: "1rem",
                                     height: "1rem",
-                                    padding: "2px 2px 0 0",
-                                    transform: "translateY(2px)",
+                                    padding: "1px 2px 0 0",
+                                    transform: "translateY(1px)",
                                 }}
                             />
                             {""}
