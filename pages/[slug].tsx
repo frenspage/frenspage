@@ -13,6 +13,9 @@ import Loader from "../components/global/Loader";
 import DonatePopup from "../components/popups/DonatePopup";
 import { useRouter } from "next/router";
 import { useUser } from "../context/UserContext";
+import NewLineText from "../components/global/NewLinetext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTwitter } from "@fortawesome/free-brands-svg-icons";
 
 interface Props {}
 
@@ -182,8 +185,34 @@ const UserPage: NextPage<Props> = ({}) => {
                             {slug}
                         </h3>
                     </div>
-                    <p>{page?.get("biography")}</p>
-                    <p>{page?.get("twitterName")}</p>
+
+                    <div className="flex flex-column-center">
+                        <div className="paddingBottom paddingTop greyfont">
+                            <NewLineText text={page?.get("biography")} />
+                        </div>
+                        <a
+                            href={`https://twitter.com/${page?.get(
+                                "twitterName",
+                            )}`}
+                            target="_blank"
+                            rel="noreferrer"
+                        >
+                            <button
+                                className="button addIcon tooltip--twitterName"
+                                data-name={page?.get("twitterName")}
+                                tabIndex={0}
+                                style={{ lineHeight: "1rem" }}
+                            >
+                                <FontAwesomeIcon
+                                    icon={faTwitter}
+                                    style={{
+                                        fontSize: "1.5rem",
+                                        height: "1.5rem",
+                                    }}
+                                />
+                            </button>
+                        </a>
+                    </div>
                 </div>
             </div>
             <FrenPopup pageData={page} profilePic={pfp} />
