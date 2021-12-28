@@ -154,7 +154,12 @@ const EditProfilePopup: React.FC<Props> = ({
                             Add{" "}
                             <FontAwesomeIcon
                                 icon={faTwitter}
-                                style={{ fontSize: "1rem", height: "1rem" }}
+                                style={{
+                                    fontSize: "1rem",
+                                    height: "1rem",
+                                    padding: "2px 2px 0 0",
+                                    transform: "translateY(2px)",
+                                }}
                             />
                             {""}
                             Twitter
