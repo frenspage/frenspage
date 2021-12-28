@@ -185,34 +185,36 @@ const UserPage: NextPage<Props> = ({}) => {
                             {slug}
                         </h3>
                     </div>
+                    {page?.get("twitterName") && (
+                        <div className="flex flex-column-center">
+                            <div className="paddingBottom paddingTop greyfont">
+                                <NewLineText
+                                    text={page?.get("biography")}
+                                    addClass="centertext"
+                                />
+                            </div>
 
-                    <div className="flex flex-column-center">
-                        <div className="paddingBottom paddingTop greyfont">
-                            <NewLineText text={page?.get("biography")} />
-                        </div>
-                        <a
-                            href={`https://twitter.com/${page?.get(
-                                "twitterName",
-                            )}`}
-                            target="_blank"
-                            rel="noreferrer"
-                        >
-                            <button
-                                className="button addIcon tooltip--twitterName"
+                            <a
+                                href={`https://twitter.com/${page?.get(
+                                    "twitterName",
+                                )}`}
+                                target="_blank"
+                                rel="noreferrer"
+                                className={
+                                    "button addIcon small tooltip--twitterName"
+                                }
                                 data-name={page?.get("twitterName")}
-                                tabIndex={0}
-                                style={{ lineHeight: "1rem" }}
                             >
                                 <FontAwesomeIcon
                                     icon={faTwitter}
                                     style={{
-                                        fontSize: "1.5rem",
-                                        height: "1.5rem",
+                                        fontSize: "1rem",
+                                        height: "1rem",
                                     }}
                                 />
-                            </button>
-                        </a>
-                    </div>
+                            </a>
+                        </div>
+                    )}
                 </div>
             </div>
             <FrenPopup pageData={page} profilePic={pfp} />

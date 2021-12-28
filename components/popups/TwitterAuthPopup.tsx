@@ -32,7 +32,7 @@ const TwitterAuthPopup: FC<Props> = ({}) => {
                 </button>
                 <div className="content flex flex-column-center">
                     <p className="paddingTop paddingBottom">
-                        want to validate your twitter acc, ser?
+                        want to add your twitter acc, ser?
                     </p>
                     <input
                         className="input center font--md"
@@ -53,11 +53,7 @@ const TwitterAuthPopup: FC<Props> = ({}) => {
                         disabled={isFetching}
                         tabIndex={0}
                     >
-                        add Twitter account{" "}
-                        <FontAwesomeIcon
-                            icon={faTwitter}
-                            style={{ fontSize: "1rem", height: "1rem" }}
-                        />
+                        {twitter ? "update" : "add"}
                     </button>
                 </div>
             </div>

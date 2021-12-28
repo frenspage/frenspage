@@ -11,6 +11,8 @@ interface Props {
     editProfilePic: any;
     ensSelectInput?: boolean;
     editUsername: string;
+    editBiography: string;
+    setEditBiography: (val: string) => void;
 }
 
 /*
@@ -22,6 +24,8 @@ const EditProfilePopup: React.FC<Props> = ({
     editProfilePic,
     ensSelectInput,
     editUsername,
+    editBiography,
+    setEditBiography,
 }) => {
     const router = useRouter();
     const { Moralis } = useMoralis();
@@ -51,7 +55,7 @@ const EditProfilePopup: React.FC<Props> = ({
         if (user) {
             let hasClaimed: boolean = user?.get("hasClaimed");
 
-            await saveProfile(editProfilePic)
+            await saveProfile(editProfilePic, editBiography)
                 .then(() => {
                     if (!hasClaimed) {
                         setShowFirstTimePopup(true);
@@ -127,8 +131,10 @@ const EditProfilePopup: React.FC<Props> = ({
                         name="biography"
                         className="textarea biography"
                         placeholder="your biography (120 char)"
-                        value={biography}
-                        onChange={(val) => setBiography(val.target.value)}
+                        value={editBiography}
+                        rows={4}
+                        maxLength={150}
+                        onChange={(val) => setEditBiography(val.target.value)}
                     />
                 </div>
 

@@ -31,7 +31,7 @@ interface ContextProps {
     readonly authenticate: () => void;
     readonly disconnect: () => void;
     readonly hasClaimed: () => boolean | any;
-    readonly saveProfile: (editPfp: any) => any;
+    readonly saveProfile: (editPfp: any, editBio: string) => any;
 }
 
 export const UserContext = createContext<ContextProps>({
@@ -149,7 +149,6 @@ export const UserProvider: React.FC = ({ children }) => {
 
             if (object) {
                 setPage(object);
-                console.log("Page: ", object);
                 saveEnsDomain(object.get("slug"), object);
                 setIsAuthenticated(true);
                 setBiography(object.get("biography") ?? "");
@@ -252,7 +251,7 @@ export const UserProvider: React.FC = ({ children }) => {
             });
     };
 
-    const savePage = async () => {
+    const savePage = async (editBiography: string) => {
         let PageObject = Moralis.Object.extend("Page");
 
         let checkUserHasPage = new Moralis.Query(PageObject);
@@ -261,7 +260,7 @@ export const UserProvider: React.FC = ({ children }) => {
         const userPage = await checkUserHasPage.first();
         if (userPage) {
             userPage.set("twitterName", twitter ?? "");
-            userPage.set("biography", biography ?? "");
+            userPage.set("biography", editBiography ?? biography ?? "");
             if (ensDomain) {
                 userPage.set("slug", ensDomain?.name);
                 userPage.set("ensTokenId", ensDomain?.token_id ?? "");
@@ -271,7 +270,7 @@ export const UserProvider: React.FC = ({ children }) => {
                 .save()
                 .then(() => {
                     setTwitter(twitter ?? "");
-                    setBiography(biography ?? "");
+                    setBiography(editBiography ?? biography ?? "");
                     if (ensDomain) {
                         saveEnsDomain(ensDomain?.name, ensDomain);
                     }
@@ -289,7 +288,7 @@ export const UserProvider: React.FC = ({ children }) => {
             page.set("slug", ensDomain?.name);
             page.set("ensTokenId", ensDomain?.token_id ?? "");
             page.set("twitterName", twitter ?? "");
-            page.set("biography", biography ?? "");
+            page.set("biography", editBiography ?? biography ?? "");
             page.save()
                 .then(() => {
                     setTwitter(twitter ?? "");
@@ -306,9 +305,9 @@ export const UserProvider: React.FC = ({ children }) => {
     };
 
     /** save profile changes **/
-    const saveProfile = async (editProfilePic: any) => {
+    const saveProfile = async (editProfilePic: any, editBiography: string) => {
         await saveChangeProfilePic(editProfilePic).then(() =>
-            savePage().then(() => {}),
+            savePage(editBiography).then(() => {}),
         );
     };
 

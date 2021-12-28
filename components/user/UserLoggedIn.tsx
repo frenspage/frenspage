@@ -38,6 +38,7 @@ const UserLoggedIn: FC<Props> = ({
 
     const [editProfilePic, setEditProfilePic] = useState<any>(null); // this is the profile pic that is displayed in the preview/edit box
     const [editUsername, setEditUsername] = useState<any>(null); // this is the username that is displayed in the preview/edit box
+    const [editBiography, setEditBiography] = useState<string>(biography ?? ""); // this is the username that is displayed in the preview/edit box
 
     const { setShowEditProfilePopup } = usePopup();
 
@@ -78,31 +79,33 @@ const UserLoggedIn: FC<Props> = ({
                                     {username}
                                 </h3>
                             </div>
-                            <div className="flex flex-column-center greyfont">
-                                <div className="paddingBottom paddingTop">
-                                    <NewLineText text={biography} />
-                                </div>
-                                <a
-                                    href={`https://twitter.com/${twitter}`}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                >
-                                    <button
-                                        className="button addIcon tooltip--twitterName"
+                            {twitter && (
+                                <div className="flex flex-column-center greyfont">
+                                    <div className="paddingBottom paddingTop centertext biography">
+                                        <NewLineText
+                                            text={biography}
+                                            addClass="centertext"
+                                        />
+                                    </div>
+                                    <a
+                                        href={`https://twitter.com/${twitter}`}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className={
+                                            "button addIcon small tooltip--twitterName"
+                                        }
                                         data-name={twitter}
-                                        tabIndex={0}
-                                        style={{ lineHeight: "1rem" }}
                                     >
                                         <FontAwesomeIcon
                                             icon={faTwitter}
                                             style={{
-                                                fontSize: "1.5rem",
-                                                height: "1.5rem",
+                                                fontSize: "1rem",
+                                                height: "1rem",
                                             }}
                                         />
-                                    </button>
-                                </a>
-                            </div>
+                                    </a>
+                                </div>
+                            )}
                         </div>
                     </div>
 
@@ -136,6 +139,8 @@ const UserLoggedIn: FC<Props> = ({
                     <EditProfilePopup
                         editProfilePic={editProfilePic}
                         editUsername={editUsername}
+                        editBiography={editBiography}
+                        setEditBiography={setEditBiography}
                     />
 
                     <EditProfilePicPopup
