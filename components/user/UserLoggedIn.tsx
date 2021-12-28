@@ -80,8 +80,8 @@ const UserLoggedIn: FC<Props> = ({
                                 </h3>
                             </div>
                             {twitter && (
-                                <div className="flex flex-column-center greyfont">
-                                    <div className="paddingBottom paddingTop centertext biography">
+                                <div className="flex flex-column-center">
+                                    <div className="paddingBottom paddingTop greyfont centertext biography">
                                         <NewLineText
                                             text={biography}
                                             addClass="centertext"
