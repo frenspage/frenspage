@@ -13,6 +13,8 @@ interface ContextProps {
     readonly setFrenPopup: (value: boolean) => void;
     readonly transferPopup: boolean;
     readonly setTransferPopup: (value: boolean) => void;
+    readonly twitterAuthPopup: boolean;
+    readonly setTwitterAuthPopup: (value: boolean) => void;
 }
 
 export const PopupContext = createContext<ContextProps>({
@@ -28,6 +30,8 @@ export const PopupContext = createContext<ContextProps>({
     setFrenPopup: () => null,
     transferPopup: false,
     setTransferPopup: () => null,
+    twitterAuthPopup: false,
+    setTwitterAuthPopup: () => null,
 });
 
 export const PopupProvider: React.FC = ({ children }) => {
@@ -38,6 +42,7 @@ export const PopupProvider: React.FC = ({ children }) => {
     const [showFirstTimePopup, setShowFirstTimePopup] = useState(false);
     const [frenPopup, setFrenPopup] = useState(false);
     const [transferPopup, setTransferPopup] = useState(false);
+    const [twitterAuthPopup, setTwitterAuthPopup] = useState(false);
 
     return (
         <PopupContext.Provider
@@ -54,6 +59,8 @@ export const PopupProvider: React.FC = ({ children }) => {
                 setFrenPopup,
                 transferPopup,
                 setTransferPopup,
+                twitterAuthPopup,
+                setTwitterAuthPopup,
             }}
         >
             {children}

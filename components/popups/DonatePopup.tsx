@@ -55,12 +55,13 @@ const DonatePopup: FC<Props> = ({ ethAddress }) => {
     return (
         <div className={"popupbg" + (!transferPopup ? " hidden" : "")}>
             <div className="popup transferPopup">
-                <div
+                <button
                     className="closepopup"
                     onClick={() => setTransferPopup(false)}
+                    tabIndex={0}
                 >
                     <span>&times;</span>
-                </div>
+                </button>
                 <div className="content flex flex-column-center">
                     {transferMessage && transferMessage !== "" && (
                         <div className="paddingBottom">

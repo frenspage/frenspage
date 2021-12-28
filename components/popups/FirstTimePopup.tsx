@@ -54,12 +54,13 @@ const FirstTimePopup: React.FC<Props> = ({ editProfilePic, editUsername }) => {
             />
 
             <div className="popup">
-                <div
+                <button
                     className="closepopup"
                     onClick={() => setShowFirstTimePopup(false)}
+                    tabIndex={0}
                 >
                     <span>&times;</span>
-                </div>
+                </button>
                 <img
                     src={
                         editProfilePic?.image_preview_url ?? "/images/punk.png"

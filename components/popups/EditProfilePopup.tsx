@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { useUser } from "../../context/UserContext";
+import TwitterAuthPopup from "./TwitterAuthPopup";
 
 interface Props {
     editProfilePic: any;
@@ -24,98 +25,42 @@ const EditProfilePopup: React.FC<Props> = ({
 }) => {
     const router = useRouter();
     const { Moralis } = useMoralis();
-    const { user, ensDomain, saveEnsDomain, username, setPfp, page, setPage } =
-        useUser();
+    const {
+        user,
+        ensDomain,
+        saveEnsDomain,
+        username,
+        setPfp,
+        page,
+        setPage,
+        twitter,
+        saveProfile,
+        biography,
+        setBiography,
+    } = useUser();
     const {
         showEditProfilePopup,
         setShowEditProfilePopup,
         setShowEditProfilePicPopup,
         setShowEditENSPopup,
         setShowFirstTimePopup,
+        setTwitterAuthPopup,
     } = usePopup();
 
-    const saveChangeProfilePic = async () => {
-        let data = editProfilePic;
-
-        if (!data) return;
-
-        let PFP = Moralis.Object.extend("ProfilePic");
-        let pfp = new PFP();
-
-        pfp.set("owner", user);
-        pfp.set("token_address", data.asset_contract?.address);
-        pfp.set("token_id", data.token_id);
-
-        pfp.save()
-            .then((res: any) => {
-                setPfp(data);
-            })
-            .catch((error: any) => {
-                // Execute any logic that should take place if the save fails.
-                // error is a Moralis.Error with an error code and message.
-                alert("Failed to save pfp, with error code: " + error.message);
-            });
-    };
-
-    const saveChangeENS = async () => {
-        let data: any = ensDomain;
-        if (!ensDomain) return;
-
-        let PageObject = Moralis.Object.extend("Page");
-
-        let checkUserHasPage = new Moralis.Query(PageObject);
-        checkUserHasPage.equalTo("owner", user);
-        checkUserHasPage.descending("createdAt");
-        const userPage = await checkUserHasPage.first();
-
-        if (userPage) {
-            userPage.set("slug", ensDomain?.name);
-            userPage.set("ensTokenId", ensDomain?.token_id ?? "");
-            userPage
-                .save()
-                .then(() => {
-                    saveEnsDomain(ensDomain?.name, ensDomain);
-                })
-                .catch((err: any) =>
-                    console.error(
-                        "Save new ens slug for page ERROR: ",
-                        err.message,
-                    ),
-                );
-        } else {
-            let page = new PageObject();
-
-            page.set("owner", user);
-            page.set("slug", ensDomain?.name);
-            page.set("ensTokenId", ensDomain?.token_id ?? "");
-            page.save()
-                .then(() => {
-                    setPage(data);
-                })
-                .catch((error: any) => {
-                    alert(
-                        "Failed to create new page, with error code: " +
-                            error.message,
-                    );
-                });
-        }
-    };
-
-    const saveProfile = () => {
+    const save = async () => {
         if (user) {
             let hasClaimed: boolean = user?.get("hasClaimed");
 
-            saveChangeProfilePic()
-                .then(() =>
-                    saveChangeENS().then(() => {
-                        if (!hasClaimed) {
-                            setShowFirstTimePopup(true);
-                        }
-                        setShowEditProfilePopup(false);
-                        user?.set("hasClaimed", true);
-                        router.push(ensDomain?.name);
-                    }),
-                )
+            await saveProfile(editProfilePic)
+                .then(() => {
+                    if (!hasClaimed) {
+                        setShowFirstTimePopup(true);
+                    }
+                    setShowEditProfilePopup(false);
+                    user?.set("hasClaimed", true);
+                    router.push(ensDomain?.name);
+                })
+
                 .catch((err: any) =>
                     console.error("saveProfile ERROR: ", err.message),
                 );
@@ -128,12 +73,13 @@ const EditProfilePopup: React.FC<Props> = ({
             className={"popupbg" + (!showEditProfilePopup ? " hidden" : "")}
         >
             <div className="popup">
-                <div
+                <button
                     className="closepopup"
                     onClick={() => setShowEditProfilePopup(false)}
+                    tabIndex={0}
                 >
                     <span>&times;</span>
-                </div>
+                </button>
 
                 <img
                     src={
@@ -142,11 +88,13 @@ const EditProfilePopup: React.FC<Props> = ({
                     className="profilepicselect myprofilepic"
                     onClick={() => setShowEditProfilePicPopup(true)}
                     alt="Profile Picture"
+                    tabIndex={0}
                 />
 
                 <div
                     className={"ensselect ellipsis"}
                     onClick={() => setShowEditENSPopup(true)}
+                    tabIndex={0}
                 >
                     <div
                         id="ensname"
@@ -167,23 +115,59 @@ const EditProfilePopup: React.FC<Props> = ({
 
                 <div
                     className={
-                        "smallfont greyfont paddingTopm ellipsis" +
+                        "smallfont greyfont ellipsis" +
                         (ensSelectInput ? " hidden" : "")
                     }
                 >
                     current username: {editUsername ?? username}
                 </div>
 
-                <div
+                <div className="flex flex-column-center marginTop">
+                    <textarea
+                        name="biography"
+                        className="textarea biography"
+                        placeholder="your biography (120 char)"
+                        value={biography}
+                        onChange={(val) => setBiography(val.target.value)}
+                    />
+                </div>
+
+                {!twitter && (
+                    <div className="flex flex-column-center paddingTop--big">
+                        <p className="smallfont">Connect Twitter</p>
+                        <button
+                            className="button addIcon marginTop"
+                            onClick={() => setTwitterAuthPopup(true)}
+                        >
+                            +
+                        </button>
+                    </div>
+                )}
+
+                {twitter && (
+                    <div
+                        className={
+                            "smallfont greyfont hover paddingTop ellipsis cursor--pointer" +
+                            (ensSelectInput ? " hidden" : "")
+                        }
+                        onClick={() => setTwitterAuthPopup(true)}
+                        tabIndex={0}
+                    >
+                        twitter account: {twitter}
+                    </div>
+                )}
+
+                <button
                     id="savesettings"
-                    className="savebutton cansubmit"
-                    onClick={() => saveProfile()}
+                    className="savebutton cansubmit button black"
+                    onClick={() => save()}
+                    tabIndex={0}
                 >
                     <FontAwesomeIcon
                         icon={faSave}
                         style={{ fontSize: "1rem", height: "1rem" }}
                     />
-                </div>
+                </button>
             </div>
         </div>
     );

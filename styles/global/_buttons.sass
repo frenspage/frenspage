@@ -1,0 +1,55 @@
+@use "../abstracts/index" as *
+
+//----------------------------------
+//             BUTTONS             -
+//----------------------------------
+
+.button
+	cursor: pointer
+	position: relative
+
+	&.primary, &.active, &.selected, &.is-style-primary .wp-block-button__link
+		background: $primary
+		color: $textLight
+		border: none
+		padding: 1rem 1.5rem
+		margin: 1rem
+		border-radius: $borderRadius
+		cursor: pointer
+		font-weight: 300
+
+	&.black
+		background: $black
+		color: $white
+		border: 2px solid $black
+		padding: .5rem 1.56rem
+		text-align: center
+		font-size: 1rem
+		line-height: 1rem
+		-webkit-appearance: none
+		font-family: "OCR A Std", sans-serif
+		border-radius: 50px
+		transition: $transition-default
+
+		&:hover
+			background: $white
+			color: $black
+
+	&.addIcon
+		background: $black
+		color: $white
+		width: 3rem
+		height: 3rem
+		font-size: 2.5rem
+		border: 2px solid $black
+		text-align: center
+		-webkit-appearance: none
+		border-radius: 1.5rem
+		transition: $transition-default
+
+		&:hover
+			background: $white
+			color: $black
+
+
+

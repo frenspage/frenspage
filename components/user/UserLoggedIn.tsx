@@ -11,6 +11,10 @@ import PostitCanvas from "../canvas/PostitCanvas";
 import { useRouter } from "next/router";
 import Loader from "../global/Loader";
 import { useUser } from "../../context/UserContext";
+import TwitterAuthPopup from "../popups/TwitterAuthPopup";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTwitter } from "@fortawesome/free-brands-svg-icons";
+import NewLineText from "../global/NewLinetext";
 
 interface Props {
     showCanvas?: boolean;
@@ -21,7 +25,16 @@ const UserLoggedIn: FC<Props> = ({
     showCanvas = false,
     loadBeforeRedirect = false,
 }) => {
-    const { user, username, pfp, setPfp, authenticate, disconnect } = useUser();
+    const {
+        user,
+        username,
+        pfp,
+        setPfp,
+        authenticate,
+        disconnect,
+        twitter,
+        biography,
+    } = useUser();
 
     const [editProfilePic, setEditProfilePic] = useState<any>(null); // this is the profile pic that is displayed in the preview/edit box
     const [editUsername, setEditUsername] = useState<any>(null); // this is the username that is displayed in the preview/edit box
@@ -64,6 +77,31 @@ const UserLoggedIn: FC<Props> = ({
                                 <h3 className="username profilename">
                                     {username}
                                 </h3>
+                            </div>
+                            <div className="flex flex-column-center greyfont">
+                                <div className="paddingBottom paddingTop">
+                                    <NewLineText text={biography} />
+                                </div>
+                                <a
+                                    href={`https://twitter.com/${twitter}`}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
+                                    <button
+                                        className="button addIcon tooltip--twitterName"
+                                        data-name={twitter}
+                                        tabIndex={0}
+                                        style={{ lineHeight: "1rem" }}
+                                    >
+                                        <FontAwesomeIcon
+                                            icon={faTwitter}
+                                            style={{
+                                                fontSize: "1.5rem",
+                                                height: "1.5rem",
+                                            }}
+                                        />
+                                    </button>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -110,6 +148,8 @@ const UserLoggedIn: FC<Props> = ({
                         editProfilePic={editProfilePic}
                         editUsername={editUsername}
                     />
+
+                    <TwitterAuthPopup />
                 </div>
             </div>
             {showCanvas && <PostitCanvas />}

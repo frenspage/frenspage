@@ -75,6 +75,7 @@ const UserPage: NextPage<Props> = ({}) => {
             /*** CHECK IF PAGE EXISTS ***/
             if (userPage) {
                 setPage(userPage);
+
                 const pageOwner = userPage.get("owner");
 
                 /*** CHECK IF OWNER EXISTS (to prevent errors) ***/
@@ -181,6 +182,8 @@ const UserPage: NextPage<Props> = ({}) => {
                             {slug}
                         </h3>
                     </div>
+                    <p>{page?.get("biography")}</p>
+                    <p>{page?.get("twitterName")}</p>
                 </div>
             </div>
             <FrenPopup pageData={page} profilePic={pfp} />
