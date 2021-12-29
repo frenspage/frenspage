@@ -51,7 +51,7 @@ const TwitterAuthPopup: FC<Props> = ({}) => {
                         />
                     )*/}
                     <button
-                        className="sharebutton marginTop button black"
+                        className="marginTop button black"
                         onClick={() => saveTwitter()}
                         disabled={isFetching}
                         tabIndex={0}

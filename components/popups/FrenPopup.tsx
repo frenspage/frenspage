@@ -101,7 +101,7 @@ const FrenPopup: React.FC<Props> = ({ pageData, profilePic }) => {
                     <br />
 
                     <button
-                        className="sharebutton"
+                        className="button black"
                         onClick={() => setTransferPopup(true)}
                     >
                         Send donation{" "}

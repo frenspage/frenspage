@@ -150,7 +150,14 @@ const EditProfilePopup: React.FC<Props> = ({
 
                 {!twitter && (
                     <div className="flex flex-column-center paddingTop">
-                        <p className="smallfont">
+                        <a
+                            className="smallfont"
+                            onClick={(evt) => {
+                                evt.preventDefault();
+                                setTwitterAuthPopup(true);
+                            }}
+                            tabIndex={0}
+                        >
                             Add{" "}
                             <FontAwesomeIcon
                                 icon={faTwitter}
@@ -162,14 +169,8 @@ const EditProfilePopup: React.FC<Props> = ({
                                 }}
                             />
                             {""}
-                            Twitter
-                        </p>
-                        <button
-                            className="button addIcon marginTop"
-                            onClick={() => setTwitterAuthPopup(true)}
-                        >
-                            +
-                        </button>
+                            Twitter{" "}
+                        </a>
                     </div>
                 )}
 

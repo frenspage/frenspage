@@ -84,7 +84,7 @@ const DonatePopup: FC<Props> = ({ ethAddress }) => {
                         />
                     )}
                     <button
-                        className="sharebutton marginTop"
+                        className="button black marginTop"
                         onClick={() => sendDonation()}
                         disabled={isFetching}
                         tabIndex={0}
