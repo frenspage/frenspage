@@ -233,19 +233,30 @@ const UserPage: NextPage<Props> = ({}) => {
                 </div>
             )}
 
-            {!user && (
-                <div className="walletinfo" tabIndex={0}>
-                    <div
-                        className="address"
-                        onClick={() => {
-                            setIsClickAuth(true);
-                            authenticate();
-                        }}
-                    >
-                        connect wallet
+            {
+                //@ts-ignore
+                !user && window?.ethereum && (
+                    <div className={"walletinfo"} tabIndex={0}>
+                        <div
+                            className="address hover"
+                            onClick={() => {
+                                setIsClickAuth(true);
+                                authenticate();
+                            }}
+                        >
+                            connect wallet
+                        </div>
                     </div>
-                </div>
-            )}
+                )
+            }
+            {
+                //@ts-ignore
+                !user && !window.ethereum && (
+                    <div className={"walletinfo"}>
+                        <div className="address">no web3 wallet found</div>
+                    </div>
+                )
+            }
 
             {showCanvas && <PostitCanvas />}
         </Layout>
