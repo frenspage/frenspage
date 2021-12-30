@@ -10,14 +10,17 @@ import { usePopup } from "../../context/PopupContext";
 import FrenCanvas from "../canvas/FrenCanvas";
 import { useRouter } from "next/router";
 
-import LoggedInCanvas from "../canvas/LoggedInCanvas";
-
 import Loader from "../global/Loader";
 import { useUser } from "../../context/UserContext";
 import TwitterAuthPopup from "../popups/TwitterAuthPopup";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTwitter } from "@fortawesome/free-brands-svg-icons";
 import NewLineText from "../global/NewLinetext";
+import dynamic from "next/dynamic";
+
+const LoggedInCanvas = dynamic(() => import("../canvas/LoggedInCanvas"), {
+    ssr: false,
+});
 
 interface Props {
     showCanvas?: boolean;
@@ -44,6 +47,8 @@ const UserLoggedIn: FC<Props> = ({
     const [editBiography, setEditBiography] = useState<string>(biography ?? ""); // this is the username that is displayed in the preview/edit box
 
     const { setShowEditProfilePopup } = usePopup();
+
+    /** Canvas Active state **/
 
     /**
      * Loads the page information from the DB
