@@ -6,79 +6,61 @@ import { useRouter } from "next/router";
 import UserLoggedIn from "../components/user/UserLoggedIn";
 import Loader from "../components/global/Loader";
 import { faLongArrowAltUp } from "@fortawesome/free-solid-svg-icons";
+import { useUser } from "../context/UserContext";
 
 const Home: NextPage = () => {
     const router = useRouter();
-    const {
-        authenticate,
-        isAuthenticated,
-        user,
-        isInitialized,
-        Moralis,
-        setUserData,
-    } = useMoralis();
-    const [userEns, setUserEns] = useState(user?.get("ensusername") ?? "");
+    const { isInitialized } = useMoralis();
+    const { user, username, isAuthenticated, authenticate } = useUser();
 
     useEffect(() => {
-        if (user) {
-            setUserEns(user?.get("ensusername"));
-            if (!user.get("ensusername")) {
-                let ens = user.get("username")?.toLowerCase();
-
-                setUserData({ ensusername: ens });
-            }
+        if (isAuthenticated && user && username && username !== "") {
+            router.push("/" + username);
         }
-    }, [user, Moralis.Web3API.account, isAuthenticated]);
-
-    useEffect(() => {
-        if (user && userEns) {
-            router.push("/" + userEns);
-        }
-    }, [userEns, user]);
+    }, [user, username, isAuthenticated]);
 
     if (!isInitialized) return <Loader />;
 
     if (!isAuthenticated)
         return (
-            <Layout>
+            <Layout showFooter={true}>
                 <div className="container">
                     <div id="loggedoutcontent" className="content">
-                        gm fren
-                        <br />
-                        <br /> plz sign in to your page
-                        <br />
-                        <br />
-                        {
-                            //@ts-ignore
-                            window?.ethereum ? (
-                                <button
-                                    className="connectwallet"
-                                    onClick={() =>
-                                        authenticate({
-                                            signingMessage: "gm fren",
-                                        })
-                                    }
-                                >
-                                    Connect wallet
-                                </button>
-                            ) : (
-                                <div>
-                                    <span>----</span>
-                                    <p>no web3 wallet found</p>
-                                </div>
-                            )
-                        }
+                        <div>
+                            gm fren
+                            <br />
+                            <br /> plz sign in to your page
+                            <br />
+                            <br />
+                            {
+                                //@ts-ignore
+                                window?.ethereum ? (
+                                    <button
+                                        className="connectwallet"
+                                        onClick={() => authenticate()}
+                                    >
+                                        Connect wallet
+                                    </button>
+                                ) : (
+                                    <div>
+                                        <span>----</span>
+                                        <p>no web3 wallet found</p>
+                                    </div>
+                                )
+                            }
+                        </div>
                     </div>
                 </div>
             </Layout>
         );
 
-    if (isAuthenticated && user)
-        return <UserLoggedIn setRedirectName={setUserEns} />;
+    if (isAuthenticated && user) return <Loader />;
 
     return (
         <Layout>
-            <h1>Errorrrrrr sry fren</h1>
+            <div className="container content">
+                <h1>Errorrrrrr sry fren</h1>
+            </div>
         </Layout>
     );
 };

@@ -1,8 +1,8 @@
 # frens.page
 
-gm fren, this repo is for your frens.
+gm frens
 
-This project is based on Next.js using Moralis-API.
+This project is based on Next.js using the Moralis.io API and the OpenSea API.
 
 
 
@@ -43,9 +43,7 @@ const {
 	showEditENSPopup, setShowEditENSPopup,                  // EditENSPopup-component
 	showEditProfilePicPopup, setShowEditProfilePicPopup,    // EditProfilePicPopup-component
 	showFirstTimePopup, setShowFirstTimePopup,              // FirstTypePopup-component
-	frenPopup, setFrenPopup                                 // FrenPopup-component
+	frenPopup, setFrenPopup,                                // FrenPopup-component
+        transferPopup, setTransferPopup,                        // DonatePopup-component
 } = usePopup();
 ```
-
-## Copyright
-This is a project by Neon Luxembourg (Misch Strotz) and Daniel Wahl

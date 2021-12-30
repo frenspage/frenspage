@@ -6,14 +6,14 @@
 
 
 .tooltip
-	&--copied
+	&--copied, &--twitterName
 		@include pseudo($loc: before, $left: 0, $top: 0)
 			content: "copied!"
 			background: $black
 			color: $white
 			height: 1rem
 			padding: .5rem
-			border-radius: 3px
+			border-radius: 5px
 			transform: translate(-100%, -25%)
 			opacity: 0
 			visibility: hidden
@@ -23,3 +23,17 @@
 			&::before
 				opacity: 1
 				visibility: visible
+
+	&--twitterName
+		&::before
+			content: attr(data-name)
+			font-size: .8rem
+			border: none
+			left: 50%
+			transform: translate(-50%, 110%)
+		&:hover, &:focus, &:focus-visible
+			&::before
+				opacity: 1
+				visibility: visible
+
+

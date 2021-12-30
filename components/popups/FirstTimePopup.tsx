@@ -12,28 +12,21 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 import Confetti from "react-confetti";
+import { useUser } from "../../context/UserContext";
 
 interface Props {
-    ENS: any;
     editProfilePic: any;
     editUsername: string;
-    setPage: (val: any) => void;
 }
 
 /*
 FirstTimePopup is the popup that opens when the user saves his page for the first time, and thus claims his domain
 */
-const FirstTimePopup: React.FC<Props> = ({
-    editProfilePic,
-    editUsername,
-    setPage,
-    ENS,
-}) => {
-    const router = useRouter();
-    const { user, Moralis } = useMoralis();
-    const [showTooltip, setShowTooltip] = useState(false);
-
+const FirstTimePopup: React.FC<Props> = ({ editProfilePic, editUsername }) => {
+    const { user, ensDomain } = useUser();
     const { showFirstTimePopup, setShowFirstTimePopup } = usePopup();
+
+    const [showTooltip, setShowTooltip] = useState(false);
 
     useEffect(() => {
         let closeTooltip = setInterval(function () {
@@ -47,6 +40,8 @@ const FirstTimePopup: React.FC<Props> = ({
         };
     }, [showTooltip, setShowTooltip]);
 
+    if (!user || !user?.get("hasClaimed")) return null;
+
     return (
         <div
             id="showfirsttime"
@@ -59,12 +54,13 @@ const FirstTimePopup: React.FC<Props> = ({
             />
 
             <div className="popup">
-                <div
+                <button
                     className="closepopup"
                     onClick={() => setShowFirstTimePopup(false)}
+                    tabIndex={0}
                 >
                     <span>&times;</span>
-                </div>
+                </button>
                 <img
                     src={
                         editProfilePic?.image_preview_url ?? "/images/punk.png"
@@ -77,7 +73,7 @@ const FirstTimePopup: React.FC<Props> = ({
                     <h2>gm {editUsername}</h2>
                 </div>
 
-                {ENS.token_id && ENS.token_id !== "" ? (
+                {ensDomain?.token_id && ensDomain?.token_id !== "" ? (
                     <div className="smallfont">
                         Nice{" "}
                         <a
@@ -141,7 +137,10 @@ const FirstTimePopup: React.FC<Props> = ({
                             rel="noreferrer"
                         >
                             wallet: {user?.attributes?.ethAddress}{" "}
-                            <FontAwesomeIcon icon={faExternalLinkAlt} />
+                            <FontAwesomeIcon
+                                icon={faExternalLinkAlt}
+                                style={{ fontSize: "1rem", height: "1rem" }}
+                            />
                         </a>
                     </Link>
                 </div>
@@ -166,7 +165,11 @@ const FirstTimePopup: React.FC<Props> = ({
                             );
                     }}
                 >
-                    Tell your Twitter frens <FontAwesomeIcon icon={faTwitter} />
+                    Tell your Twitter frens{" "}
+                    <FontAwesomeIcon
+                        icon={faTwitter}
+                        style={{ fontSize: "1rem", height: "1rem" }}
+                    />
                 </button>
 
                 <br />
@@ -177,7 +180,10 @@ const FirstTimePopup: React.FC<Props> = ({
                     className="savebutton cansubmit"
                     onClick={() => setShowFirstTimePopup(false)}
                 >
-                    <FontAwesomeIcon icon={faArrowRight} />
+                    <FontAwesomeIcon
+                        icon={faArrowRight}
+                        style={{ fontSize: "1rem", height: "1rem" }}
+                    />
                 </div>
             </div>
         </div>

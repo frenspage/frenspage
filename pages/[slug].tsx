@@ -11,18 +11,20 @@ import { punifyCode } from "../lib/lib";
 import Loader from "../components/global/Loader";
 import DonatePopup from "../components/popups/DonatePopup";
 import { useRouter } from "next/router";
+import { useUser } from "../context/UserContext";
+import NewLineText from "../components/global/NewLinetext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTwitter } from "@fortawesome/free-brands-svg-icons";
 
 interface Props {}
 
 const showCanvas = true;
 
 const UserPage: NextPage<Props> = ({}) => {
-    const { authenticate } = useMoralis();
     const router = useRouter();
 
     const [pfp, setPfp] = useState<any>(null);
     const [page, setPage] = useState<any>(null);
-    const [owner, setOwner] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [doesExist, setDoesExist] = useState(true);
     const [error, setError] = useState<any>(null);
@@ -32,10 +34,10 @@ const UserPage: NextPage<Props> = ({}) => {
     const lowercasedSlug = routeredSlug?.toLowerCase();
     const slug = punifyCode(lowercasedSlug);
 
-    const { isInitialized, Moralis, isAuthenticated, user, logout } =
-        useMoralis();
+    const { isInitialized, Moralis } = useMoralis();
+    const { user, isAuthenticated, authenticate, disconnect } = useUser();
 
-    const { setFrenPopup, setTransferPopup } = usePopup();
+    const { setFrenPopup } = usePopup();
 
     /***** INITIAL LOAD *****/
     useEffect(() => {
@@ -44,10 +46,13 @@ const UserPage: NextPage<Props> = ({}) => {
 
     /***** CHECK IF USER has page claimed after connect *****/
     useEffect(() => {
-        if (user && isClickAuth && !user.get("hasClaimed")) {
-            router.push("/" + user.get("ensusername"));
+        if (isAuthenticated && user && isClickAuth && !user.get("hasClaimed")) {
+            setIsClickAuth(false);
+            if (user.get("ensusername") !== router?.query?.slug)
+                router.push("/");
         }
-    }, [user]);
+        if (!user) loadData();
+    }, [user, isAuthenticated, Moralis.Web3API.account]);
 
     const load = async () => {
         await loadData().then(() => {});
@@ -70,6 +75,7 @@ const UserPage: NextPage<Props> = ({}) => {
             /*** CHECK IF PAGE EXISTS ***/
             if (userPage) {
                 setPage(userPage);
+
                 const pageOwner = userPage.get("owner");
 
                 /*** CHECK IF OWNER EXISTS (to prevent errors) ***/
@@ -103,6 +109,7 @@ const UserPage: NextPage<Props> = ({}) => {
                         /**********************
                          *  User has no PFP
                          * ********************/
+                        setPfp(null);
                         setIsLoading(false);
                     }
                 }
@@ -112,6 +119,7 @@ const UserPage: NextPage<Props> = ({}) => {
                  *   --> no fren here
                  * **********************/
                 if (!page) {
+                    setPfp(null);
                     setIsLoading(false);
                     setDoesExist(false);
                 }
@@ -159,21 +167,54 @@ const UserPage: NextPage<Props> = ({}) => {
     return (
         <Layout addClass="root-user">
             <div className="user-container">
-                <img
-                    src={pfp?.image_preview_url ?? "/images/punk.png"}
-                    className="profilepic"
-                    onClick={() => setFrenPopup(true)}
-                    style={{ cursor: "pointer" }}
-                    tabIndex={0}
-                />
-                <br />
-                <h3
-                    onClick={() => setFrenPopup(true)}
-                    style={{ cursor: "pointer" }}
-                    className="centertext ethname"
-                >
-                    {slug}
-                </h3>
+                <div id="profilepicbox">
+                    <img
+                        src={pfp?.image_preview_url ?? "/images/punk.png"}
+                        className="profilepic"
+                        onClick={() => setFrenPopup(true)}
+                        style={{ cursor: "pointer" }}
+                        tabIndex={0}
+                    />
+                    <br />
+                    <div className="ellipsis flex flex-center--horizontal">
+                        <h3
+                            onClick={() => setFrenPopup(true)}
+                            className="username profilename"
+                        >
+                            {slug}
+                        </h3>
+                    </div>
+                    {page?.get("twitterName") && (
+                        <div className="flex flex-column-center">
+                            <div className="marginTop marginBottom greyfont centertext biography">
+                                <NewLineText
+                                    text={page?.get("biography")}
+                                    addClass="centertext"
+                                />
+                            </div>
+
+                            <a
+                                href={`https://twitter.com/${page?.get(
+                                    "twitterName",
+                                )}`}
+                                target="_blank"
+                                rel="noreferrer"
+                                className={
+                                    "button addIcon small tooltip--twitterName"
+                                }
+                                data-name={page?.get("twitterName")}
+                            >
+                                <FontAwesomeIcon
+                                    icon={faTwitter}
+                                    style={{
+                                        fontSize: "1rem",
+                                        height: "1rem",
+                                    }}
+                                />
+                            </a>
+                        </div>
+                    )}
+                </div>
             </div>
             <FrenPopup pageData={page} profilePic={pfp} />
             <DonatePopup ethAddress={page?.get("ethAddress")} />
@@ -185,27 +226,36 @@ const UserPage: NextPage<Props> = ({}) => {
                             connected as {user?.get("ethAddress")}
                         </a>
                     </Link>
-                    <div className="disconnect" onClick={() => logout()}>
+                    <div className="disconnect" onClick={() => disconnect()}>
                         disconnect
                     </div>
                 </div>
             )}
 
-            {!user && (
-                <div className="walletinfo" tabIndex={0}>
-                    <div
-                        className="address"
-                        onClick={() => {
-                            setIsClickAuth(true);
-                            authenticate({
-                                signingMessage: "gm fren",
-                            });
-                        }}
-                    >
-                        connect wallet
+            {
+                //@ts-ignore
+                !user && window?.ethereum && (
+                    <div className={"walletinfo"} tabIndex={0}>
+                        <div
+                            className="address hover"
+                            onClick={() => {
+                                setIsClickAuth(true);
+                                authenticate();
+                            }}
+                        >
+                            connect wallet
+                        </div>
                     </div>
-                </div>
-            )}
+                )
+            }
+            {
+                //@ts-ignore
+                !user && !window.ethereum && (
+                    <div className={"walletinfo"}>
+                        <div className="address">no web3 wallet found</div>
+                    </div>
+                )
+            }
 
             {showCanvas && <FrenCanvas />}
         </Layout>

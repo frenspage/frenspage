@@ -3,57 +3,65 @@ import { useMoralis } from "react-moralis";
 import { usePopup } from "../../context/PopupContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave } from "@fortawesome/free-solid-svg-icons";
+import { useUser } from "../../context/UserContext";
 
 interface Props {
-    ENS: any;
-    setENS: (val: any) => void;
     setEditUsername: (val: string) => void;
 }
 
-const EditENSPopup: React.FC<Props> = ({ ENS, setENS, setEditUsername }) => {
+const maxItemsPerPage: number = 50;
+
+const EditENSPopup: React.FC<Props> = ({ setEditUsername }) => {
     const [ensNames, setEnsNames] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
     const [currentSelected, setCurrentSelected] = useState<any>(null);
 
     const { showEditENSPopup, setShowEditENSPopup } = usePopup();
-    const { user, Moralis } = useMoralis();
+    const { Moralis } = useMoralis();
+    const { user, ensDomain, setEnsDomain } = useUser();
 
     const fetcher = async () => {
+        let offset: number = 0;
+        let itemsPerPage: number = maxItemsPerPage;
         if (user) {
-            let ethAddress = user.get("ethAddress"); //"0x80f0ae4e0b80544330Fc5257fc32c69A4dB6e630"; //"0x6871D1a603fEb9Cc2aA8213B9ab16B33e418cD8F";//
+            let ethAddress = user.get("ethAddress");
             const options = {
                 method: "GET",
                 headers: {
-                    "X-API-KEY": "8c7bf4fd89934d35a88dd6ecf44fe627",
+                    "X-API-KEY": process.env.NEXT_PUBLIC_OPENSEEKEY + "",
                 },
             };
-            fetch(
-                `https://api.opensea.io/api/v1/assets?owner=${ethAddress}&order_direction=desc&offset=0&limit=50`,
-                options,
-            )
-                .then((response) => response.json())
-                .then((response) => {
-                    if (!response || response.length <= 0)
-                        console.log(
-                            "You have no nfts, neither .eth names in your wallet!",
-                        );
+            let fetchedItems: Array<any> = [];
+            while (itemsPerPage >= maxItemsPerPage) {
+                await fetchPage(offset, ethAddress, options)
+                    .then((res: any) => {
+                        itemsPerPage = res?.assets?.length;
+                        fetchedItems = [...fetchedItems, ...res?.assets];
+                        offset++;
+                    })
+                    .catch((err) => (itemsPerPage = 0));
+            }
 
-                    let domains: any[] = [];
-                    response?.assets?.map((element: any) => {
-                        if (
-                            process.env.NEXT_PUBLIC_ENSCONTRACTADDRESS?.toLowerCase() ===
-                            element.asset_contract.address?.toLowerCase()
-                        ) {
-                            domains = [...domains, element];
-                        }
-                    });
-                    setEnsNames(domains);
-                    //console.log(domains);
-                })
-
-                .catch((err) => console.error(err));
+            setEnsNames(fetchedItems);
         }
+    };
+
+    const fetchPage = async (
+        offset: number,
+        ethAddress: string,
+        options: any,
+    ) => {
+        let result = null;
+
+        let url = `https://api.opensea.io/api/v1/assets?owner=${ethAddress}&asset_contract_address=${process.env.NEXT_PUBLIC_ENSCONTRACTADDRESS}&offset=${offset}&limit=${maxItemsPerPage}`;
+        await fetch(url, options)
+            .then((res) => res.json())
+            .then((response) => {
+                result = response;
+            })
+            .catch((err) => console.error(err));
+        return result;
     };
 
     useEffect(() => {
@@ -72,7 +80,7 @@ const EditENSPopup: React.FC<Props> = ({ ENS, setENS, setEditUsername }) => {
         const isPageAlreadyExists = await checkPageAlreadyExists.first();
 
         if (!isPageAlreadyExists) {
-            setENS(data);
+            setEnsDomain(data);
             setEditUsername(name);
             setShowEditENSPopup(false);
         } else {
@@ -91,12 +99,13 @@ const EditENSPopup: React.FC<Props> = ({ ENS, setENS, setEditUsername }) => {
         >
             <div className="bigpopup">
                 <div className="content">
-                    <div
+                    <button
                         className="closepopup"
                         onClick={() => setShowEditENSPopup(false)}
+                        tabIndex={0}
                     >
                         <span>&times;</span>
-                    </div>
+                    </button>
 
                     <h1>Anon, select your .eth name</h1>
                     <h4>(Can be changed later)</h4>
@@ -112,7 +121,7 @@ const EditENSPopup: React.FC<Props> = ({ ENS, setENS, setEditUsername }) => {
                         </div>
                     )}
 
-                    {!isLoading && ensNames && ensNames.length > 0 ? (
+                    {!isLoading && ensNames && ensNames.length > 0 && (
                         <div className="profilepicselect_nfts">
                             <div className="content flex flex--gap--big paddingTop--big">
                                 {ensNames?.map((nft: any, index: number) => {
@@ -173,34 +182,20 @@ const EditENSPopup: React.FC<Props> = ({ ENS, setENS, setEditUsername }) => {
                                 })}
                             </div>
                         </div>
-                    ) : (
+                    )}
+                    {!isLoading && (!ensNames || ensNames.length <= 0) && (
                         <div className="paddingTop--big">
                             It seems that you don't have any ENS domains yet.{" "}
                             <br />
-                            Buy one{" "}
                             <a
                                 href="https://ens.domains"
                                 target="_blank"
                                 rel="noreferrer"
                             >
-                                here
+                                Buy one here
                             </a>
                         </div>
                     )}
-
-                    <div className="clearfix"></div>
-
-                    <div
-                        id="saveens"
-                        className={
-                            "savebutton" + (currentSelected ? " cansubmit" : "")
-                        }
-                        onClick={() => {
-                            if (currentSelected) changeENS(currentSelected);
-                        }}
-                    >
-                        <FontAwesomeIcon icon={faSave} />
-                    </div>
                 </div>
             </div>
         </div>

@@ -20,9 +20,13 @@ const FrenPopup: React.FC<Props> = ({ pageData, profilePic }) => {
     return (
         <div className={"popupbg" + (!frenPopup ? " hidden" : "")}>
             <div className="popup">
-                <div className="closepopup" onClick={() => setFrenPopup(false)}>
+                <button
+                    className="closepopup"
+                    onClick={() => setFrenPopup(false)}
+                    tabIndex={0}
+                >
                     <span>&times;</span>
-                </div>
+                </button>
                 <div
                     className="content flex flex-direction--column flex-center--vertical padding--none"
                     style={{ width: "100%" }}
@@ -49,6 +53,11 @@ const FrenPopup: React.FC<Props> = ({ pageData, profilePic }) => {
                                 "/images/punk.png"
                             }
                             className="profilepic noHover"
+                            style={{
+                                cursor: profilePic?.image_preview_url
+                                    ? "pointer"
+                                    : "initial",
+                            }}
                             alt="Profile Picture"
                         />
                     )}
@@ -57,7 +66,7 @@ const FrenPopup: React.FC<Props> = ({ pageData, profilePic }) => {
                         {pageData?.get("ensTokenId") ? (
                             <a
                                 href={
-                                    "https://opensea.io/assets/0x57f1887a8bf19b14fc0df6fd9b2acc9af147ea85/" +
+                                    `https://opensea.io/assets/${process.env.NEXT_PUBLIC_ENSCONTRACTADDRESS}/` +
                                     pageData?.get("ensTokenId")
                                 }
                                 target="_blank"
@@ -82,16 +91,24 @@ const FrenPopup: React.FC<Props> = ({ pageData, profilePic }) => {
                                 <span style={{ paddingRight: ".5rem" }}>
                                     {pageData?.get("ethAddress")}
                                 </span>
-                                <FontAwesomeIcon icon={faExternalLinkAlt} />
+                                <FontAwesomeIcon
+                                    icon={faExternalLinkAlt}
+                                    style={{ fontSize: "1rem", height: "1rem" }}
+                                />
                             </a>
                         )}
                     </div>
                     <br />
+
                     <button
-                        className="sharebutton"
+                        className="button black"
                         onClick={() => setTransferPopup(true)}
                     >
-                        Send donation <FontAwesomeIcon icon={faEthereum} />
+                        Send donation{" "}
+                        <FontAwesomeIcon
+                            icon={faEthereum}
+                            style={{ fontSize: "1rem", height: "1rem" }}
+                        />
                     </button>
                 </div>
             </div>

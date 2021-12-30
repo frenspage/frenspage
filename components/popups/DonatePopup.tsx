@@ -14,13 +14,13 @@ const DonatePopup: FC<Props> = ({ ethAddress }) => {
     const [price, setPrice] = useState<number>(0.1);
     const { transferPopup, setTransferPopup } = usePopup();
 
-    const { Moralis } = useMoralis();
     const {
         web3,
         enableWeb3,
         isWeb3Enabled,
         isWeb3EnableLoading,
         web3EnableError,
+        Moralis,
     } = useMoralis();
 
     const {
@@ -40,6 +40,7 @@ const DonatePopup: FC<Props> = ({ ethAddress }) => {
             });
         }
     };
+
     useEffect(() => {
         enableWeb3();
     }, []);
@@ -54,12 +55,13 @@ const DonatePopup: FC<Props> = ({ ethAddress }) => {
     return (
         <div className={"popupbg" + (!transferPopup ? " hidden" : "")}>
             <div className="popup transferPopup">
-                <div
+                <button
                     className="closepopup"
                     onClick={() => setTransferPopup(false)}
+                    tabIndex={0}
                 >
                     <span>&times;</span>
-                </div>
+                </button>
                 <div className="content flex flex-column-center">
                     {transferMessage && transferMessage !== "" && (
                         <div className="paddingBottom">
@@ -82,12 +84,16 @@ const DonatePopup: FC<Props> = ({ ethAddress }) => {
                         />
                     )}
                     <button
-                        className="sharebutton marginTop"
+                        className="button black marginTop"
                         onClick={() => sendDonation()}
                         disabled={isFetching}
                         tabIndex={0}
                     >
-                        Send donation <FontAwesomeIcon icon={faEthereum} />
+                        Send donation{" "}
+                        <FontAwesomeIcon
+                            icon={faEthereum}
+                            style={{ fontSize: "1rem", height: "1rem" }}
+                        />
                     </button>
                 </div>
             </div>

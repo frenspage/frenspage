@@ -3,17 +3,20 @@ import { useMoralis } from "react-moralis";
 import { usePopup } from "../../context/PopupContext";
 import { useRouter } from "next/router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSave, faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import {
+    faSave,
+    faArrowRight,
+    faTrash,
+} from "@fortawesome/free-solid-svg-icons";
+import { useUser } from "../../context/UserContext";
+import { faTwitter } from "@fortawesome/free-brands-svg-icons";
 
 interface Props {
-    profilePic: any;
     editProfilePic: any;
-    ENS: any;
-    setENS: (val: any) => void;
-    setProfilePic: (val: string) => void;
     ensSelectInput?: boolean;
     editUsername: string;
-    setPage: (val: any) => void;
+    editBiography: string;
+    setEditBiography: (val: string) => void;
 }
 
 /*
@@ -22,113 +25,59 @@ EditProfilePopup is the popup that opens when the user clicks on his profile pic
 editProfilePic and editUsername are the names which are displayed in the popup, but which may not be saved yet. Maybe rename to "previewProfilePic"?
 */
 const EditProfilePopup: React.FC<Props> = ({
-    profilePic,
-    ENS,
-    setENS,
-    setProfilePic,
     editProfilePic,
     ensSelectInput,
     editUsername,
-    setPage,
+    editBiography,
+    setEditBiography,
 }) => {
     const router = useRouter();
-    const { user, Moralis } = useMoralis();
+    const { Moralis } = useMoralis();
+    const {
+        user,
+        ensDomain,
+        saveEnsDomain,
+        username,
+        setPfp,
+        page,
+        setPage,
+        twitter,
+        setTwitter,
+        saveProfile,
+        biography,
+        setBiography,
+    } = useUser();
     const {
         showEditProfilePopup,
         setShowEditProfilePopup,
         setShowEditProfilePicPopup,
         setShowEditENSPopup,
         setShowFirstTimePopup,
+        setTwitterAuthPopup,
     } = usePopup();
 
-    const saveChangeProfilePic = async () => {
-        let data = editProfilePic;
-
-        if (!data) return;
-
-        let PFP = Moralis.Object.extend("ProfilePic");
-        let pfp = new PFP();
-
-        pfp.set("owner", user);
-        pfp.set("token_address", data.asset_contract?.address);
-        pfp.set("token_id", data.token_id);
-
-        pfp.save()
-            .then((res: any) => {
-                setProfilePic(data);
-            })
-            .catch((error: any) => {
-                // Execute any logic that should take place if the save fails.
-                // error is a Moralis.Error with an error code and message.
-                alert("Failed to save pfp, with error code: " + error.message);
-            });
-    };
-
-    const saveChangeENS = async () => {
-        let data: any = ENS;
-        if (!ENS) return;
-
-        let PageObject = Moralis.Object.extend("Page");
-
-        let checkUserHasPage = new Moralis.Query(PageObject);
-        checkUserHasPage.equalTo("owner", user);
-        checkUserHasPage.descending("createdAt");
-        const userPage = await checkUserHasPage.first();
-
-        if (userPage) {
-            userPage.set("slug", ENS?.name);
-            userPage.set("ensTokenId", ENS?.token_id ?? "");
-            userPage
-                .save()
-                .then(() => {
-                    setPage(ENS);
-                    setENS(ENS);
-                })
-                .catch((err: any) =>
-                    console.error(
-                        "Save new ens slug for page ERROR: ",
-                        err.message,
-                    ),
-                );
-        } else {
-            let page = new PageObject();
-
-            page.set("owner", user);
-            page.set("slug", ENS?.name);
-            page.set("ensTokenId", ENS?.token_id ?? "");
-            page.save()
-                .then(() => {
-                    setPage(data);
-                    setENS(ENS);
-                })
-                .catch((error: any) => {
-                    alert(
-                        "Failed to create new page, with error code: " +
-                            error.message,
-                    );
-                });
-        }
-    };
-
-    const saveProfile = () => {
+    const save = async () => {
         if (user) {
             let hasClaimed: boolean = user?.get("hasClaimed");
 
-            saveChangeProfilePic()
-                .then(() =>
-                    saveChangeENS().then(() => {
-                        if (!hasClaimed) {
-                            setShowFirstTimePopup(true);
-                        }
-                        setShowEditProfilePopup(false);
-                        user?.set("hasClaimed", true);
-                        router.push(ENS?.name);
-                    }),
-                )
+            await saveProfile(editProfilePic, editBiography)
+                .then(() => {
+                    if (!hasClaimed) {
+                        setShowFirstTimePopup(true);
+                    }
+                    setShowEditProfilePopup(false);
+                    user?.set("hasClaimed", true);
+                    router.push(ensDomain?.name);
+                })
+
                 .catch((err: any) =>
                     console.error("saveProfile ERROR: ", err.message),
                 );
         }
+    };
+
+    const removeTwitter = () => {
+        setTwitter("");
     };
 
     return (
@@ -137,12 +86,13 @@ const EditProfilePopup: React.FC<Props> = ({
             className={"popupbg" + (!showEditProfilePopup ? " hidden" : "")}
         >
             <div className="popup">
-                <div
+                <button
                     className="closepopup"
                     onClick={() => setShowEditProfilePopup(false)}
+                    tabIndex={0}
                 >
                     <span>&times;</span>
-                </div>
+                </button>
 
                 <img
                     src={
@@ -151,11 +101,13 @@ const EditProfilePopup: React.FC<Props> = ({
                     className="profilepicselect myprofilepic"
                     onClick={() => setShowEditProfilePicPopup(true)}
                     alt="Profile Picture"
+                    tabIndex={0}
                 />
 
                 <div
                     className={"ensselect ellipsis"}
                     onClick={() => setShowEditENSPopup(true)}
+                    tabIndex={0}
                 >
                     <div
                         id="ensname"
@@ -166,26 +118,104 @@ const EditProfilePopup: React.FC<Props> = ({
                         id="selectensname"
                         className={ensSelectInput ? " dontdisplay" : ""}
                     >
-                        Select ENS name <FontAwesomeIcon icon={faArrowRight} />
+                        Select ENS name{" "}
+                        <FontAwesomeIcon
+                            icon={faArrowRight}
+                            style={{ fontSize: "1rem", height: "1rem" }}
+                        />
                     </div>
                 </div>
 
                 <div
                     className={
-                        "smallfont greyfont paddingTopm ellipsis" +
+                        "smallfont greyfont ellipsis" +
                         (ensSelectInput ? " hidden" : "")
                     }
                 >
-                    current username: {editUsername}
+                    current username: {editUsername ?? username}
                 </div>
 
-                <div
-                    id="savesettings"
-                    className="savebutton cansubmit"
-                    onClick={() => saveProfile()}
-                >
-                    <FontAwesomeIcon icon={faSave} />
+                <div className="flex flex-column-center marginTop">
+                    <textarea
+                        name="biography"
+                        className="textarea textarea--biography"
+                        placeholder={
+                            "your biography\n& your links\n200 chars & 4 rows max.\nno funny business ser"
+                        }
+                        value={editBiography}
+                        rows={4}
+                        maxLength={200}
+                        cols={50}
+                        wrap="hard"
+                        onChange={(val) => setEditBiography(val.target.value)}
+                    />
                 </div>
+
+                {!twitter && (
+                    <div className="flex flex-column-center paddingTop">
+                        <a
+                            className="smallfont"
+                            onClick={(evt) => {
+                                evt.preventDefault();
+                                setTwitterAuthPopup(true);
+                            }}
+                            tabIndex={0}
+                        >
+                            Add{" "}
+                            <FontAwesomeIcon
+                                icon={faTwitter}
+                                style={{
+                                    fontSize: "1rem",
+                                    height: "1rem",
+                                    padding: "1px 2px 0 0",
+                                    transform: "translateY(1px)",
+                                }}
+                            />
+                            {""}
+                            Twitter{" "}
+                        </a>
+                    </div>
+                )}
+
+                {twitter && (
+                    <div className="paddingTop flex flex-center--horizontal flex-center--vertical">
+                        <div
+                            className={
+                                "smallfont hoverfont ellipsis cursor--pointer" +
+                                (ensSelectInput ? " hidden" : "")
+                            }
+                            onClick={() => setTwitterAuthPopup(true)}
+                            tabIndex={0}
+                        >
+                            twitter account: {twitter}
+                        </div>
+                        <span
+                            tabIndex={0}
+                            onClick={removeTwitter}
+                            className="removeTwitter hoverfont"
+                        >
+                            <FontAwesomeIcon
+                                icon={faTrash}
+                                style={{
+                                    fontSize: "1rem",
+                                    height: "1rem",
+                                }}
+                            />
+                        </span>
+                    </div>
+                )}
+
+                <button
+                    id="savesettings"
+                    className="savebutton cansubmit button black"
+                    onClick={() => save()}
+                    tabIndex={0}
+                >
+                    <FontAwesomeIcon
+                        icon={faSave}
+                        style={{ fontSize: "1rem", height: "1rem" }}
+                    />
+                </button>
             </div>
         </div>
     );

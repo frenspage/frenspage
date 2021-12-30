@@ -1,4 +1,4 @@
-import React, { useState, createContext, useContext } from "react";
+import React, { useState, createContext, useContext, useEffect } from "react";
 
 interface ContextProps {
     readonly showEditProfilePopup: boolean;
@@ -13,6 +13,8 @@ interface ContextProps {
     readonly setFrenPopup: (value: boolean) => void;
     readonly transferPopup: boolean;
     readonly setTransferPopup: (value: boolean) => void;
+    readonly twitterAuthPopup: boolean;
+    readonly setTwitterAuthPopup: (value: boolean) => void;
 }
 
 export const PopupContext = createContext<ContextProps>({
@@ -28,16 +30,105 @@ export const PopupContext = createContext<ContextProps>({
     setFrenPopup: () => null,
     transferPopup: false,
     setTransferPopup: () => null,
+    twitterAuthPopup: false,
+    setTwitterAuthPopup: () => null,
 });
 
 export const PopupProvider: React.FC = ({ children }) => {
-    const [showEditProfilePopup, setShowEditProfilePopup] = useState(false);
-    const [showEditENSPopup, setShowEditENSPopup] = useState(false);
-    const [showEditProfilePicPopup, setShowEditProfilePicPopup] =
+    const [showEditProfilePopup, _setShowEditProfilePopup] = useState(false);
+    const [showEditENSPopup, _setShowEditENSPopup] = useState(false);
+    const [showEditProfilePicPopup, _setShowEditProfilePicPopup] =
         useState(false);
-    const [showFirstTimePopup, setShowFirstTimePopup] = useState(false);
-    const [frenPopup, setFrenPopup] = useState(false);
-    const [transferPopup, setTransferPopup] = useState(false);
+    const [showFirstTimePopup, _setShowFirstTimePopup] = useState(false);
+    const [frenPopup, _setFrenPopup] = useState(false);
+    const [transferPopup, _setTransferPopup] = useState(false);
+    const [twitterAuthPopup, _setTwitterAuthPopup] = useState(false);
+
+    /** Opened-Popup timeline/history, to track which popup should be closed at first with escape-key **/
+    const [timeline, _setTimeline] = useState<Array<string>>([]);
+    const timelineRef = React.useRef(timeline);
+    const setTimeline = (data: any) => {
+        timelineRef.current = data;
+        _setTimeline(data);
+    };
+
+    useEffect(() => {
+        window.addEventListener("keydown", (evt) => escapeChecker(evt));
+        return () => {
+            window.removeEventListener("keydown", (evt) => escapeChecker(evt));
+        };
+    }, []);
+
+    const escapeChecker = (evt: KeyboardEvent) => {
+        let current = timelineRef.current;
+
+        if (current.length > 0) {
+            if (evt.keyCode == 27 || evt.key === "Escape") {
+                let popup = current[current.length - 1];
+                switch (popup) {
+                    case "showEditProfilePopup":
+                        setShowEditProfilePopup(false);
+                        break;
+                    case "showEditENSPopup":
+                        setShowEditENSPopup(false);
+                        break;
+                    case "showEditProfilePicPopup":
+                        setShowEditProfilePicPopup(false);
+                        break;
+                    case "showFirstTimePopup":
+                        setShowFirstTimePopup(false);
+                        break;
+                    case "frenPopup":
+                        setFrenPopup(false);
+                        break;
+                    case "transferPopup":
+                        setTransferPopup(false);
+                        break;
+                    case "twitterAuthPopup":
+                        setTwitterAuthPopup(false);
+                        break;
+                }
+            }
+        }
+    };
+
+    const changeTimeline = (val: boolean, name: string) => {
+        if (val) setTimeline([...timeline, name]);
+        else
+            setTimeline(
+                timelineRef.current.filter((item: string) => item !== name),
+            );
+    };
+
+    const setShowEditProfilePopup = (val: boolean) => {
+        changeTimeline(val, "showEditProfilePopup");
+        _setShowEditProfilePopup(val);
+    };
+
+    const setShowEditENSPopup = (val: boolean) => {
+        changeTimeline(val, "showEditENSPopup");
+        _setShowEditENSPopup(val);
+    };
+    const setShowEditProfilePicPopup = (val: boolean) => {
+        changeTimeline(val, "showEditProfilePicPopup");
+        _setShowEditProfilePicPopup(val);
+    };
+    const setShowFirstTimePopup = (val: boolean) => {
+        changeTimeline(val, "showFirstTimePopup");
+        _setShowFirstTimePopup(val);
+    };
+    const setFrenPopup = (val: boolean) => {
+        changeTimeline(val, "frenPopup");
+        _setFrenPopup(val);
+    };
+    const setTransferPopup = (val: boolean) => {
+        changeTimeline(val, "transferPopup");
+        _setTransferPopup(val);
+    };
+    const setTwitterAuthPopup = (val: boolean) => {
+        changeTimeline(val, "twitterAuthPopup");
+        _setTwitterAuthPopup(val);
+    };
 
     return (
         <PopupContext.Provider
@@ -54,6 +145,8 @@ export const PopupProvider: React.FC = ({ children }) => {
                 setFrenPopup,
                 transferPopup,
                 setTransferPopup,
+                twitterAuthPopup,
+                setTwitterAuthPopup,
             }}
         >
             {children}
