@@ -18,7 +18,7 @@ import { faTwitter } from "@fortawesome/free-brands-svg-icons";
 import NewLineText from "../global/NewLinetext";
 import dynamic from "next/dynamic";
 
-const LoggedInCanvas = dynamic(() => import("../canvas/LoggedInCanvas"), {
+const LoggedInCanvas = dynamic(() => import("../canvas/KanvaCanvas"), {
     ssr: false,
 });
 
