@@ -9,6 +9,8 @@ interface Props {
     setEditUsername: (val: string) => void;
 }
 
+const maxItemsPerPage: number = 50;
+
 const EditENSPopup: React.FC<Props> = ({ setEditUsername }) => {
     const [ensNames, setEnsNames] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -20,6 +22,8 @@ const EditENSPopup: React.FC<Props> = ({ setEditUsername }) => {
     const { user, ensDomain, setEnsDomain } = useUser();
 
     const fetcher = async () => {
+        let offset: number = 0;
+        let itemsPerPage: number = maxItemsPerPage;
         if (user) {
             let ethAddress = user.get("ethAddress");
             const options = {
@@ -28,27 +32,37 @@ const EditENSPopup: React.FC<Props> = ({ setEditUsername }) => {
                     "X-API-KEY": process.env.NEXT_PUBLIC_OPENSEEKEY + "",
                 },
             };
+            let fetchedItems: Array<any> = [];
+            while (itemsPerPage >= maxItemsPerPage) {
+                await fetchPage(offset, ethAddress, options)
+                    .then((res: any) => {
+                        itemsPerPage = res?.assets?.length;
+                        fetchedItems = [...fetchedItems, ...res?.assets];
+                        offset++;
+                    })
+                    .catch((err) => (itemsPerPage = 0));
+            }
 
-            let url = `https://api.opensea.io/api/v1/assets?owner=${ethAddress}&asset_contract_address=${process.env.NEXT_PUBLIC_ENSCONTRACTADDRESS}&offset=0&limit=50`;
-
-            fetch(url, options)
-                .then((response) => response.json())
-                .then((response) => {
-                    if (
-                        !response ||
-                        response.length <= 0 ||
-                        response.assets.length <= 0
-                    )
-                        console.log(
-                            "You have no nfts, neither .eth names in your wallet!",
-                        );
-
-                    setEnsNames(response?.assets);
-                    //console.log(domains);
-                })
-
-                .catch((err) => console.error(err));
+            setEnsNames(fetchedItems);
         }
+    };
+
+    const fetchPage = async (
+        offset: number,
+        ethAddress: string,
+        options: any,
+    ) => {
+        let result = null;
+
+        let url = `https://api.opensea.io/api/v1/assets?owner=${ethAddress}&asset_contract_address=${process.env.NEXT_PUBLIC_ENSCONTRACTADDRESS}&offset=${offset}&limit=${maxItemsPerPage}`;
+        await fetch(url, options)
+            .then((res) => res.json())
+            .then((response) => {
+                result = response;
+                //console.log(domains);
+            })
+            .catch((err) => console.error(err));
+        return result;
     };
 
     useEffect(() => {

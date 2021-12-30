@@ -8,14 +8,18 @@ interface Props {
     setEditProfilePic: (val: boolean) => void;
 }
 
+const maxItemsPerPage: number = 50;
+
 const EditProfilePicPopup: React.FC<Props> = ({ setEditProfilePic }) => {
-    const [nfts, setNfts] = useState<any>(null);
+    const [nfts, setNfts] = useState<Array<any>>([]);
     const [currentSelected, setCurrentSelected] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(true);
     const { showEditProfilePicPopup, setShowEditProfilePicPopup } = usePopup();
     const { user, Moralis } = useMoralis();
 
     const fetcher = async () => {
+        let offset: number = 0;
+        let itemsPerPage: number = maxItemsPerPage;
         if (user) {
             let ethAddress = user.get("ethAddress");
             const options = {
@@ -24,17 +28,38 @@ const EditProfilePicPopup: React.FC<Props> = ({ setEditProfilePic }) => {
                     "X-API-KEY": process.env.NEXT_PUBLIC_OPENSEEKEY + "",
                 },
             };
-            fetch(
-                `https://api.opensea.io/api/v1/assets?owner=${ethAddress}&order_direction=desc&offset=0&limit=50`,
-                options,
-            )
-                .then((response) => response.json())
-                .then((response) => {
-                    setNfts(response);
-                })
-                .catch((err) => console.error(err));
+            let fetchedItems: Array<any> = [];
+            while (itemsPerPage >= maxItemsPerPage) {
+                await fetchPage(offset, ethAddress, options)
+                    .then((res: any) => {
+                        itemsPerPage = res?.assets?.length;
+                        fetchedItems = [...fetchedItems, ...res?.assets];
+                        offset++;
+                    })
+                    .catch((err) => (itemsPerPage = 0));
+            }
+
+            setNfts(fetchedItems);
         }
     };
+
+    const fetchPage = async (
+        offset: number,
+        ethAddress: string,
+        options: any,
+    ) => {
+        let result = null;
+
+        let url = `https://api.opensea.io/api/v1/assets?owner=${ethAddress}&order_direction=desc&offset=${offset}&limit=${maxItemsPerPage}`;
+        await fetch(url, options)
+            .then((response) => response.json())
+            .then((response) => {
+                result = response;
+            })
+            .catch((err) => console.error(err));
+        return result;
+    };
+
     useEffect(() => {
         if (user) fetcher().then(() => setIsLoading(false));
     }, [user, Moralis.Web3API.account]);
@@ -76,10 +101,10 @@ const EditProfilePicPopup: React.FC<Props> = ({ setEditProfilePic }) => {
                         </div>
                     )}
 
-                    {!isLoading && nfts?.assets && nfts.assets.length > 0 ? (
+                    {!isLoading && nfts && nfts.length > 0 ? (
                         <div className="profilepicselect_nfts">
                             <div className="content flex flex--gap--big paddingTop--big">
-                                {nfts.assets?.map((nft: any, index: number) => {
+                                {nfts?.map((nft: any, index: number) => {
                                     return (
                                         <div
                                             className="pfp__nft grid__item"
