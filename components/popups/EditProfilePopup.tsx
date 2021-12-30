@@ -3,7 +3,11 @@ import { useMoralis } from "react-moralis";
 import { usePopup } from "../../context/PopupContext";
 import { useRouter } from "next/router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSave, faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import {
+    faSave,
+    faArrowRight,
+    faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 import { useUser } from "../../context/UserContext";
 import TwitterAuthPopup from "./TwitterAuthPopup";
 import { faTwitter } from "@fortawesome/free-brands-svg-icons";
@@ -178,7 +182,7 @@ const EditProfilePopup: React.FC<Props> = ({
                     <div className="paddingTop flex flex-center--horizontal flex-center--vertical">
                         <div
                             className={
-                                "smallfont greyfont hover ellipsis cursor--pointer" +
+                                "smallfont hoverfont ellipsis cursor--pointer" +
                                 (ensSelectInput ? " hidden" : "")
                             }
                             onClick={() => setTwitterAuthPopup(true)}
@@ -189,9 +193,15 @@ const EditProfilePopup: React.FC<Props> = ({
                         <span
                             tabIndex={0}
                             onClick={removeTwitter}
-                            className="removeTwitter"
+                            className="removeTwitter hoverfont"
                         >
-                            &times;
+                            <FontAwesomeIcon
+                                icon={faTrash}
+                                style={{
+                                    fontSize: "1rem",
+                                    height: "1rem",
+                                }}
+                            />
                         </span>
                     </div>
                 )}
