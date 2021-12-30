@@ -59,7 +59,6 @@ const EditENSPopup: React.FC<Props> = ({ setEditUsername }) => {
             .then((res) => res.json())
             .then((response) => {
                 result = response;
-                //console.log(domains);
             })
             .catch((err) => console.error(err));
         return result;
@@ -122,7 +121,7 @@ const EditENSPopup: React.FC<Props> = ({ setEditUsername }) => {
                         </div>
                     )}
 
-                    {!isLoading && ensNames && ensNames.length > 0 ? (
+                    {!isLoading && ensNames && ensNames.length > 0 && (
                         <div className="profilepicselect_nfts">
                             <div className="content flex flex--gap--big paddingTop--big">
                                 {ensNames?.map((nft: any, index: number) => {
@@ -183,7 +182,8 @@ const EditENSPopup: React.FC<Props> = ({ setEditUsername }) => {
                                 })}
                             </div>
                         </div>
-                    ) : (
+                    )}
+                    {!isLoading && (!ensNames || ensNames.length <= 0) && (
                         <div className="paddingTop--big">
                             It seems that you don't have any ENS domains yet.{" "}
                             <br />
@@ -196,21 +196,6 @@ const EditENSPopup: React.FC<Props> = ({ setEditUsername }) => {
                             </a>
                         </div>
                     )}
-
-                    {/**<div
-                        id="saveens"
-                        className={
-                            "savebutton" + (currentSelected ? " cansubmit" : "")
-                        }
-                        onClick={() => {
-                            if (currentSelected) changeENS(currentSelected);
-                        }}
-                    >
-                        <FontAwesomeIcon
-                            icon={faSave}
-                            style={{ fontSize: "1rem", height: "1rem" }}
-                        />
-                    </div>**/}
                 </div>
             </div>
         </div>

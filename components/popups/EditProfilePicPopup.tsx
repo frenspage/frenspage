@@ -101,7 +101,7 @@ const EditProfilePicPopup: React.FC<Props> = ({ setEditProfilePic }) => {
                         </div>
                     )}
 
-                    {!isLoading && nfts && nfts.length > 0 ? (
+                    {!isLoading && nfts && nfts.length > 0 && (
                         <div className="profilepicselect_nfts">
                             <div className="content flex flex--gap--big paddingTop--big">
                                 {nfts?.map((nft: any, index: number) => {
@@ -148,28 +148,12 @@ const EditProfilePicPopup: React.FC<Props> = ({ setEditProfilePic }) => {
                                 })}
                             </div>
                         </div>
-                    ) : (
+                    )}
+                    {!isLoading && (!nfts || nfts.length <= 0) && (
                         <div className="paddingTop--big">
                             It seems that u don't have any nfts yet.
                         </div>
                     )}
-
-                    {/** <div
-                        id="savepfp"
-                        className={
-                            "savebutton" + (currentSelected ? " cansubmit" : "")
-                        }
-                        data-onclick="choosePFP();"
-                        onClick={() => {
-                            if (currentSelected)
-                                changeProfilePic(currentSelected);
-                        }}
-                    >
-                        <FontAwesomeIcon
-                            icon={faSave}
-                            style={{ fontSize: "1rem", height: "1rem" }}
-                        />
-                    </div>**/}
                 </div>
             </div>
         </div>

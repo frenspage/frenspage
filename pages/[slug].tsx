@@ -112,6 +112,7 @@ const UserPage: NextPage<Props> = ({}) => {
                         /**********************
                          *  User has no PFP
                          * ********************/
+                        setPfp(null);
                         setIsLoading(false);
                     }
                 }
@@ -121,6 +122,7 @@ const UserPage: NextPage<Props> = ({}) => {
                  *   --> no fren here
                  * **********************/
                 if (!page) {
+                    setPfp(null);
                     setIsLoading(false);
                     setDoesExist(false);
                 }
