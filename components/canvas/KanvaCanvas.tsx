@@ -3,16 +3,36 @@ import { NextPage } from "next";
 import { initLoggedInCanvas } from "../../canvas/main";
 import { Stage, Layer, Rect } from "react-konva";
 import NewCardPopup from "../popups/NewCardPopup";
+import Card from "./items/Card";
 
-function generateShapes() {
-    return [...Array(1)].map((_, i) => ({
+const generateShapes = (pX?: number, pY?: number) => {
+    return [...Array(1)].map((_, i) => generateShape(i, pX, pY));
+};
+
+const generateShape = (i: number, pX?: number, pY?: number) => {
+    let x =
+        pX ??
+        Math.random() *
+            (window.innerWidth > 200
+                ? window.innerWidth - 200
+                : window.innerWidth);
+    let y =
+        pY ??
+        Math.random() *
+            (window.innerHeight > 300
+                ? window.innerHeight - 300
+                : window.innerHeight);
+    return {
         id: i.toString(),
-        x: Math.random() * window.innerWidth,
-        y: Math.random() * window.innerHeight,
+        x: x,
+        y: y,
         rotation: 0,
         isDragging: false,
-    }));
-}
+        content: {
+            title: `Card ${i}`,
+        },
+    };
+};
 
 const INITIAL_STATE = generateShapes();
 
@@ -23,21 +43,7 @@ const LoggedInCanvas: NextPage = () => {
 
     const addCard = () => {
         let i = cards.length;
-        let card = {
-            id: i.toString(),
-            x:
-                Math.random() *
-                (window.innerWidth > 200
-                    ? window.innerWidth - 200
-                    : window.innerWidth),
-            y:
-                Math.random() *
-                (window.innerHeight > 300
-                    ? window.innerHeight - 300
-                    : window.innerHeight),
-            rotation: 0,
-            isDragging: false,
-        };
+        let card = generateShape(i, undefined, undefined);
         setCards((old) => [...old, card]);
     };
 
@@ -75,25 +81,13 @@ const LoggedInCanvas: NextPage = () => {
                 <Stage width={window.innerWidth} height={window.innerHeight}>
                     <Layer>
                         {cards.map((item, index) => (
-                            <Rect
+                            <Card
                                 key={`card__${index}`}
-                                id={item.id}
-                                x={item.x}
-                                y={item.y}
-                                width={200}
-                                height={300}
-                                fill="#ffffff"
-                                draggable
-                                rotation={item.rotation}
-                                scaleX={item.isDragging ? 1.1 : 1}
-                                scaleY={item.isDragging ? 1.1 : 1}
-                                onDragStart={handleDragStart}
-                                onDragEnd={handleDragEnd}
-                                onClick={handleClick}
-                                shadowColor={"black"}
-                                shadowBlur={10}
-                                shadowOffset={{ x: 0, y: 0 }}
-                                shadowOpacity={0.5}
+                                index={item.id}
+                                item={item}
+                                handleDragStart={handleDragStart}
+                                handleDragEnd={handleDragEnd}
+                                handleClick={handleClick}
                             />
                         ))}
                     </Layer>

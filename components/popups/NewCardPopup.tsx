@@ -14,8 +14,8 @@ const NewCardPopup: FC<Props> = ({
     setOpenedCard,
 }) => {
     const closePopup = () => {
-        setOpenedCard(-1);
         setIsOpen(false);
+        setOpenedCard(-1);
     };
     return (
         <div className={"popupbg" + (!isOpen ? " hidden" : "")}>
