@@ -27,7 +27,7 @@ const Layout: NextPage<Props> = ({
                         <FontAwesomeIcon icon={faTwitter} />
                     </a>
                     <a
-                        href="https://discord.gg/9chXdS2V"
+                        href="https://discord.gg/DCE7yenGX5"
                         target="_blank"
                         rel="noreferrer"
                     >
