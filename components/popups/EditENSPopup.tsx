@@ -13,16 +13,17 @@ const maxItemsPerPage: number = 50;
 
 const EditENSPopup: React.FC<Props> = ({ setEditUsername }) => {
     const [ensNames, setEnsNames] = useState<any[]>([]);
+    const [currentSelected, setCurrentSelected] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(true);
 
-    const [currentSelected, setCurrentSelected] = useState<any>(null);
+    const [hasMore, setHasMore] = useState(true);
+    const [fetchOffset, setFetchOffset] = useState(0);
 
     const { showEditENSPopup, setShowEditENSPopup } = usePopup();
     const { Moralis } = useMoralis();
-    const { user, ensDomain, setEnsDomain } = useUser();
+    const { user, setEnsDomain } = useUser();
 
     const fetcher = async () => {
-        let offset: number = 0;
         let itemsPerPage: number = maxItemsPerPage;
         if (user) {
             let ethAddress = user.get("ethAddress");
@@ -32,29 +33,25 @@ const EditENSPopup: React.FC<Props> = ({ setEditUsername }) => {
                     "X-API-KEY": process.env.NEXT_PUBLIC_OPENSEEKEY + "",
                 },
             };
-            let fetchedItems: Array<any> = [];
-            while (itemsPerPage >= maxItemsPerPage) {
-                await fetchPage(offset, ethAddress, options)
-                    .then((res: any) => {
-                        itemsPerPage = res?.assets?.length;
-                        fetchedItems = [...fetchedItems, ...res?.assets];
-                        offset++;
-                    })
-                    .catch((err) => (itemsPerPage = 0));
-            }
 
-            setEnsNames(fetchedItems);
+            await fetchPage(ethAddress, options)
+                .then((res: any) => {
+                    itemsPerPage = res?.assets?.length;
+                    if (itemsPerPage === maxItemsPerPage) {
+                        setHasMore(true);
+                    } else {
+                        setHasMore(false);
+                    }
+                    setEnsNames((old) => [...old, ...res?.assets]);
+                    setFetchOffset((old) => old + itemsPerPage);
+                })
+                .catch((err) => (itemsPerPage = 0));
         }
     };
 
-    const fetchPage = async (
-        offset: number,
-        ethAddress: string,
-        options: any,
-    ) => {
+    const fetchPage = async (ethAddress: string, options: any) => {
         let result = null;
-
-        let url = `https://api.opensea.io/api/v1/assets?owner=${ethAddress}&asset_contract_address=${process.env.NEXT_PUBLIC_ENSCONTRACTADDRESS}&offset=${offset}&limit=${maxItemsPerPage}`;
+        let url = `https://api.opensea.io/api/v1/assets?owner=${ethAddress}&asset_contract_address=${process.env.NEXT_PUBLIC_ENSCONTRACTADDRESS}&offset=${fetchOffset}&limit=${maxItemsPerPage}`;
         await fetch(url, options)
             .then((res) => res.json())
             .then((response) => {
@@ -66,11 +63,12 @@ const EditENSPopup: React.FC<Props> = ({ setEditUsername }) => {
 
     useEffect(() => {
         if (user) fetcher().then(() => setIsLoading(false));
+        else setEnsNames([]);
     }, [user, Moralis.Web3API.account]);
 
     const changeENS = async (data: any) => {
         if (!data) return;
-        //console.log("ENS DATA: ", data);
+
         let name = data.name?.toLowerCase();
 
         let PageObject = Moralis.Object.extend("Page");
@@ -180,6 +178,16 @@ const EditENSPopup: React.FC<Props> = ({ setEditUsername }) => {
                                         </div>
                                     );
                                 })}
+                                {hasMore && (
+                                    <div className="flex flex-center--vertical flex-center--horizontal w-100">
+                                        <button
+                                            className="button black"
+                                            onClick={fetcher}
+                                        >
+                                            Load More...
+                                        </button>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     )}

@@ -169,10 +169,14 @@ export const UserProvider: React.FC = ({ children }) => {
                         saveEnsDomain(user?.get("username"), {
                             name: user?.get("username"),
                         });
-                        setBiography(object.get("biography") ?? "");
-                        setTwitter(object.get("twitterName") ?? "");
+                        setBiography("");
+                        setTwitter("");
                     })
                     .catch((error: any) => {
+                        console.error(
+                            "Failed to create new page, with error: ",
+                            error,
+                        );
                         alert(
                             "Failed to create new page, with error code: " +
                                 error.message,
