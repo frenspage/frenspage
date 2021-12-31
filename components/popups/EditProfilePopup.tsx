@@ -81,6 +81,11 @@ const EditProfilePopup: React.FC<Props> = ({
         setTwitter("");
     };
 
+    const changeEditBiography = (text: string) => {
+        while (text.includes("\n\n")) text = text.replace("\n\n", "\n");
+        if (text.split("\n").length <= 4) setEditBiography(text);
+    };
+
     return (
         <div
             id="editprofile"
@@ -148,7 +153,9 @@ const EditProfilePopup: React.FC<Props> = ({
                         maxLength={200}
                         cols={50}
                         wrap="hard"
-                        onChange={(val) => setEditBiography(val.target.value)}
+                        onChange={(val) =>
+                            changeEditBiography(val.target.value)
+                        }
                     />
                 </div>
 
