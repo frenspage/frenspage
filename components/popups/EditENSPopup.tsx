@@ -79,12 +79,6 @@ const EditENSPopup: React.FC<Props> = ({ setEditUsername }) => {
             setEnsDomain(data);
             setEditUsername(name);
             setShowEditENSPopup(false);
-        } else {
-            /*alert(
-                "a page with the ens username '" +
-                    name +
-                    "' already exists!\nPlease use another name!",
-            );*/
         }
     };
 
