@@ -214,7 +214,7 @@ const EditProfilePopup: React.FC<Props> = ({
                 >
                     <FontAwesomeIcon
                         icon={faSave}
-                        style={{ fontSize: "1rem", height: "1rem" }}
+                        style={{ fontSize: "1.4rem", height: "1.4rem" }}
                     />
                 </button>
             </div>
