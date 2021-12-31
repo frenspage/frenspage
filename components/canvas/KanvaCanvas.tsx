@@ -19,13 +19,22 @@ const INITIAL_STATE = generateShapes();
 const LoggedInCanvas: NextPage = () => {
     const [cards, setCards] = useState(INITIAL_STATE);
     const [popupIsOpen, setPopupIsOpen] = useState(false);
+    const [openedCard, setOpenedCard] = useState(-1);
 
     const addCard = () => {
         let i = cards.length;
         let card = {
             id: i.toString(),
-            x: Math.random() * window.innerWidth,
-            y: Math.random() * window.innerHeight,
+            x:
+                Math.random() *
+                (window.innerWidth > 200
+                    ? window.innerWidth - 200
+                    : window.innerWidth),
+            y:
+                Math.random() *
+                (window.innerHeight > 300
+                    ? window.innerHeight - 300
+                    : window.innerHeight),
             rotation: 0,
             isDragging: false,
         };
@@ -54,6 +63,12 @@ const LoggedInCanvas: NextPage = () => {
         );
     };
 
+    const handleClick = (e: any) => {
+        const id = e.target.id();
+        setPopupIsOpen(true);
+        setOpenedCard(id);
+    };
+
     return (
         <>
             <div id="main-canvas-container" className="canvas-container">
@@ -74,7 +89,7 @@ const LoggedInCanvas: NextPage = () => {
                                 scaleY={item.isDragging ? 1.1 : 1}
                                 onDragStart={handleDragStart}
                                 onDragEnd={handleDragEnd}
-                                onClick={() => setPopupIsOpen(true)}
+                                onClick={handleClick}
                                 shadowColor={"black"}
                                 shadowBlur={10}
                                 shadowOffset={{ x: 0, y: 0 }}
@@ -84,7 +99,12 @@ const LoggedInCanvas: NextPage = () => {
                     </Layer>
                 </Stage>
             </div>
-            <NewCardPopup isOpen={popupIsOpen} setIsOpen={setPopupIsOpen} />
+            <NewCardPopup
+                isOpen={popupIsOpen}
+                setIsOpen={setPopupIsOpen}
+                openedCard={openedCard}
+                setOpenedCard={setOpenedCard}
+            />
             <button className="fab" id="fab" onClick={addCard}>
                 +
             </button>
