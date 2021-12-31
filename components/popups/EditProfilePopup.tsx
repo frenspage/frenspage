@@ -82,7 +82,6 @@ const EditProfilePopup: React.FC<Props> = ({
     };
 
     const changeEditBiography = (text: string) => {
-        while (text.includes("\n\n")) text = text.replace("\n\n", "\n");
         if (text.split("\n").length <= 4) setEditBiography(text);
     };
 

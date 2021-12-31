@@ -14,6 +14,7 @@
         "@fortawesome/free-solid-svg-icons": "^5.15.4",
         "@fortawesome/react-fontawesome": "^0.1.16",
         "@walletconnect/web3-provider": "^1.6.6",
+        "autolinker": "^3.14.3",
         "moralis": "^0.0.135",
         "next": "12.0.4",
         "node-sass": "^6.0.1",
