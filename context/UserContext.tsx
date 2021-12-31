@@ -123,7 +123,7 @@ export const UserProvider: React.FC = ({ children }) => {
 
     /** authentificate/login user and load page **/
     const authenticate = async () => {
-        await moralisAuth();
+        await moralisAuth({ signingMessage: "gm fren" });
         await loadPage();
     };
 
