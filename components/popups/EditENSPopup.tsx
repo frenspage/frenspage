@@ -9,17 +9,22 @@ interface Props {
     setEditUsername: (val: string) => void;
 }
 
+const maxItemsPerPage: number = 50;
+
 const EditENSPopup: React.FC<Props> = ({ setEditUsername }) => {
     const [ensNames, setEnsNames] = useState<any[]>([]);
+    const [currentSelected, setCurrentSelected] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(true);
 
-    const [currentSelected, setCurrentSelected] = useState<any>(null);
+    const [hasMore, setHasMore] = useState(true);
+    const [fetchOffset, setFetchOffset] = useState(0);
 
     const { showEditENSPopup, setShowEditENSPopup } = usePopup();
     const { Moralis } = useMoralis();
-    const { user, ensDomain, setEnsDomain } = useUser();
+    const { user, setEnsDomain } = useUser();
 
     const fetcher = async () => {
+        let itemsPerPage: number = maxItemsPerPage;
         if (user) {
             let ethAddress = user.get("ethAddress");
             const options = {
@@ -29,35 +34,41 @@ const EditENSPopup: React.FC<Props> = ({ setEditUsername }) => {
                 },
             };
 
-            let url = `https://api.opensea.io/api/v1/assets?owner=${ethAddress}&asset_contract_address=${process.env.NEXT_PUBLIC_ENSCONTRACTADDRESS}&offset=0&limit=50`;
-
-            fetch(url, options)
-                .then((response) => response.json())
-                .then((response) => {
-                    if (
-                        !response ||
-                        response.length <= 0 ||
-                        response.assets.length <= 0
-                    )
-                        console.log(
-                            "You have no nfts, neither .eth names in your wallet!",
-                        );
-
-                    setEnsNames(response?.assets);
-                    //console.log(domains);
+            await fetchPage(ethAddress, options)
+                .then((res: any) => {
+                    itemsPerPage = res?.assets?.length;
+                    if (itemsPerPage === maxItemsPerPage) {
+                        setHasMore(true);
+                    } else {
+                        setHasMore(false);
+                    }
+                    setEnsNames((old) => [...old, ...res?.assets]);
+                    setFetchOffset((old) => old + itemsPerPage);
                 })
-
-                .catch((err) => console.error(err));
+                .catch((err) => (itemsPerPage = 0));
         }
+    };
+
+    const fetchPage = async (ethAddress: string, options: any) => {
+        let result = null;
+        let url = `https://api.opensea.io/api/v1/assets?owner=${ethAddress}&asset_contract_address=${process.env.NEXT_PUBLIC_ENSCONTRACTADDRESS}&offset=${fetchOffset}&limit=${maxItemsPerPage}`;
+        await fetch(url, options)
+            .then((res) => res.json())
+            .then((response) => {
+                result = response;
+            })
+            .catch((err) => console.error(err));
+        return result;
     };
 
     useEffect(() => {
         if (user) fetcher().then(() => setIsLoading(false));
+        else setEnsNames([]);
     }, [user, Moralis.Web3API.account]);
 
     const changeENS = async (data: any) => {
         if (!data) return;
-        //console.log("ENS DATA: ", data);
+
         let name = data.name?.toLowerCase();
 
         let PageObject = Moralis.Object.extend("Page");
@@ -86,12 +97,13 @@ const EditENSPopup: React.FC<Props> = ({ setEditUsername }) => {
         >
             <div className="bigpopup">
                 <div className="content">
-                    <div
+                    <button
                         className="closepopup"
                         onClick={() => setShowEditENSPopup(false)}
+                        tabIndex={0}
                     >
                         <span>&times;</span>
-                    </div>
+                    </button>
 
                     <h1>Anon, select your .eth name</h1>
                     <h4>(Can be changed later)</h4>
@@ -107,7 +119,7 @@ const EditENSPopup: React.FC<Props> = ({ setEditUsername }) => {
                         </div>
                     )}
 
-                    {!isLoading && ensNames && ensNames.length > 0 ? (
+                    {!isLoading && ensNames && ensNames.length > 0 && (
                         <div className="profilepicselect_nfts">
                             <div className="content flex flex--gap--big paddingTop--big">
                                 {ensNames?.map((nft: any, index: number) => {
@@ -166,9 +178,20 @@ const EditENSPopup: React.FC<Props> = ({ setEditUsername }) => {
                                         </div>
                                     );
                                 })}
+                                {hasMore && (
+                                    <div className="flex flex-center--vertical flex-center--horizontal w-100">
+                                        <button
+                                            className="button black"
+                                            onClick={fetcher}
+                                        >
+                                            Load More...
+                                        </button>
+                                    </div>
+                                )}
                             </div>
                         </div>
-                    ) : (
+                    )}
+                    {!isLoading && (!ensNames || ensNames.length <= 0) && (
                         <div className="paddingTop--big">
                             It seems that you don't have any ENS domains yet.{" "}
                             <br />
@@ -181,21 +204,6 @@ const EditENSPopup: React.FC<Props> = ({ setEditUsername }) => {
                             </a>
                         </div>
                     )}
-
-                    {/**<div
-                        id="saveens"
-                        className={
-                            "savebutton" + (currentSelected ? " cansubmit" : "")
-                        }
-                        onClick={() => {
-                            if (currentSelected) changeENS(currentSelected);
-                        }}
-                    >
-                        <FontAwesomeIcon
-                            icon={faSave}
-                            style={{ fontSize: "1rem", height: "1rem" }}
-                        />
-                    </div>**/}
                 </div>
             </div>
         </div>

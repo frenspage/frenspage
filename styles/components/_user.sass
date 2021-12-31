@@ -17,4 +17,13 @@
     margin: 0 auto
     height: 100%
 
+.biography
+    overflow: hidden
+    text-overflow: ellipsis
+    max-width: 100%
+    font-size: .875rem
+
+    @include media-below(smallPhone)
+        max-width: calc(100vw - 2rem)
+
 

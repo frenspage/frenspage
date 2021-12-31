@@ -8,13 +8,39 @@ input
 	&.input
 		padding: 1rem 1rem
 		border-radius: 2rem
-		border: 1px solid $black
+		border: 2px solid $black
 		margin: 1rem
 		-webkit-appearance: none
 		font-family: "OCR A Std", sans-serif
 		font-size: 20px
+		line-height: 20px
+	&.font-1rem, &.font--md
+		font-size: 1rem
 
 	&.width--s, &.small
 		width: 12rem
 	&.center
 		text-align: center
+
+textarea
+	&.textarea
+		background: #EEEEEE
+		border: 1px solid #cccccc
+		border-radius: .7rem
+		padding: 1rem 1rem 0
+		text-align: center
+		font-family: "OCR A Std", sans-serif
+		resize: none
+
+		&::placeholder, &::-webkit-input-placeholder, &::-moz-placeholder
+			color: #cccccc
+
+		&--biography
+			min-width: 400px
+			min-height: 100px
+			margin: 1rem 0
+			width: 400px
+
+		@include media-below(phone)
+			min-width: auto
+			width: 100%

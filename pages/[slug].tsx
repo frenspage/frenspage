@@ -13,6 +13,9 @@ import Loader from "../components/global/Loader";
 import DonatePopup from "../components/popups/DonatePopup";
 import { useRouter } from "next/router";
 import { useUser } from "../context/UserContext";
+import NewLineText from "../components/global/NewLinetext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTwitter } from "@fortawesome/free-brands-svg-icons";
 
 interface Props {}
 
@@ -75,6 +78,7 @@ const UserPage: NextPage<Props> = ({}) => {
             /*** CHECK IF PAGE EXISTS ***/
             if (userPage) {
                 setPage(userPage);
+
                 const pageOwner = userPage.get("owner");
 
                 /*** CHECK IF OWNER EXISTS (to prevent errors) ***/
@@ -108,6 +112,7 @@ const UserPage: NextPage<Props> = ({}) => {
                         /**********************
                          *  User has no PFP
                          * ********************/
+                        setPfp(null);
                         setIsLoading(false);
                     }
                 }
@@ -117,6 +122,7 @@ const UserPage: NextPage<Props> = ({}) => {
                  *   --> no fren here
                  * **********************/
                 if (!page) {
+                    setPfp(null);
                     setIsLoading(false);
                     setDoesExist(false);
                 }
@@ -181,6 +187,40 @@ const UserPage: NextPage<Props> = ({}) => {
                             {slug}
                         </h3>
                     </div>
+                    {(page?.get("twitterName") || page?.get("biography")) && (
+                        <div className="flex flex-column-center">
+                            {page?.get("biography") && (
+                                <div className="marginTop marginBottom greyfont centertext biography">
+                                    <NewLineText
+                                        text={page?.get("biography")}
+                                        addClass="centertext"
+                                    />
+                                </div>
+                            )}
+
+                            {page?.get("twitterName") && (
+                                <a
+                                    href={`https://twitter.com/${page?.get(
+                                        "twitterName",
+                                    )}`}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className={
+                                        "button addIcon small tooltip--twitterName"
+                                    }
+                                    data-name={page?.get("twitterName")}
+                                >
+                                    <FontAwesomeIcon
+                                        icon={faTwitter}
+                                        style={{
+                                            fontSize: "1rem",
+                                            height: "1rem",
+                                        }}
+                                    />
+                                </a>
+                            )}
+                        </div>
+                    )}
                 </div>
             </div>
             <FrenPopup pageData={page} profilePic={pfp} />
@@ -199,19 +239,30 @@ const UserPage: NextPage<Props> = ({}) => {
                 </div>
             )}
 
-            {!user && (
-                <div className="walletinfo" tabIndex={0}>
-                    <div
-                        className="address"
-                        onClick={() => {
-                            setIsClickAuth(true);
-                            authenticate();
-                        }}
-                    >
-                        connect wallet
+            {
+                //@ts-ignore
+                !user && window?.ethereum && (
+                    <div className={"walletinfo"} tabIndex={0}>
+                        <div
+                            className="address hover"
+                            onClick={() => {
+                                setIsClickAuth(true);
+                                authenticate();
+                            }}
+                        >
+                            connect wallet
+                        </div>
                     </div>
-                </div>
-            )}
+                )
+            }
+            {
+                //@ts-ignore
+                !user && !window.ethereum && (
+                    <div className={"walletinfo"}>
+                        <div className="address">no web3 wallet found</div>
+                    </div>
+                )
+            }
 
             {showCanvas && <PostitCanvas />}
         </Layout>

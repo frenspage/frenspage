@@ -20,9 +20,13 @@ const FrenPopup: React.FC<Props> = ({ pageData, profilePic }) => {
     return (
         <div className={"popupbg" + (!frenPopup ? " hidden" : "")}>
             <div className="popup">
-                <div className="closepopup" onClick={() => setFrenPopup(false)}>
+                <button
+                    className="closepopup"
+                    onClick={() => setFrenPopup(false)}
+                    tabIndex={0}
+                >
                     <span>&times;</span>
-                </div>
+                </button>
                 <div
                     className="content flex flex-direction--column flex-center--vertical padding--none"
                     style={{ width: "100%" }}
@@ -97,7 +101,7 @@ const FrenPopup: React.FC<Props> = ({ pageData, profilePic }) => {
                     <br />
 
                     <button
-                        className="sharebutton"
+                        className="button black"
                         onClick={() => setTransferPopup(true)}
                     >
                         Send donation{" "}

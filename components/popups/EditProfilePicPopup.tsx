@@ -3,19 +3,28 @@ import { useMoralis } from "react-moralis";
 import { usePopup } from "../../context/PopupContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave } from "@fortawesome/free-solid-svg-icons";
+import { useUser } from "../../context/UserContext";
 
 interface Props {
     setEditProfilePic: (val: boolean) => void;
 }
 
+const maxItemsPerPage: number = 5;
+
 const EditProfilePicPopup: React.FC<Props> = ({ setEditProfilePic }) => {
-    const [nfts, setNfts] = useState<any>(null);
+    const [nfts, setNfts] = useState<Array<any>>([]);
     const [currentSelected, setCurrentSelected] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(true);
+
+    const [hasMore, setHasMore] = useState(true);
+    const [fetchOffset, setFetchOffset] = useState(0);
+
     const { showEditProfilePicPopup, setShowEditProfilePicPopup } = usePopup();
-    const { user, Moralis } = useMoralis();
+    const { Moralis } = useMoralis();
+    const { user } = useUser();
 
     const fetcher = async () => {
+        let itemsPerPage: number = maxItemsPerPage;
         if (user) {
             let ethAddress = user.get("ethAddress");
             const options = {
@@ -24,19 +33,37 @@ const EditProfilePicPopup: React.FC<Props> = ({ setEditProfilePic }) => {
                     "X-API-KEY": process.env.NEXT_PUBLIC_OPENSEEKEY + "",
                 },
             };
-            fetch(
-                `https://api.opensea.io/api/v1/assets?owner=${ethAddress}&order_direction=desc&offset=0&limit=50`,
-                options,
-            )
-                .then((response) => response.json())
-                .then((response) => {
-                    setNfts(response);
+
+            await fetchPage(ethAddress, options)
+                .then((res: any) => {
+                    itemsPerPage = res?.assets?.length;
+                    if (itemsPerPage === maxItemsPerPage) {
+                        setHasMore(true);
+                    } else {
+                        setHasMore(false);
+                    }
+                    setNfts((old) => [...old, ...res?.assets]);
+                    setFetchOffset((old) => old + itemsPerPage);
                 })
-                .catch((err) => console.error(err));
+                .catch((err) => (itemsPerPage = 0));
         }
     };
+
+    const fetchPage = async (ethAddress: string, options: any) => {
+        let result = null;
+        let url = `https://api.opensea.io/api/v1/assets?owner=${ethAddress}&order_direction=desc&offset=${fetchOffset}&limit=${maxItemsPerPage}`;
+        await fetch(url, options)
+            .then((response) => response.json())
+            .then((response) => {
+                result = response;
+            })
+            .catch((err) => console.error(err));
+        return result;
+    };
+
     useEffect(() => {
         if (user) fetcher().then(() => setIsLoading(false));
+        else setNfts([]);
     }, [user, Moralis.Web3API.account]);
 
     const changeProfilePic = (data: any) => {
@@ -53,12 +80,13 @@ const EditProfilePicPopup: React.FC<Props> = ({ setEditProfilePic }) => {
         >
             <div className="bigpopup">
                 <div className="content">
-                    <div
+                    <button
                         className="closepopup"
                         onClick={() => setShowEditProfilePicPopup(false)}
+                        tabIndex={0}
                     >
                         <span>&times;</span>
-                    </div>
+                    </button>
 
                     <h1>Select your pfp</h1>
 
@@ -67,18 +95,18 @@ const EditProfilePicPopup: React.FC<Props> = ({ setEditProfilePic }) => {
                     {isLoading && (
                         <div id="profilepicselect_nfts_loading">
                             <div className="lds-ellipsis">
-                                <div></div>
-                                <div></div>
-                                <div></div>
-                                <div></div>
+                                <div />
+                                <div />
+                                <div />
+                                <div />
                             </div>
                         </div>
                     )}
 
-                    {!isLoading && nfts?.assets && nfts.assets.length > 0 ? (
+                    {!isLoading && nfts && nfts.length > 0 && (
                         <div className="profilepicselect_nfts">
                             <div className="content flex flex--gap--big paddingTop--big">
-                                {nfts.assets?.map((nft: any, index: number) => {
+                                {nfts?.map((nft: any, index: number) => {
                                     return (
                                         <div
                                             className="pfp__nft grid__item"
@@ -120,30 +148,24 @@ const EditProfilePicPopup: React.FC<Props> = ({ setEditProfilePic }) => {
                                         </div>
                                     );
                                 })}
+                                {hasMore && (
+                                    <div className="flex flex-center--vertical flex-center--horizontal w-100">
+                                        <button
+                                            className="button black"
+                                            onClick={fetcher}
+                                        >
+                                            Load More...
+                                        </button>
+                                    </div>
+                                )}
                             </div>
                         </div>
-                    ) : (
+                    )}
+                    {!isLoading && (!nfts || nfts.length <= 0) && (
                         <div className="paddingTop--big">
                             It seems that u don't have any nfts yet.
                         </div>
                     )}
-
-                    {/** <div
-                        id="savepfp"
-                        className={
-                            "savebutton" + (currentSelected ? " cansubmit" : "")
-                        }
-                        data-onclick="choosePFP();"
-                        onClick={() => {
-                            if (currentSelected)
-                                changeProfilePic(currentSelected);
-                        }}
-                    >
-                        <FontAwesomeIcon
-                            icon={faSave}
-                            style={{ fontSize: "1rem", height: "1rem" }}
-                        />
-                    </div>**/}
                 </div>
             </div>
         </div>

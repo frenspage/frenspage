@@ -11,6 +11,10 @@ import PostitCanvas from "../canvas/PostitCanvas";
 import { useRouter } from "next/router";
 import Loader from "../global/Loader";
 import { useUser } from "../../context/UserContext";
+import TwitterAuthPopup from "../popups/TwitterAuthPopup";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTwitter } from "@fortawesome/free-brands-svg-icons";
+import NewLineText from "../global/NewLinetext";
 
 interface Props {
     showCanvas?: boolean;
@@ -21,10 +25,20 @@ const UserLoggedIn: FC<Props> = ({
     showCanvas = false,
     loadBeforeRedirect = false,
 }) => {
-    const { user, username, pfp, setPfp, authenticate, disconnect } = useUser();
+    const {
+        user,
+        username,
+        pfp,
+        setPfp,
+        authenticate,
+        disconnect,
+        twitter,
+        biography,
+    } = useUser();
 
     const [editProfilePic, setEditProfilePic] = useState<any>(null); // this is the profile pic that is displayed in the preview/edit box
     const [editUsername, setEditUsername] = useState<any>(null); // this is the username that is displayed in the preview/edit box
+    const [editBiography, setEditBiography] = useState<string>(biography ?? ""); // this is the username that is displayed in the preview/edit box
 
     const { setShowEditProfilePopup } = usePopup();
 
@@ -38,6 +52,10 @@ const UserLoggedIn: FC<Props> = ({
     useEffect(() => {
         if (pfp) setEditProfilePic(pfp);
     }, [pfp, setPfp]);
+
+    useEffect(() => {
+        if (biography) setEditBiography(biography);
+    }, [biography]);
 
     if (loadBeforeRedirect) return <Loader />;
 
@@ -65,6 +83,37 @@ const UserLoggedIn: FC<Props> = ({
                                     {username}
                                 </h3>
                             </div>
+                            {(twitter || biography) && (
+                                <div className="flex flex-column-center">
+                                    {biography && (
+                                        <div className="marginTop marginBottom greyfont centertext biography">
+                                            <NewLineText
+                                                text={biography}
+                                                addClass="centertext"
+                                            />
+                                        </div>
+                                    )}
+                                    {twitter && (
+                                        <a
+                                            href={`https://twitter.com/${twitter}`}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            className={
+                                                "button addIcon small tooltip--twitterName"
+                                            }
+                                            data-name={twitter}
+                                        >
+                                            <FontAwesomeIcon
+                                                icon={faTwitter}
+                                                style={{
+                                                    fontSize: "1rem",
+                                                    height: "1rem",
+                                                }}
+                                            />
+                                        </a>
+                                    )}
+                                </div>
+                            )}
                         </div>
                     </div>
 
@@ -98,6 +147,8 @@ const UserLoggedIn: FC<Props> = ({
                     <EditProfilePopup
                         editProfilePic={editProfilePic}
                         editUsername={editUsername}
+                        editBiography={editBiography}
+                        setEditBiography={setEditBiography}
                     />
 
                     <EditProfilePicPopup
@@ -110,6 +161,8 @@ const UserLoggedIn: FC<Props> = ({
                         editProfilePic={editProfilePic}
                         editUsername={editUsername}
                     />
+
+                    <TwitterAuthPopup />
                 </div>
             </div>
             {showCanvas && <PostitCanvas />}
