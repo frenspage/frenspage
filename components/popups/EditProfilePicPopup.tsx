@@ -9,7 +9,7 @@ interface Props {
     setEditProfilePic: (val: boolean) => void;
 }
 
-const maxItemsPerPage: number = 5;
+const maxItemsPerPage: number = 50;
 
 const EditProfilePicPopup: React.FC<Props> = ({ setEditProfilePic }) => {
     const [nfts, setNfts] = useState<Array<any>>([]);
