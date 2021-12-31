@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import Script from "next/script";
-import { useMoralis } from "react-moralis";
 import { usePopup } from "../../context/PopupContext";
-import { useRouter } from "next/router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTwitter } from "@fortawesome/free-brands-svg-icons";
 import {
@@ -19,9 +16,10 @@ interface Props {
     editUsername: string;
 }
 
-/*
-FirstTimePopup is the popup that opens when the user saves his page for the first time, and thus claims his domain
-*/
+/**
+    FirstTimePopup is the popup that opens when the user saves his page for the first time,
+    and thus claims his domain
+**/
 const FirstTimePopup: React.FC<Props> = ({ editProfilePic, editUsername }) => {
     const { user, ensDomain } = useUser();
     const { showFirstTimePopup, setShowFirstTimePopup } = usePopup();

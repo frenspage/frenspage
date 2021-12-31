@@ -1,5 +1,3 @@
-// Add UserContext
-
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useMoralis } from "react-moralis";
 

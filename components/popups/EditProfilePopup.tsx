@@ -9,7 +9,6 @@ import {
     faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { useUser } from "../../context/UserContext";
-import TwitterAuthPopup from "./TwitterAuthPopup";
 import { faTwitter } from "@fortawesome/free-brands-svg-icons";
 
 interface Props {

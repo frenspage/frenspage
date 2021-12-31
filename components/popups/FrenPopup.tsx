@@ -1,11 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { usePopup } from "../../context/PopupContext";
-import { useMoralis, useWeb3Transfer } from "react-moralis";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEthereum } from "@fortawesome/free-brands-svg-icons";
 import { faExternalLinkAlt } from "@fortawesome/free-solid-svg-icons";
-import Moralis from "moralis";
-import send = Moralis.Push.send;
 
 interface Props {
     pageData: any;

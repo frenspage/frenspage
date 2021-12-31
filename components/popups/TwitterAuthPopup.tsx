@@ -1,8 +1,5 @@
-import React, { FC, useState, useEffect } from "react";
+import React, { FC, useState } from "react";
 import { usePopup } from "../../context/PopupContext";
-import DonateError from "../errors/DonateError";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEthereum, faTwitter } from "@fortawesome/free-brands-svg-icons";
 import { useUser } from "../../context/UserContext";
 
 interface Props {}
@@ -10,8 +7,6 @@ interface Props {}
 const TwitterAuthPopup: FC<Props> = ({}) => {
     const { twitterAuthPopup, setTwitterAuthPopup } = usePopup();
     const { twitter, setTwitter } = useUser();
-    const [error, setError] = useState<any>(null);
-    const [isFetching, setIsFetching] = useState(false);
 
     const [username, setUsername] = useState<string>("");
 
@@ -44,16 +39,9 @@ const TwitterAuthPopup: FC<Props> = ({}) => {
                         type="text"
                         placeholder="@username"
                     />
-                    {/*error && (
-                        <DonateError
-                            errorCode={(error as any).code ?? 400}
-                            errorMessage={error.message ?? ""}
-                        />
-                    )*/}
                     <button
                         className="marginTop button black"
                         onClick={() => saveTwitter()}
-                        disabled={isFetching}
                         tabIndex={0}
                     >
                         {twitter ? "update" : "add"}
