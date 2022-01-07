@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useMoralis } from "react-moralis";
 import { usePopup } from "../../context/PopupContext";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSave } from "@fortawesome/free-solid-svg-icons";
+import { useUser } from "../../context/UserContext";
 
 interface Props {
     setEditProfilePic: (val: boolean) => void;
@@ -14,11 +13,15 @@ const EditProfilePicPopup: React.FC<Props> = ({ setEditProfilePic }) => {
     const [nfts, setNfts] = useState<Array<any>>([]);
     const [currentSelected, setCurrentSelected] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(true);
+
+    const [hasMore, setHasMore] = useState(true);
+    const [fetchOffset, setFetchOffset] = useState(0);
+
     const { showEditProfilePicPopup, setShowEditProfilePicPopup } = usePopup();
-    const { user, Moralis } = useMoralis();
+    const { Moralis } = useMoralis();
+    const { user } = useUser();
 
     const fetcher = async () => {
-        let offset: number = 0;
         let itemsPerPage: number = maxItemsPerPage;
         if (user) {
             let ethAddress = user.get("ethAddress");
@@ -28,29 +31,25 @@ const EditProfilePicPopup: React.FC<Props> = ({ setEditProfilePic }) => {
                     "X-API-KEY": process.env.NEXT_PUBLIC_OPENSEEKEY + "",
                 },
             };
-            let fetchedItems: Array<any> = [];
-            while (itemsPerPage >= maxItemsPerPage) {
-                await fetchPage(offset, ethAddress, options)
-                    .then((res: any) => {
-                        itemsPerPage = res?.assets?.length;
-                        fetchedItems = [...fetchedItems, ...res?.assets];
-                        offset++;
-                    })
-                    .catch((err) => (itemsPerPage = 0));
-            }
 
-            setNfts(fetchedItems);
+            await fetchPage(ethAddress, options)
+                .then((res: any) => {
+                    itemsPerPage = res?.assets?.length;
+                    if (itemsPerPage === maxItemsPerPage) {
+                        setHasMore(true);
+                    } else {
+                        setHasMore(false);
+                    }
+                    setNfts((old) => [...old, ...res?.assets]);
+                    setFetchOffset((old) => old + itemsPerPage);
+                })
+                .catch((err) => (itemsPerPage = 0));
         }
     };
 
-    const fetchPage = async (
-        offset: number,
-        ethAddress: string,
-        options: any,
-    ) => {
+    const fetchPage = async (ethAddress: string, options: any) => {
         let result = null;
-
-        let url = `https://api.opensea.io/api/v1/assets?owner=${ethAddress}&order_direction=desc&offset=${offset}&limit=${maxItemsPerPage}`;
+        let url = `https://api.opensea.io/api/v1/assets?owner=${ethAddress}&order_direction=desc&offset=${fetchOffset}&limit=${maxItemsPerPage}`;
         await fetch(url, options)
             .then((response) => response.json())
             .then((response) => {
@@ -62,6 +61,7 @@ const EditProfilePicPopup: React.FC<Props> = ({ setEditProfilePic }) => {
 
     useEffect(() => {
         if (user) fetcher().then(() => setIsLoading(false));
+        else setNfts([]);
     }, [user, Moralis.Web3API.account]);
 
     const changeProfilePic = (data: any) => {
@@ -93,10 +93,10 @@ const EditProfilePicPopup: React.FC<Props> = ({ setEditProfilePic }) => {
                     {isLoading && (
                         <div id="profilepicselect_nfts_loading">
                             <div className="lds-ellipsis">
-                                <div></div>
-                                <div></div>
-                                <div></div>
-                                <div></div>
+                                <div />
+                                <div />
+                                <div />
+                                <div />
                             </div>
                         </div>
                     )}
@@ -146,6 +146,16 @@ const EditProfilePicPopup: React.FC<Props> = ({ setEditProfilePic }) => {
                                         </div>
                                     );
                                 })}
+                                {hasMore && (
+                                    <div className="flex flex-center--vertical flex-center--horizontal w-100">
+                                        <button
+                                            className="button black"
+                                            onClick={fetcher}
+                                        >
+                                            Load More...
+                                        </button>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     )}

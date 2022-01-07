@@ -184,34 +184,38 @@ const UserPage: NextPage<Props> = ({}) => {
                             {slug}
                         </h3>
                     </div>
-                    {page?.get("twitterName") && (
+                    {(page?.get("twitterName") || page?.get("biography")) && (
                         <div className="flex flex-column-center">
-                            <div className="marginTop marginBottom greyfont centertext biography">
-                                <NewLineText
-                                    text={page?.get("biography")}
-                                    addClass="centertext"
-                                />
-                            </div>
+                            {page?.get("biography") && (
+                                <div className="marginTop marginBottom greyfont centertext biography">
+                                    <NewLineText
+                                        text={page?.get("biography")}
+                                        addClass="centertext"
+                                    />
+                                </div>
+                            )}
 
-                            <a
-                                href={`https://twitter.com/${page?.get(
-                                    "twitterName",
-                                )}`}
-                                target="_blank"
-                                rel="noreferrer"
-                                className={
-                                    "button addIcon small tooltip--twitterName"
-                                }
-                                data-name={page?.get("twitterName")}
-                            >
-                                <FontAwesomeIcon
-                                    icon={faTwitter}
-                                    style={{
-                                        fontSize: "1rem",
-                                        height: "1rem",
-                                    }}
-                                />
-                            </a>
+                            {page?.get("twitterName") && (
+                                <a
+                                    href={`https://twitter.com/${page?.get(
+                                        "twitterName",
+                                    )}`}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className={
+                                        "button addIcon small tooltip--twitterName"
+                                    }
+                                    data-name={page?.get("twitterName")}
+                                >
+                                    <FontAwesomeIcon
+                                        icon={faTwitter}
+                                        style={{
+                                            fontSize: "1rem",
+                                            height: "1rem",
+                                        }}
+                                    />
+                                </a>
+                            )}
                         </div>
                     )}
                 </div>

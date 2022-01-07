@@ -1,5 +1,3 @@
-// Add UserContext
-
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useMoralis } from "react-moralis";
 
@@ -123,7 +121,7 @@ export const UserProvider: React.FC = ({ children }) => {
 
     /** authentificate/login user and load page **/
     const authenticate = async () => {
-        await moralisAuth();
+        await moralisAuth({ signingMessage: "gm fren" });
         await loadPage();
     };
 
@@ -169,10 +167,14 @@ export const UserProvider: React.FC = ({ children }) => {
                         saveEnsDomain(user?.get("username"), {
                             name: user?.get("username"),
                         });
-                        setBiography(object.get("biography") ?? "");
-                        setTwitter(object.get("twitterName") ?? "");
+                        setBiography("");
+                        setTwitter("");
                     })
                     .catch((error: any) => {
+                        console.error(
+                            "Failed to create new page, with error: ",
+                            error,
+                        );
                         alert(
                             "Failed to create new page, with error code: " +
                                 error.message,

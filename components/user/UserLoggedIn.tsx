@@ -5,8 +5,8 @@ import EditProfilePopup from "../popups/EditProfilePopup";
 import EditProfilePicPopup from "../popups/EditProfilePicPopup";
 import EditENSPopup from "../popups/EditENSPopup";
 import FirstTimePopup from "../popups/FirstTimePopup";
-import { useMoralis } from "react-moralis";
 import { usePopup } from "../../context/PopupContext";
+
 import FrenCanvas from "../canvas/FrenCanvas";
 import { useRouter } from "next/router";
 

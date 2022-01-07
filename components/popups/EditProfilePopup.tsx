@@ -19,11 +19,13 @@ interface Props {
     setEditBiography: (val: string) => void;
 }
 
-/*
-EditProfilePopup is the popup that opens when the user clicks on his profile picture on his own page (or on the index page).
+/**
+    EditProfilePopup is the popup that opens when the user clicks
+    on his profile picture on his own page (or on the index page).
 
-editProfilePic and editUsername are the names which are displayed in the popup, but which may not be saved yet. Maybe rename to "previewProfilePic"?
-*/
+    editProfilePic and editUsername are the names which are displayed in the popup,
+    but which may not be saved yet.
+**/
 const EditProfilePopup: React.FC<Props> = ({
     editProfilePic,
     ensSelectInput,
@@ -32,21 +34,8 @@ const EditProfilePopup: React.FC<Props> = ({
     setEditBiography,
 }) => {
     const router = useRouter();
-    const { Moralis } = useMoralis();
-    const {
-        user,
-        ensDomain,
-        saveEnsDomain,
-        username,
-        setPfp,
-        page,
-        setPage,
-        twitter,
-        setTwitter,
-        saveProfile,
-        biography,
-        setBiography,
-    } = useUser();
+    const { user, ensDomain, username, twitter, setTwitter, saveProfile } =
+        useUser();
     const {
         showEditProfilePopup,
         setShowEditProfilePopup,
@@ -78,6 +67,10 @@ const EditProfilePopup: React.FC<Props> = ({
 
     const removeTwitter = () => {
         setTwitter("");
+    };
+
+    const changeEditBiography = (text: string) => {
+        if (text.split("\n").length <= 4) setEditBiography(text);
     };
 
     return (
@@ -140,14 +133,16 @@ const EditProfilePopup: React.FC<Props> = ({
                         name="biography"
                         className="textarea textarea--biography"
                         placeholder={
-                            "your biography\n& your links\n200 chars & 4 rows max.\nno funny business ser"
+                            "put your gms\n& your links here\nmax 200 chars\n& 4 rows"
                         }
                         value={editBiography}
                         rows={4}
                         maxLength={200}
                         cols={50}
                         wrap="hard"
-                        onChange={(val) => setEditBiography(val.target.value)}
+                        onChange={(val) =>
+                            changeEditBiography(val.target.value)
+                        }
                     />
                 </div>
 
@@ -213,7 +208,7 @@ const EditProfilePopup: React.FC<Props> = ({
                 >
                     <FontAwesomeIcon
                         icon={faSave}
-                        style={{ fontSize: "1rem", height: "1rem" }}
+                        style={{ fontSize: "1.4rem", height: "1.4rem" }}
                     />
                 </button>
             </div>

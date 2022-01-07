@@ -1,11 +1,9 @@
 import type { NextPage } from "next";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Layout from "../components/global/Layout";
 import { useMoralis } from "react-moralis";
 import { useRouter } from "next/router";
-import UserLoggedIn from "../components/user/UserLoggedIn";
 import Loader from "../components/global/Loader";
-import { faLongArrowAltUp } from "@fortawesome/free-solid-svg-icons";
 import { useUser } from "../context/UserContext";
 
 const Home: NextPage = () => {
