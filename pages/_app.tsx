@@ -4,6 +4,7 @@ import { MoralisProvider } from "react-moralis";
 import { PopupProvider } from "../context/PopupContext";
 import Head from "next/head";
 import { UserProvider } from "../context/UserContext";
+import { PageContextProvider } from "../context/PageContentContext";
 
 function MyApp({ Component, pageProps }: AppProps) {
     const appId: string = process.env.NEXT_PUBLIC_APPID ?? "";
@@ -11,14 +12,16 @@ function MyApp({ Component, pageProps }: AppProps) {
     return (
         <MoralisProvider appId={appId} serverUrl={serverUrl}>
             <UserProvider>
-                <PopupProvider>
-                    <Head>
-                        <title>frens.page</title>
-                        <meta name="description" content="gm" />
-                        <link rel="icon" href="/images/favicon.png" />
-                    </Head>
-                    <Component {...pageProps} />
-                </PopupProvider>
+                <PageContextProvider>
+                    <PopupProvider>
+                        <Head>
+                            <title>frens.page</title>
+                            <meta name="description" content="gm" />
+                            <link rel="icon" href="/images/favicon.png" />
+                        </Head>
+                        <Component {...pageProps} />
+                    </PopupProvider>
+                </PageContextProvider>
             </UserProvider>
         </MoralisProvider>
     );

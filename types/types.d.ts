@@ -20,3 +20,29 @@ export interface INFTs {
     result?: INFT[] | [];
     total?: number;
 }
+
+export interface ICardItem {
+    id: string;
+    index: number;
+    x: number;
+    y: number;
+    rotation: number;
+    isDragging: boolean;
+    content: {
+        caption: string;
+        path: string | any;
+    };
+    object: any; // Moralis object to update/save/destroy
+}
+
+export type TCardItems = Array<ICardProps> | Array;
+
+export interface ICardProps {
+    index: string | number;
+    item: ICardItem | any;
+    handleDragStart: (e: any) => void;
+    handleDragEnd: (e: any) => void;
+    handleClick: (e: any) => void;
+    handleMouseEnter: (e: any) => void;
+    handleMouseLeave: (e: any) => void;
+}
