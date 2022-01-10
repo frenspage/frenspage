@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Layout from "../components/global/Layout";
 import { useMoralis, useMoralisQuery } from "react-moralis";
-import FrenCanvas from "../components/canvas/FrenCanvas";
 import UserLoggedIn from "../components/user/UserLoggedIn";
 import FrenPopup from "../components/popups/FrenPopup";
 import { usePopup } from "../context/PopupContext";
@@ -15,6 +14,11 @@ import { useUser } from "../context/UserContext";
 import NewLineText from "../components/global/NewLinetext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTwitter } from "@fortawesome/free-brands-svg-icons";
+import dynamic from "next/dynamic";
+
+const FrenCanvas = dynamic(() => import("../components/canvas/FrenCanvas"), {
+    ssr: false,
+});
 
 interface Props {}
 
@@ -261,7 +265,7 @@ const UserPage: NextPage<Props> = ({}) => {
                 )
             }
 
-            {showCanvas && <FrenCanvas />}
+            {showCanvas && <FrenCanvas page={page} />}
         </Layout>
     );
 };

@@ -45,4 +45,5 @@ export interface ICardProps {
     handleClick: (e: any) => void;
     handleMouseEnter: (e: any) => void;
     handleMouseLeave: (e: any) => void;
+    isUsersOwnPage: boolean;
 }

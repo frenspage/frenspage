@@ -6,25 +6,39 @@ import { useMoralis } from "react-moralis";
 interface ContextProps {
     readonly content: TCardItems;
     readonly addContent: (val: any) => void;
+    readonly deleteContent: (val: any) => void;
     readonly modifyContentItem: (val: any) => void;
+    readonly setFrenPage: (val: any) => void;
 }
 
 export const PageContentContext = createContext<ContextProps>({
     content: [],
     addContent: () => null,
+    deleteContent: () => null,
     modifyContentItem: () => null,
+    setFrenPage: () => null,
 });
 
 export const PageContextProvider: React.FC = ({ children }) => {
     const { Moralis } = useMoralis();
-    const { page } = useUser();
+    const { page: userPage } = useUser();
+    const [page, setPage] = useState<any>(userPage);
     const [content, setContent] = useState<any>([]);
 
     useEffect(() => {
         if (page) {
             loadContent().then((res) => {});
+        } else {
+            if (userPage) setPage(userPage);
         }
-    }, [page]);
+    }, [page, userPage]);
+
+    const setFrenPage = (newPage: any) => {
+        if (newPage) {
+            setPage(newPage);
+            loadContent().then((res) => {});
+        }
+    };
 
     const getCardItemFromObject = (object: any, index: number) => {
         return {
@@ -90,13 +104,35 @@ export const PageContextProvider: React.FC = ({ children }) => {
             });
     };
 
+    const deleteContent = async (item: ICardItem) => {
+        if (!item || !page) return;
+        await item.object
+            ?.destroy()
+            .then(async (res: any) => {
+                //console.log("cardWasDeleted: ", res.id);
+                //console.log("contentBeforeDelete: ", content);
+                await setContent((old: any) =>
+                    old.filter((item: ICardItem) => item.id !== res.id),
+                );
+            })
+            .catch((err: any) => console.error(err));
+    };
+
+    useEffect(() => console.log(content), [content, setContent]);
+
     const modifyContentItem = () => {
         console.log("modifyContent");
     };
 
     return (
         <PageContentContext.Provider
-            value={{ content, addContent, modifyContentItem }}
+            value={{
+                content,
+                addContent,
+                deleteContent,
+                modifyContentItem,
+                setFrenPage,
+            }}
         >
             {children}
         </PageContentContext.Provider>

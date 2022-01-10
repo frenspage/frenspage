@@ -1,21 +1,126 @@
 import React, { useEffect, useState } from "react";
 import { NextPage } from "next";
-import { initFrenCanvas } from "../../canvas/main";
+import { initLoggedInCanvas } from "../../canvas/main";
+import { Stage, Layer, Rect } from "react-konva";
+import NewCardPopup from "../popups/NewCardPopup";
+import Card from "./items/Card";
+import { usePageContent } from "../../context/PageContentContext";
+import { ICardItem, TCardItems } from "../../types/types";
 
-const FrenCanvas: NextPage = () => {
+const generateShapes = (pX?: number, pY?: number) => {
+    return [...Array(1)].map((_, i) => generateShape(i, pX, pY));
+};
+
+const generateShape = (i: number, pX?: number, pY?: number): ICardItem => {
+    let x =
+        pX ??
+        Math.random() *
+            (window.innerWidth > 200
+                ? window.innerWidth - 200
+                : window.innerWidth);
+    let y =
+        pY ??
+        Math.random() *
+            (window.innerHeight > 300
+                ? window.innerHeight - 300
+                : window.innerHeight);
+    return {
+        id: i.toString(),
+        index: i,
+        x: x,
+        y: y,
+        rotation: 0,
+        isDragging: false,
+        content: {
+            caption: `Caption`,
+            path: "https://lh3.googleusercontent.com/zxbvg7j5quveTfu_gjKK-5PD2DYY5kjJSMkg1gae6sZnmtBsSvxKEu0_hyX67mA2X6gJZPdmy6umGZES91nHoTgqqRIPC1vdQz49ng=s250",
+        },
+        object: null,
+    };
+};
+
+const INITIAL_STATE = generateShapes();
+
+interface Props {
+    page: any;
+}
+
+const FrenCanvas: React.FC<Props> = ({ page }) => {
+    const { content, addContent, setFrenPage } = usePageContent();
+    const [cards, setCards] = useState<TCardItems>(content);
+    const [popupIsOpen, setPopupIsOpen] = useState(false);
+    const [openedCard, setOpenedCard] = useState<ICardItem | null>(null);
+    const [mousePosition, setMousePosition] = useState<{
+        x: number;
+        y: number;
+    }>({ x: 0, y: 0 });
+
     useEffect(() => {
-        initFrenCanvas().then(() => {
-            console.log("*** INIT CANVAS ***");
+        setFrenPage(page);
+    }, [page]);
+
+    useEffect(() => {
+        if (page && content) setCards(content);
+    }, [content]);
+
+    const handleMouseEnter = (e: any) => {
+        const container = e.target?.getStage()?.container();
+        if (container) container.style.cursor = "pointer";
+    };
+
+    const handleMouseLeave = (e: any) => {
+        const container = e.target?.getStage()?.container();
+        if (container) container.style.cursor = "default";
+    };
+
+    const handleDragStart = (e: any, item: ICardItem) => {};
+    const handleDragEnd = (e: any, item: ICardItem) => {};
+
+    const handleClick = (e: any, item: ICardItem) => {};
+
+    const mouseMove = (e: any) => {
+        if (!cards) return;
+        let tempCards = cards;
+        let x = e?.evt.clientX ?? 0;
+        let y = e?.evt.clientY ?? 0;
+
+        tempCards.forEach((card: ICardItem, index: number) => {
+            card.rotation = ((card.x - x) / 360) * -10;
+            if (card.rotation > 360) card.rotation = 5;
         });
-    }, []);
+        setCards(tempCards);
+        setMousePosition({ x: x ?? 0, y: y });
+    };
 
     return (
         <>
-            <div id="main-canvas-container" className="canvas-container" />
-
-            <button className="fab" id="fab">
-                +
-            </button>
+            <div id="main-canvas-container" className="canvas-container">
+                <Stage
+                    width={window.innerWidth}
+                    height={window.innerHeight}
+                    onMouseMove={mouseMove}
+                >
+                    <Layer>
+                        {cards?.map((item: ICardItem, index: number) => (
+                            <Card
+                                key={`card__${index}`}
+                                index={item?.id}
+                                item={item}
+                                handleDragStart={(e: any) =>
+                                    handleDragStart(e, item)
+                                }
+                                handleDragEnd={(e: any) =>
+                                    handleDragEnd(e, item)
+                                }
+                                handleClick={(e: any) => handleClick(e, item)}
+                                handleMouseEnter={handleMouseEnter}
+                                handleMouseLeave={handleMouseLeave}
+                                isUsersOwnPage={false}
+                            />
+                        ))}
+                    </Layer>
+                </Stage>
+            </div>
         </>
     );
 };

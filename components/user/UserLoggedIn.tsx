@@ -18,7 +18,7 @@ import { faTwitter } from "@fortawesome/free-brands-svg-icons";
 import NewLineText from "../global/NewLinetext";
 import dynamic from "next/dynamic";
 
-const LoggedInCanvas = dynamic(() => import("../canvas/KanvaCanvas"), {
+const LoggedInCanvas = dynamic(() => import("../canvas/LoggedInCanvas"), {
     ssr: false,
 });
 
@@ -173,7 +173,7 @@ const UserLoggedIn: FC<Props> = ({
                     <TwitterAuthPopup />
                 </div>
             </div>
-            {showCanvas && <LoggedInCanvas />}
+            {showCanvas && <LoggedInCanvas loggedIn={true} />}
         </Layout>
     );
 };

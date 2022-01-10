@@ -16,6 +16,7 @@ const ImageCard: FC<Props> = (props) => {
         handleMouseEnter,
         handleMouseLeave,
         file,
+        isUsersOwnPage,
     } = props;
 
     const textNode = useRef<any>(null);
@@ -25,7 +26,7 @@ const ImageCard: FC<Props> = (props) => {
         <Group
             x={item.x}
             y={item.y}
-            draggable
+            draggable={isUsersOwnPage}
             onDragStart={handleDragStart}
             onClick={handleClick}
             onDragEnd={handleDragEnd}
@@ -33,12 +34,16 @@ const ImageCard: FC<Props> = (props) => {
             onMouseLeave={handleMouseLeave}
             id={item.id}
             cursor={"pointer"}
+            rotation={item.rotation}
+            offset={{
+                x: 100,
+                y: (200 + textNode?.current?._partialTextY + 24) / 2,
+            }}
         >
             <Rect
                 width={200}
                 height={200 + textNode?.current?._partialTextY + 24}
                 fill="#ffffff"
-                rotation={item.rotation}
                 shadowColor={"black"}
                 cornerRadius={5}
                 shadowBlur={item.isDragging ? 15 : 10}

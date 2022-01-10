@@ -13,6 +13,7 @@ const TextCard: FC<Props> = (props) => {
         handleClick,
         handleMouseLeave,
         handleMouseEnter,
+        isUsersOwnPage,
     } = props;
 
     const textNode = useRef<any>(null);
@@ -22,7 +23,7 @@ const TextCard: FC<Props> = (props) => {
         <Group
             x={item.x}
             y={item.y}
-            draggable
+            draggable={isUsersOwnPage}
             onDragStart={handleDragStart}
             onClick={handleClick}
             onDragEnd={handleDragEnd}

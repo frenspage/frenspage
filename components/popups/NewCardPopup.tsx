@@ -1,10 +1,12 @@
 import React, { FC, useState, useEffect } from "react";
+import { ICardItem } from "../../types/types";
 
 interface Props {
     isOpen: boolean;
     setIsOpen: (val: boolean) => void;
-    openedCard: number;
-    setOpenedCard: (val: number) => void;
+    openedCard: ICardItem | null;
+    setOpenedCard: (val: ICardItem | null) => void;
+    deleteCard: (item: ICardItem | null) => void;
 }
 
 const NewCardPopup: FC<Props> = ({
@@ -12,11 +14,44 @@ const NewCardPopup: FC<Props> = ({
     setIsOpen,
     openedCard,
     setOpenedCard,
+    deleteCard,
 }) => {
+    const [caption, setCaption] = useState(openedCard?.content?.caption ?? "");
+    const [filePath, setFilePath] = useState(openedCard?.content?.path ?? "");
+
+    useEffect(() => {
+        setCaption(openedCard?.content?.caption ?? "");
+        setFilePath(openedCard?.content?.path ?? "");
+    }, [openedCard, setOpenedCard]);
+
     const closePopup = () => {
         setIsOpen(false);
-        setOpenedCard(-1);
+        setOpenedCard(null);
     };
+
+    const saveItemContent = (
+        caption: string,
+        filePath: string,
+        item: ICardItem | null,
+    ) => {
+        if (item) {
+            if (caption !== item.content.caption) {
+                item.content.caption = caption;
+                item.object.set("caption", caption);
+            }
+            if (filePath !== item.content.path) {
+                item.content.path = filePath;
+                item.object.set("filePath", filePath);
+            }
+            item.object.save().then((res: any) => {
+                if (res) {
+                    setIsOpen(false);
+                    setOpenedCard(null);
+                }
+            });
+        }
+    };
+
     return (
         <div className={"popupbg" + (!isOpen ? " hidden" : "")}>
             <div className="popup">
@@ -32,8 +67,43 @@ const NewCardPopup: FC<Props> = ({
                     style={{ width: "100%" }}
                 >
                     <p>New Card popup</p>
-                    <p>ID: {openedCard}</p>
+                    <p>ID: {openedCard?.id}</p>
+                    <br />
+                    <input
+                        className="input"
+                        type="text"
+                        name="caption"
+                        value={caption}
+                        onChange={(e) => setCaption(e.target.value)}
+                        placeholder="Caption/Text"
+                    />
+                    <input
+                        className="input"
+                        type="text"
+                        name="filePath"
+                        value={filePath}
+                        onChange={(e) => setFilePath(e.target.value)}
+                        placeholder="File Path (string for testing)"
+                    />
+                    <button
+                        className="button black"
+                        onClick={() =>
+                            saveItemContent(
+                                caption,
+                                filePath,
+                                openedCard as ICardItem,
+                            )
+                        }
+                    >
+                        Save
+                    </button>
                 </div>
+                <button
+                    className="button black"
+                    onClick={() => deleteCard(openedCard)}
+                >
+                    Delete Card
+                </button>
             </div>
         </div>
     );
