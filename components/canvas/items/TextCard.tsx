@@ -19,6 +19,27 @@ const TextCard: FC<Props> = (props) => {
     const textNode = useRef<any>(null);
     const [rectHeight, setRectHeight] = useState(200);
 
+    const [rotation, setRotation] = useState(item.rotation);
+    const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+    const [oldMousePosition, setOldMousePosition] = useState({ x: 0, y: 0 });
+
+    useEffect(() => {
+        const setFromEvent = (e: any) => {
+            setOldMousePosition(mousePosition);
+            setMousePosition({ x: e.clientX, y: e.clientY });
+            if (item.isDragging) {
+                if (oldMousePosition.x > mousePosition.x) setRotation(3);
+                else setRotation(-3);
+                item.rotation = rotation;
+            }
+        };
+        window.addEventListener("mousemove", setFromEvent);
+
+        return () => {
+            window.removeEventListener("mousemove", setFromEvent);
+        };
+    }, [item.isDragging, mousePosition]);
+
     return (
         <Group
             x={item.x}
@@ -32,12 +53,13 @@ const TextCard: FC<Props> = (props) => {
             id={item.id}
             overflow={"hidden"}
             width={200}
-            height={
-                textNode?.current?._partialTextY
-                    ? textNode?.current?._partialTextY + 24
-                    : 200
-            }
+            height={textNode?.current?._partialTextY + 24}
             cursor={"pointer"}
+            rotation={item.rotation}
+            offset={{
+                x: 100,
+                y: (200 + textNode?.current?._partialTextY + 24) / 2,
+            }}
         >
             <Rect
                 width={200}
@@ -47,7 +69,6 @@ const TextCard: FC<Props> = (props) => {
                         : 200
                 }
                 fill="#ffffff"
-                rotation={item.rotation}
                 shadowColor={"black"}
                 cornerRadius={5}
                 shadowBlur={item.isDragging ? 15 : 10}

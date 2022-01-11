@@ -22,6 +22,27 @@ const ImageCard: FC<Props> = (props) => {
     const textNode = useRef<any>(null);
     const imageNode = useRef<any>(null);
 
+    const [rotation, setRotation] = useState(item.rotation);
+    const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+    const [oldMousePosition, setOldMousePosition] = useState({ x: 0, y: 0 });
+
+    useEffect(() => {
+        const setFromEvent = (e: any) => {
+            setOldMousePosition(mousePosition);
+            setMousePosition({ x: e.clientX, y: e.clientY });
+            if (item.isDragging) {
+                if (oldMousePosition.x > mousePosition.x) setRotation(3);
+                else setRotation(-3);
+                item.rotation = rotation;
+            }
+        };
+        window.addEventListener("mousemove", setFromEvent);
+
+        return () => {
+            window.removeEventListener("mousemove", setFromEvent);
+        };
+    }, [item.isDragging, mousePosition]);
+
     return (
         <Group
             x={item.x}
@@ -33,8 +54,7 @@ const ImageCard: FC<Props> = (props) => {
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
             id={item.id}
-            cursor={"pointer"}
-            rotation={item.rotation}
+            rotation={rotation}
             offset={{
                 x: 100,
                 y: (200 + textNode?.current?._partialTextY + 24) / 2,

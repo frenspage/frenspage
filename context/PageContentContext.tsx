@@ -46,7 +46,7 @@ export const PageContextProvider: React.FC = ({ children }) => {
             index: index,
             x: object.get("x"),
             y: object.get("y"),
-            rotation: 0,
+            rotation: object.get("rotation"),
             isDragging: false,
             content: {
                 caption: object.get("caption"),
@@ -84,6 +84,7 @@ export const PageContextProvider: React.FC = ({ children }) => {
         contentItem.set("page", page);
         contentItem.set("caption", newItem?.content?.caption ?? "");
         contentItem.set("filePath", newItem?.content?.path ?? "");
+        contentItem.set("rotation", 0);
         contentItem.set("x", newItem?.x ?? 16);
         contentItem.set("y", newItem?.y ?? 16);
 

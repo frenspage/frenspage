@@ -15,6 +15,10 @@ interface ContextProps {
     readonly setTransferPopup: (value: boolean) => void;
     readonly twitterAuthPopup: boolean;
     readonly setTwitterAuthPopup: (value: boolean) => void;
+    readonly editCardPopup: boolean;
+    readonly setEditCardPopup: (value: boolean) => void;
+    readonly frenCardPopup: boolean;
+    readonly setFrenCardPopup: (value: boolean) => void;
 }
 
 export const PopupContext = createContext<ContextProps>({
@@ -32,6 +36,10 @@ export const PopupContext = createContext<ContextProps>({
     setTransferPopup: () => null,
     twitterAuthPopup: false,
     setTwitterAuthPopup: () => null,
+    editCardPopup: false,
+    setEditCardPopup: () => null,
+    frenCardPopup: false,
+    setFrenCardPopup: () => null,
 });
 
 export const PopupProvider: React.FC = ({ children }) => {
@@ -43,6 +51,8 @@ export const PopupProvider: React.FC = ({ children }) => {
     const [frenPopup, _setFrenPopup] = useState(false);
     const [transferPopup, _setTransferPopup] = useState(false);
     const [twitterAuthPopup, _setTwitterAuthPopup] = useState(false);
+    const [editCardPopup, _setEditCardPopup] = useState(false);
+    const [frenCardPopup, _setFrenCardPopup] = useState(false);
 
     /** Opened-Popup timeline/history, to track which popup should be closed at first with escape-key **/
     const [timeline, _setTimeline] = useState<Array<string>>([]);
@@ -87,6 +97,12 @@ export const PopupProvider: React.FC = ({ children }) => {
                     case "twitterAuthPopup":
                         setTwitterAuthPopup(false);
                         break;
+                    case "editCardPopup":
+                        setEditCardPopup(false);
+                        break;
+                    case "frenCardPopup":
+                        setFrenCardPopup(false);
+                        break;
                 }
             }
         }
@@ -129,6 +145,14 @@ export const PopupProvider: React.FC = ({ children }) => {
         changeTimeline(val, "twitterAuthPopup");
         _setTwitterAuthPopup(val);
     };
+    const setEditCardPopup = (val: boolean) => {
+        changeTimeline(val, "editCardPopup");
+        _setEditCardPopup(val);
+    };
+    const setFrenCardPopup = (val: boolean) => {
+        changeTimeline(val, "frenCardPopup");
+        _setFrenCardPopup(val);
+    };
 
     return (
         <PopupContext.Provider
@@ -147,6 +171,10 @@ export const PopupProvider: React.FC = ({ children }) => {
                 setTransferPopup,
                 twitterAuthPopup,
                 setTwitterAuthPopup,
+                editCardPopup,
+                setEditCardPopup,
+                frenCardPopup,
+                setFrenCardPopup,
             }}
         >
             {children}

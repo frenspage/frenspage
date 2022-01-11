@@ -1,21 +1,20 @@
 import React, { FC, useState, useEffect } from "react";
 import { ICardItem } from "../../types/types";
+import { usePopup } from "../../context/PopupContext";
 
 interface Props {
-    isOpen: boolean;
-    setIsOpen: (val: boolean) => void;
     openedCard: ICardItem | null;
     setOpenedCard: (val: ICardItem | null) => void;
     deleteCard: (item: ICardItem | null) => void;
 }
 
-const NewCardPopup: FC<Props> = ({
-    isOpen,
-    setIsOpen,
+const EditCardPopup: FC<Props> = ({
     openedCard,
     setOpenedCard,
     deleteCard,
 }) => {
+    const { editCardPopup: isOpen, setEditCardPopup: setIsOpen } = usePopup();
+
     const [caption, setCaption] = useState(openedCard?.content?.caption ?? "");
     const [filePath, setFilePath] = useState(openedCard?.content?.path ?? "");
 
@@ -69,13 +68,13 @@ const NewCardPopup: FC<Props> = ({
                     <p>New Card popup</p>
                     <p>ID: {openedCard?.id}</p>
                     <br />
-                    <input
-                        className="input"
-                        type="text"
+                    <textarea
+                        className="textarea"
                         name="caption"
                         value={caption}
                         onChange={(e) => setCaption(e.target.value)}
                         placeholder="Caption/Text"
+                        rows={3}
                     />
                     <input
                         className="input"
@@ -109,4 +108,4 @@ const NewCardPopup: FC<Props> = ({
     );
 };
 
-export default NewCardPopup;
+export default EditCardPopup;

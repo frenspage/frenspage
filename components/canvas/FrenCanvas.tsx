@@ -2,10 +2,12 @@ import React, { useEffect, useState } from "react";
 import { NextPage } from "next";
 import { initLoggedInCanvas } from "../../canvas/main";
 import { Stage, Layer, Rect } from "react-konva";
-import NewCardPopup from "../popups/NewCardPopup";
+import EditCardPopup from "../popups/EditCardPopup";
 import Card from "./items/Card";
 import { usePageContent } from "../../context/PageContentContext";
 import { ICardItem, TCardItems } from "../../types/types";
+import FrenCardPopup from "../popups/FrenCardPopup";
+import { usePopup } from "../../context/PopupContext";
 
 const generateShapes = (pX?: number, pY?: number) => {
     return [...Array(1)].map((_, i) => generateShape(i, pX, pY));
@@ -48,12 +50,8 @@ interface Props {
 const FrenCanvas: React.FC<Props> = ({ page }) => {
     const { content, addContent, setFrenPage } = usePageContent();
     const [cards, setCards] = useState<TCardItems>(content);
-    const [popupIsOpen, setPopupIsOpen] = useState(false);
     const [openedCard, setOpenedCard] = useState<ICardItem | null>(null);
-    const [mousePosition, setMousePosition] = useState<{
-        x: number;
-        y: number;
-    }>({ x: 0, y: 0 });
+    const { setFrenCardPopup } = usePopup();
 
     useEffect(() => {
         setFrenPage(page);
@@ -76,30 +74,15 @@ const FrenCanvas: React.FC<Props> = ({ page }) => {
     const handleDragStart = (e: any, item: ICardItem) => {};
     const handleDragEnd = (e: any, item: ICardItem) => {};
 
-    const handleClick = (e: any, item: ICardItem) => {};
-
-    const mouseMove = (e: any) => {
-        if (!cards) return;
-        let tempCards = cards;
-        let x = e?.evt.clientX ?? 0;
-        let y = e?.evt.clientY ?? 0;
-
-        tempCards.forEach((card: ICardItem, index: number) => {
-            card.rotation = ((card.x - x) / 360) * -10;
-            if (card.rotation > 360) card.rotation = 5;
-        });
-        setCards(tempCards);
-        setMousePosition({ x: x ?? 0, y: y });
+    const handleClick = (e: any, item: ICardItem) => {
+        setOpenedCard(item);
+        setFrenCardPopup(true);
     };
 
     return (
         <>
             <div id="main-canvas-container" className="canvas-container">
-                <Stage
-                    width={window.innerWidth}
-                    height={window.innerHeight}
-                    onMouseMove={mouseMove}
-                >
+                <Stage width={window.innerWidth} height={window.innerHeight}>
                     <Layer>
                         {cards?.map((item: ICardItem, index: number) => (
                             <Card
@@ -121,6 +104,7 @@ const FrenCanvas: React.FC<Props> = ({ page }) => {
                     </Layer>
                 </Stage>
             </div>
+            <FrenCardPopup item={openedCard} setItem={setOpenedCard} />
         </>
     );
 };

@@ -2,10 +2,11 @@ import React, { useEffect, useRef, useState } from "react";
 import { NextPage } from "next";
 import { initLoggedInCanvas } from "../../canvas/main";
 import { Stage, Layer, Rect, Text } from "react-konva";
-import NewCardPopup from "../popups/NewCardPopup";
+import EditCardPopup from "../popups/EditCardPopup";
 import Card from "./items/Card";
 import { usePageContent } from "../../context/PageContentContext";
 import { ICardItem, TCardItems } from "../../types/types";
+import { usePopup } from "../../context/PopupContext";
 
 const generateShapes = (pX?: number, pY?: number) => {
     return [...Array(1)].map((_, i) => generateShape(i, pX, pY));
@@ -46,12 +47,8 @@ interface Props {
 const LoggedInCanvas: React.FC<Props> = ({ loggedIn = false }) => {
     const { content, addContent, deleteContent } = usePageContent();
     const [cards, setCards] = useState<TCardItems>(content);
-    const [popupIsOpen, setPopupIsOpen] = useState(false);
     const [openedCard, setOpenedCard] = useState<ICardItem | null>(null);
-    const [mousePosition, setMousePosition] = useState<{
-        x: number;
-        y: number;
-    }>({ x: 0, y: 0 });
+    const { setEditCardPopup } = usePopup();
 
     useEffect(() => setCards(content), [content]);
 
@@ -76,6 +73,7 @@ const LoggedInCanvas: React.FC<Props> = ({ loggedIn = false }) => {
         const id = e.target.id();
         const container = e.target?.getStage()?.container();
         if (container) container.style.cursor = "grab";
+
         if (cards)
             setCards(
                 cards.map((card: any) => {
@@ -89,6 +87,7 @@ const LoggedInCanvas: React.FC<Props> = ({ loggedIn = false }) => {
     const handleDragEnd = (e: any, item: ICardItem) => {
         const container = e.target?.getStage()?.container();
         if (container) container.style.cursor = "pointer";
+
         if (cards) {
             setCards(
                 cards?.map((card: any) => {
@@ -101,49 +100,28 @@ const LoggedInCanvas: React.FC<Props> = ({ loggedIn = false }) => {
             if (item.object) {
                 item.object.set("x", e.target.attrs.x);
                 item.object.set("y", e.target.attrs.y);
+                item.object.set("rotation", item.rotation);
                 item.object.save();
             }
         }
     };
 
     const handleClick = (e: any, item: ICardItem) => {
-        setPopupIsOpen(true);
+        setEditCardPopup(true);
         setOpenedCard(item);
     };
 
     const deleteCard = (card: ICardItem | null) => {
         if (!card) return;
         deleteContent(card);
-        setPopupIsOpen(false);
+        setEditCardPopup(false);
         setOpenedCard(null);
-    };
-
-    const mouseMove = (e: any) => {
-        if (!cards) return;
-        let tempCards = cards;
-        let mouseX = e?.evt.clientX ?? 0;
-        let mouseY = e?.evt.clientY ?? 0;
-
-        tempCards.forEach((card: ICardItem, index: number) => {
-            let multiplic = 5;
-            if (mouseY > card.y + 100) multiplic *= -1;
-
-            card.rotation =
-                ((mouseX - window.innerWidth / 2) / 360) * multiplic;
-            if (card.rotation > 360) card.rotation = 5;
-        });
-        setCards(tempCards);
-        setMousePosition({ x: mouseX ?? 0, y: mouseY });
     };
 
     return (
         <>
             <div id="main-canvas-container" className="canvas-container">
-                <Stage
-                    width={window.innerWidth}
-                    height={window.innerHeight}
-                    onMouseMove={mouseMove}
-                >
+                <Stage width={window.innerWidth} height={window.innerHeight}>
                     <Layer>
                         {cards?.map((item: ICardItem, index: number) => (
                             <Card
@@ -167,9 +145,7 @@ const LoggedInCanvas: React.FC<Props> = ({ loggedIn = false }) => {
             </div>
             {loggedIn && (
                 <>
-                    <NewCardPopup
-                        isOpen={popupIsOpen}
-                        setIsOpen={setPopupIsOpen}
+                    <EditCardPopup
                         openedCard={openedCard}
                         setOpenedCard={setOpenedCard}
                         deleteCard={deleteCard}
