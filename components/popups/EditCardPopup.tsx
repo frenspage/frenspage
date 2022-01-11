@@ -61,48 +61,53 @@ const EditCardPopup: FC<Props> = ({
                 >
                     <span>&times;</span>
                 </button>
-                <div
-                    className="content flex flex-direction--column flex-center--vertical padding--none"
-                    style={{ width: "100%" }}
-                >
-                    <p>New Card popup</p>
-                    <p>ID: {openedCard?.id}</p>
-                    <br />
-                    <textarea
-                        className="textarea"
-                        name="caption"
-                        value={caption}
-                        onChange={(e) => setCaption(e.target.value)}
-                        placeholder="Caption/Text"
-                        rows={3}
-                    />
-                    <input
-                        className="input"
-                        type="text"
-                        name="filePath"
-                        value={filePath}
-                        onChange={(e) => setFilePath(e.target.value)}
-                        placeholder="File Path (string for testing)"
-                    />
-                    <button
-                        className="button black"
-                        onClick={() =>
-                            saveItemContent(
-                                caption,
-                                filePath,
-                                openedCard as ICardItem,
-                            )
-                        }
+                <div className="flex flex-direction--column flex-space-between h--100">
+                    <div
+                        className="content flex flex-direction--column flex-center--vertical padding--none"
+                        style={{ width: "100%" }}
                     >
-                        Save
-                    </button>
+                        <p>New Card popup</p>
+                        <p>ID: {openedCard?.id}</p>
+                        <br />
+                        <textarea
+                            className="textarea"
+                            name="caption"
+                            value={caption}
+                            onChange={(e) => setCaption(e.target.value)}
+                            placeholder="Caption/Text"
+                            rows={3}
+                        />
+                        <input
+                            className="input"
+                            type="text"
+                            name="filePath"
+                            value={filePath}
+                            onChange={(e) => setFilePath(e.target.value)}
+                            placeholder="File Path (string for testing)"
+                        />
+                        <button
+                            className="button black"
+                            onClick={() =>
+                                saveItemContent(
+                                    caption,
+                                    filePath,
+                                    openedCard as ICardItem,
+                                )
+                            }
+                        >
+                            Save
+                        </button>
+                    </div>
+                    <div className="flex flex-space-between">
+                        <div></div>
+                        <button
+                            className="button black"
+                            onClick={() => deleteCard(openedCard)}
+                        >
+                            Delete Card
+                        </button>
+                    </div>
                 </div>
-                <button
-                    className="button black"
-                    onClick={() => deleteCard(openedCard)}
-                >
-                    Delete Card
-                </button>
             </div>
         </div>
     );
