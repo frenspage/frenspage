@@ -82,7 +82,7 @@ const FrenCanvas: React.FC<Props> = ({ page }) => {
     return (
         <>
             <div id="main-canvas-container" className="canvas-container">
-                <Stage width={window.innerWidth} height={window.innerHeight}>
+                <Stage width={window?.innerWidth} height={window?.innerHeight}>
                     <Layer>
                         {cards?.map((item: ICardItem, index: number) => (
                             <Card
