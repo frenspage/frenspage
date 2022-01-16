@@ -17,6 +17,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTwitter } from "@fortawesome/free-brands-svg-icons";
 import NewLineText from "../global/NewLinetext";
 import dynamic from "next/dynamic";
+import Hide from "../global/Hide";
+import CardsRenderer from "../mobile/CardsRenderer";
 
 const LoggedInCanvas = dynamic(() => import("../canvas/LoggedInCanvas"), {
     ssr: false,
@@ -173,7 +175,16 @@ const UserLoggedIn: FC<Props> = ({
                     <TwitterAuthPopup />
                 </div>
             </div>
-            {showCanvas && <LoggedInCanvas loggedIn={true} />}
+            {showCanvas && (
+                <Hide down={"phone"}>
+                    <LoggedInCanvas loggedIn={true} />
+                </Hide>
+            )}
+            {showCanvas && (
+                <Hide up={"phone"}>
+                    <CardsRenderer page={null} />
+                </Hide>
+            )}
         </Layout>
     );
 };

@@ -15,6 +15,8 @@ import NewLineText from "../components/global/NewLinetext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTwitter } from "@fortawesome/free-brands-svg-icons";
 import dynamic from "next/dynamic";
+import CardsRenderer from "../components/mobile/CardsRenderer";
+import Hide from "../components/global/Hide";
 
 const FrenCanvas = dynamic(() => import("../components/canvas/FrenCanvas"), {
     ssr: false,
@@ -265,7 +267,16 @@ const UserPage: NextPage<Props> = ({}) => {
                 )
             }
 
-            {showCanvas && <FrenCanvas page={page} />}
+            {showCanvas && (
+                <Hide down={"phone"}>
+                    <FrenCanvas page={page} />
+                </Hide>
+            )}
+            {showCanvas && (
+                <Hide up={"phone"}>
+                    <CardsRenderer page={page} />
+                </Hide>
+            )}
         </Layout>
     );
 };

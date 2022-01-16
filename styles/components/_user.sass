@@ -8,6 +8,11 @@
     display: flex
     justify-content: center
     align-items: center
+    @include media-below(phone)
+        flex-direction: column
+        height: auto
+        max-height: initial
+        top: 2rem
 
 .user-container
     display: flex

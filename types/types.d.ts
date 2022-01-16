@@ -40,10 +40,10 @@ export type TCardItems = Array<ICardProps> | Array;
 export interface ICardProps {
     index: string | number;
     item: ICardItem | any;
-    handleDragStart: (e: any) => void;
-    handleDragEnd: (e: any) => void;
-    handleClick: (e: any) => void;
-    handleMouseEnter: (e: any) => void;
-    handleMouseLeave: (e: any) => void;
-    isUsersOwnPage: boolean;
+    handleDragStart?: (e: any) => void;
+    handleDragEnd?: (e: any) => void;
+    handleClick?: (e: any) => void;
+    handleMouseEnter?: (e: any) => void;
+    handleMouseLeave?: (e: any) => void;
+    isUsersOwnPage?: boolean;
 }

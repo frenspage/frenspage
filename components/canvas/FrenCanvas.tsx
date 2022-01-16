@@ -79,6 +79,8 @@ const FrenCanvas: React.FC<Props> = ({ page }) => {
         setFrenCardPopup(true);
     };
 
+    if (!cards) return null;
+
     return (
         <>
             <div id="main-canvas-container" className="canvas-container">
