@@ -11,7 +11,9 @@ const Card: FC<Props> = (props) => {
             {item.content.path && (
                 <img src={item.content.path} alt={item.content.caption ?? ""} />
             )}
-            {item.content.caption && <p>{item.content.caption}</p>}
+            {item.content.caption && (
+                <p className="centertext">{item.content.caption}</p>
+            )}
         </div>
     );
 };
