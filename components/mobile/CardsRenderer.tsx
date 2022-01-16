@@ -30,7 +30,12 @@ const CardsRenderer: FC<Props> = ({ page = null }) => {
         <div className="cards__mobile__container flex flex-column-center">
             {cards?.map((item: ICardItem, index: number) => {
                 return (
-                    <Card index={index} item={item} handleClick={handleClick} />
+                    <Card
+                        key={`card__mobile__${index}`}
+                        index={index}
+                        item={item}
+                        handleClick={handleClick}
+                    />
                 );
             })}
         </div>
