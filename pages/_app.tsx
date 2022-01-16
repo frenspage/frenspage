@@ -17,7 +17,6 @@ function MyApp({ Component, pageProps }: AppProps) {
         "false",
     );
     useEffect(() => {
-        console.log(process.env.NEXT_PUBLIC_SHOWLOGIN);
         if (
             process.env.NEXT_PUBLIC_SHOWLOGIN === "1" &&
             hasAccess === "false"

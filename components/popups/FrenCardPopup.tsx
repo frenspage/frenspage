@@ -1,6 +1,7 @@
 import React, { FC, useState, useEffect } from "react";
 import { usePopup } from "../../context/PopupContext";
 import { ICardItem } from "../../types/types";
+import { linkedText, linkedTextWithoutBreak } from "../../lib/linkedText";
 
 interface Props {
     item: ICardItem | null;
@@ -39,8 +40,9 @@ const FrenCardPopup: FC<Props> = ({ item, setItem }) => {
                     )}
                     {item.content.caption && (
                         <p
+                            className="centertext"
                             dangerouslySetInnerHTML={{
-                                __html: item.content.caption,
+                                __html: linkedText(item.content.caption),
                             }}
                         />
                     )}

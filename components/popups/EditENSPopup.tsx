@@ -88,15 +88,16 @@ const EditENSPopup: React.FC<Props> = ({ setEditUsername }) => {
             className={"popupbg" + (!showEditENSPopup ? " hidden" : "")}
         >
             <div className="bigpopup">
-                <div className="content">
+                <header className="popup__header--small">
                     <button
                         className="closepopup"
                         onClick={() => setShowEditENSPopup(false)}
                         tabIndex={0}
                     >
                         <span>&times;</span>
-                    </button>
-
+                    </button>{" "}
+                </header>
+                <div className="content">
                     <h1>Anon, select your .eth name</h1>
                     <h4>(Can be changed later)</h4>
 

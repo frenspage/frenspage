@@ -77,15 +77,16 @@ const EditProfilePicPopup: React.FC<Props> = ({ setEditProfilePic }) => {
             className={"popupbg" + (!showEditProfilePicPopup ? " hidden" : "")}
         >
             <div className="bigpopup">
-                <div className="content">
+                <header className="popup__header--small">
                     <button
                         className="closepopup"
                         onClick={() => setShowEditProfilePicPopup(false)}
                         tabIndex={0}
                     >
                         <span>&times;</span>
-                    </button>
-
+                    </button>{" "}
+                </header>
+                <div className="content">
                     <h1>Select your pfp</h1>
 
                     <h4>(Can be changed later)</h4>

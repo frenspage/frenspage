@@ -21,13 +21,15 @@ const TwitterAuthPopup: FC<Props> = ({}) => {
     return (
         <div className={"popupbg" + (!twitterAuthPopup ? " hidden" : "")}>
             <div className="popup transferPopup">
-                <button
-                    className="closepopup"
-                    onClick={() => setTwitterAuthPopup(false)}
-                    tabIndex={0}
-                >
-                    <span>&times;</span>
-                </button>
+                <header className="popup__header--small">
+                    <button
+                        className="closepopup"
+                        onClick={() => setTwitterAuthPopup(false)}
+                        tabIndex={0}
+                    >
+                        <span>&times;</span>
+                    </button>{" "}
+                </header>
                 <div className="content flex flex-column-center">
                     <p className="paddingTop paddingBottom">
                         want to add your twitter acc, ser?

@@ -6,10 +6,6 @@ import EditProfilePicPopup from "../popups/EditProfilePicPopup";
 import EditENSPopup from "../popups/EditENSPopup";
 import FirstTimePopup from "../popups/FirstTimePopup";
 import { usePopup } from "../../context/PopupContext";
-
-import FrenCanvas from "../canvas/FrenCanvas";
-import { useRouter } from "next/router";
-
 import Loader from "../global/Loader";
 import { useUser } from "../../context/UserContext";
 import TwitterAuthPopup from "../popups/TwitterAuthPopup";
@@ -38,6 +34,7 @@ const UserLoggedIn: FC<Props> = ({
         username,
         pfp,
         setPfp,
+        page,
         authenticate,
         disconnect,
         twitter,
@@ -70,7 +67,7 @@ const UserLoggedIn: FC<Props> = ({
     if (loadBeforeRedirect) return <Loader />;
 
     return (
-        <Layout>
+        <Layout addClass="root-user">
             <div className="container">
                 <div id="loggedincontent" className="content">
                     <div className="frenpage user-container">
@@ -182,7 +179,7 @@ const UserLoggedIn: FC<Props> = ({
             )}
             {showCanvas && (
                 <Hide up={"phone"}>
-                    <CardsRenderer page={null} />
+                    <CardsRenderer page={page} />
                 </Hide>
             )}
         </Layout>

@@ -17,13 +17,15 @@ const FrenPopup: React.FC<Props> = ({ pageData, profilePic }) => {
     return (
         <div className={"popupbg" + (!frenPopup ? " hidden" : "")}>
             <div className="popup">
-                <button
-                    className="closepopup"
-                    onClick={() => setFrenPopup(false)}
-                    tabIndex={0}
-                >
-                    <span>&times;</span>
-                </button>
+                <header className="popup__header">
+                    <button
+                        className="closepopup"
+                        onClick={() => setFrenPopup(false)}
+                        tabIndex={0}
+                    >
+                        <span>&times;</span>
+                    </button>{" "}
+                </header>
                 <div
                     className="content flex flex-direction--column flex-center--vertical padding--none"
                     style={{ width: "100%" }}

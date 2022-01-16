@@ -2,7 +2,7 @@ import type { NextPage } from "next";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Layout from "../components/global/Layout";
-import { useMoralis, useMoralisQuery } from "react-moralis";
+import { useMoralis } from "react-moralis";
 import UserLoggedIn from "../components/user/UserLoggedIn";
 import FrenPopup from "../components/popups/FrenPopup";
 import { usePopup } from "../context/PopupContext";
@@ -171,7 +171,7 @@ const UserPage: NextPage<Props> = ({}) => {
 
     /**** IF PAGE *****/
     return (
-        <Layout addClass="root-user">
+        <Layout addClass="root-user root-user__mobile">
             <div className="user-container">
                 <div id="profilepicbox">
                     <img

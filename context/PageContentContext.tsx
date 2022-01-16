@@ -96,7 +96,6 @@ export const PageContextProvider: React.FC = ({ children }) => {
                     content.length,
                 );
                 setContent((old: any) => [...old, card]);
-                console.log("AddContent res", card);
             })
             .catch((error: any) => {
                 // Execute any logic that should take place if the save fails.
@@ -118,8 +117,6 @@ export const PageContextProvider: React.FC = ({ children }) => {
             })
             .catch((err: any) => console.error(err));
     };
-
-    useEffect(() => console.log(content), [content, setContent]);
 
     const modifyContentItem = () => {
         console.log("modifyContent");

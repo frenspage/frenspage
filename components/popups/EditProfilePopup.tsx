@@ -79,138 +79,143 @@ const EditProfilePopup: React.FC<Props> = ({
             className={"popupbg" + (!showEditProfilePopup ? " hidden" : "")}
         >
             <div className="popup">
-                <button
-                    className="closepopup"
-                    onClick={() => setShowEditProfilePopup(false)}
-                    tabIndex={0}
-                >
-                    <span>&times;</span>
-                </button>
+                <header className="popup__header">
+                    <button
+                        className="closepopup"
+                        onClick={() => setShowEditProfilePopup(false)}
+                        tabIndex={0}
+                    >
+                        <span>&times;</span>
+                    </button>{" "}
+                </header>
 
-                <img
-                    src={
-                        editProfilePic?.image_preview_url ?? "/images/punk.png"
-                    }
-                    className="profilepicselect myprofilepic"
-                    onClick={() => setShowEditProfilePicPopup(true)}
-                    alt="Profile Picture"
-                    tabIndex={0}
-                />
-
-                <div
-                    className={"ensselect ellipsis"}
-                    onClick={() => setShowEditENSPopup(true)}
-                    tabIndex={0}
-                >
-                    <div
-                        id="ensname"
-                        className={!ensSelectInput ? " dontdisplay" : ""}
+                <div className="content">
+                    <img
+                        src={
+                            editProfilePic?.image_preview_url ??
+                            "/images/punk.png"
+                        }
+                        className="profilepicselect myprofilepic"
+                        onClick={() => setShowEditProfilePicPopup(true)}
+                        alt="Profile Picture"
+                        tabIndex={0}
                     />
 
                     <div
-                        id="selectensname"
-                        className={ensSelectInput ? " dontdisplay" : ""}
+                        className={"ensselect ellipsis"}
+                        onClick={() => setShowEditENSPopup(true)}
+                        tabIndex={0}
                     >
-                        Select ENS name{" "}
-                        <FontAwesomeIcon
-                            icon={faArrowRight}
-                            style={{ fontSize: "1rem", height: "1rem" }}
+                        <div
+                            id="ensname"
+                            className={!ensSelectInput ? " dontdisplay" : ""}
+                        />
+
+                        <div
+                            id="selectensname"
+                            className={ensSelectInput ? " dontdisplay" : ""}
+                        >
+                            Select ENS name{" "}
+                            <FontAwesomeIcon
+                                icon={faArrowRight}
+                                style={{ fontSize: "1rem", height: "1rem" }}
+                            />
+                        </div>
+                    </div>
+
+                    <div
+                        className={
+                            "smallfont greyfont ellipsis" +
+                            (ensSelectInput ? " hidden" : "")
+                        }
+                    >
+                        current username: {editUsername ?? username}
+                    </div>
+
+                    <div className="flex flex-column-center marginTop">
+                        <textarea
+                            name="biography"
+                            className="textarea textarea--biography"
+                            placeholder={
+                                "put your gms\n& your links here\nmax 200 chars\n& 4 rows"
+                            }
+                            value={editBiography}
+                            rows={4}
+                            maxLength={200}
+                            cols={50}
+                            wrap="hard"
+                            onChange={(val) =>
+                                changeEditBiography(val.target.value)
+                            }
                         />
                     </div>
-                </div>
 
-                <div
-                    className={
-                        "smallfont greyfont ellipsis" +
-                        (ensSelectInput ? " hidden" : "")
-                    }
-                >
-                    current username: {editUsername ?? username}
-                </div>
-
-                <div className="flex flex-column-center marginTop">
-                    <textarea
-                        name="biography"
-                        className="textarea textarea--biography"
-                        placeholder={
-                            "put your gms\n& your links here\nmax 200 chars\n& 4 rows"
-                        }
-                        value={editBiography}
-                        rows={4}
-                        maxLength={200}
-                        cols={50}
-                        wrap="hard"
-                        onChange={(val) =>
-                            changeEditBiography(val.target.value)
-                        }
-                    />
-                </div>
-
-                {!twitter && (
-                    <div className="flex flex-column-center paddingTop">
-                        <a
-                            className="smallfont"
-                            onClick={(evt) => {
-                                evt.preventDefault();
-                                setTwitterAuthPopup(true);
-                            }}
-                            tabIndex={0}
-                        >
-                            Add{" "}
-                            <FontAwesomeIcon
-                                icon={faTwitter}
-                                style={{
-                                    fontSize: "1rem",
-                                    height: "1rem",
-                                    padding: "1px 2px 0 0",
-                                    transform: "translateY(1px)",
+                    {!twitter && (
+                        <div className="flex flex-column-center paddingTop">
+                            <a
+                                className="smallfont"
+                                onClick={(evt) => {
+                                    evt.preventDefault();
+                                    setTwitterAuthPopup(true);
                                 }}
-                            />
-                            {""}
-                            Twitter{" "}
-                        </a>
-                    </div>
-                )}
-
-                {twitter && (
-                    <div className="paddingTop flex flex-center--horizontal flex-center--vertical">
-                        <div
-                            className={
-                                "smallfont hoverfont ellipsis cursor--pointer" +
-                                (ensSelectInput ? " hidden" : "")
-                            }
-                            onClick={() => setTwitterAuthPopup(true)}
-                            tabIndex={0}
-                        >
-                            twitter account: {twitter}
+                                tabIndex={0}
+                            >
+                                Add{" "}
+                                <FontAwesomeIcon
+                                    icon={faTwitter}
+                                    style={{
+                                        fontSize: "1rem",
+                                        height: "1rem",
+                                        padding: "1px 2px 0 0",
+                                        transform: "translateY(1px)",
+                                    }}
+                                />
+                                {""}
+                                Twitter{" "}
+                            </a>
                         </div>
-                        <span
-                            tabIndex={0}
-                            onClick={removeTwitter}
-                            className="removeTwitter hoverfont"
-                        >
-                            <FontAwesomeIcon
-                                icon={faTrash}
-                                style={{
-                                    fontSize: "1rem",
-                                    height: "1rem",
-                                }}
-                            />
-                        </span>
-                    </div>
-                )}
+                    )}
 
-                <button
-                    id="savesettings"
-                    className="savebutton cansubmit button black"
-                    onClick={() => save()}
-                    tabIndex={0}
-                >
-                    <FontAwesomeIcon
-                        icon={faSave}
-                        style={{ fontSize: "1.4rem", height: "1.4rem" }}
-                    />
-                </button>
+                    {twitter && (
+                        <div className="paddingTop flex flex-center--horizontal flex-center--vertical">
+                            <div
+                                className={
+                                    "smallfont hoverfont ellipsis cursor--pointer" +
+                                    (ensSelectInput ? " hidden" : "")
+                                }
+                                onClick={() => setTwitterAuthPopup(true)}
+                                tabIndex={0}
+                            >
+                                twitter account: {twitter}
+                            </div>
+                            <span
+                                tabIndex={0}
+                                onClick={removeTwitter}
+                                className="removeTwitter hoverfont"
+                            >
+                                <FontAwesomeIcon
+                                    icon={faTrash}
+                                    style={{
+                                        fontSize: "1rem",
+                                        height: "1rem",
+                                    }}
+                                />
+                            </span>
+                        </div>
+                    )}
+
+                    <button
+                        id="savesettings"
+                        className="savebutton cansubmit button black"
+                        onClick={() => save()}
+                        tabIndex={0}
+                    >
+                        <FontAwesomeIcon
+                            icon={faSave}
+                            style={{ fontSize: "1.4rem", height: "1.4rem" }}
+                        />
+                    </button>
+                </div>
             </div>
         </div>
     );
