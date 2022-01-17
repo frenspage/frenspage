@@ -13,6 +13,7 @@ interface Props {
 
 const LoggedInCardsRenderer: FC<Props> = ({ loggedIn }) => {
     const { content, addContent, deleteContent } = usePageContent();
+    const [isLoadingUpload, setLoadingUpload] = useState(false);
     const [cards, setCards] = useState<TCardItems>(content);
     const [openedCard, setOpenedCard] = useState<ICardItem | null>(null);
     const { setEditCardPopup } = usePopup();
@@ -60,6 +61,8 @@ const LoggedInCardsRenderer: FC<Props> = ({ loggedIn }) => {
                         openedCard={openedCard}
                         setOpenedCard={setOpenedCard}
                         deleteCard={deleteCard}
+                        isLoadingUpload={isLoadingUpload}
+                        setLoadingUpload={setLoadingUpload}
                     />
 
                     <button
