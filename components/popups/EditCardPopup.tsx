@@ -3,6 +3,14 @@ import { ICardItem } from "../../types/types";
 import { usePopup } from "../../context/PopupContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { Web3Storage } from "web3.storage";
+import {
+    createNewFileName,
+    createWithNewFileName,
+    retrieveFiles,
+    storeFiles,
+    storeWithProgress,
+} from "../../lib/storage";
 
 interface Props {
     openedCard: ICardItem | null;
@@ -20,6 +28,7 @@ const EditCardPopup: FC<Props> = ({
     const [caption, setCaption] = useState(openedCard?.content?.caption ?? "");
     const [filePath, setFilePath] = useState(openedCard?.content?.path ?? "");
     const [file, setFile] = useState<any>(null);
+    const [uploadProgress, setUploadProgress] = useState("0");
 
     useEffect(() => {
         setCaption(openedCard?.content?.caption ?? "");
@@ -30,22 +39,38 @@ const EditCardPopup: FC<Props> = ({
         setIsOpen(false);
         setOpenedCard(null);
         setFile(null);
+        setUploadProgress("0");
     };
 
-    const saveItemContent = (
+    const uploadImage = async () => {
+        if (file) {
+            const newFile = createWithNewFileName(file);
+            let cid = await storeFiles(newFile); //storeWithProgress(file, setUploadProgress);
+            let retrievedFile = await retrieveFiles(cid);
+            let path = `https://${cid}.ipfs.dweb.link/${retrievedFile.name}`;
+            return path;
+        }
+    };
+
+    const saveItemContent = async (
         caption: string,
         filePath: string,
         item: ICardItem | null,
     ) => {
         if (item) {
+            if (file) {
+                let uploadedFilePath = await uploadImage();
+                //if (filePath !== item.content.path) {
+                if (uploadedFilePath) {
+                    item.content.path = uploadedFilePath;
+                    item.object.set("filePath", uploadedFilePath);
+                }
+            }
             if (caption !== item.content.caption) {
                 item.content.caption = caption;
                 item.object.set("caption", caption);
             }
-            if (filePath !== item.content.path) {
-                item.content.path = filePath;
-                item.object.set("filePath", filePath);
-            }
+
             item.object.save().then((res: any) => {
                 if (res) {
                     setIsOpen(false);
