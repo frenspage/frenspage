@@ -10,17 +10,23 @@ import {
     storeFiles,
     storeWithProgress,
 } from "../../lib/storage";
+import Loader from "../global/Loader";
+import LoadingSpinner from "../global/LoadingSpinner";
 
 interface Props {
     openedCard: ICardItem | null;
     setOpenedCard: (val: ICardItem | null) => void;
     deleteCard: (item: ICardItem | null) => void;
+    isLoadingUpload: boolean;
+    setLoadingUpload: (val: boolean) => void;
 }
 
 const EditCardPopup: FC<Props> = ({
     openedCard,
     setOpenedCard,
     deleteCard,
+    isLoadingUpload,
+    setLoadingUpload,
 }) => {
     const { editCardPopup: isOpen, setEditCardPopup: setIsOpen } = usePopup();
 
@@ -56,6 +62,7 @@ const EditCardPopup: FC<Props> = ({
         filePath: string,
         item: ICardItem | null,
     ) => {
+        setLoadingUpload(true);
         if (item) {
             if (file) {
                 let uploadedFilePath = await uploadImage();
@@ -72,9 +79,9 @@ const EditCardPopup: FC<Props> = ({
 
             item.object.save().then((res: any) => {
                 if (res) {
-                    setIsOpen(false);
-                    setOpenedCard(null);
+                    closePopup();
                 }
+                setLoadingUpload(false);
             });
         }
     };
@@ -161,6 +168,9 @@ const EditCardPopup: FC<Props> = ({
                             >
                                 Save
                             </button>
+                        </div>
+                        <div className="flex flex-column-center w-100">
+                            {isLoadingUpload && <LoadingSpinner />}
                         </div>
                     </div>
                 </div>

@@ -20,6 +20,7 @@ const Card: FC<Props> = (props) => {
             let tempFile = new window.Image(184, 184);
 
             tempFile.src = item.content.path;
+            tempFile.style.objectFit = "cover";
             tempFile.addEventListener("load", () => setFile(tempFile));
         }
     };
