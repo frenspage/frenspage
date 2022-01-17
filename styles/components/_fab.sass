@@ -1,14 +1,14 @@
 @use "../abstracts/index" as *
 
 //----------------------------------
-//               FAQ               -
+//               FAB               -
 //----------------------------------
 
 
-.fab
+.addCard-button
     position: fixed
-    bottom: 3rem
-    right: 3rem
+    bottom: 2rem
+    right: 2rem
     border: none
     background: $black
     width: 3rem
@@ -20,5 +20,10 @@
     transition: $transition-default
 
     &:hover
-        box-shadow: 0px 1px 10px 2px rgba(0, 0, 0, 0.2)
+        box-shadow: 0 1px 10px 2px rgba(0, 0, 0, 0.2)
         cursor: pointer
+
+    @include media-below(phone)
+        bottom: initial
+        top: 1rem
+        right: 1rem

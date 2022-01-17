@@ -42,8 +42,8 @@ const TextCard: FC<Props> = (props) => {
 
     return (
         <Group
-            x={item.x}
-            y={item.y}
+            x={(window.innerWidth * item.x) / 100}
+            y={(window.innerHeight * item.y) / 100}
             draggable={isUsersOwnPage}
             onDragStart={handleDragStart}
             onClick={handleClick}

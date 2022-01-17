@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import { NextPage } from "next";
 import { initLoggedInCanvas } from "../../canvas/main";
 import { Stage, Layer, Rect, Text } from "react-konva";
@@ -7,38 +7,7 @@ import Card from "./items/Card";
 import { usePageContent } from "../../context/PageContentContext";
 import { ICardItem, TCardItems } from "../../types/types";
 import { usePopup } from "../../context/PopupContext";
-
-const generateShapes = (pX?: number, pY?: number) => {
-    return [...Array(1)].map((_, i) => generateShape(i, pX, pY));
-};
-
-const generateShape = (i: number, pX?: number, pY?: number): ICardItem => {
-    let x =
-        pX ??
-        Math.random() *
-            (window.innerWidth > 200
-                ? window.innerWidth - 200
-                : window.innerWidth);
-    let y =
-        pY ??
-        Math.random() *
-            (window.innerHeight > 300
-                ? window.innerHeight - 300
-                : window.innerHeight);
-    return {
-        id: i.toString(),
-        index: i,
-        x: x,
-        y: y,
-        rotation: 0,
-        isDragging: false,
-        content: {
-            caption: `Caption`,
-            path: "/images/punk.png",
-        },
-        object: null,
-    };
-};
+import { generateShape } from "../../lib/generateShape";
 
 interface Props {
     loggedIn: boolean;
@@ -50,7 +19,28 @@ const LoggedInCanvas: React.FC<Props> = ({ loggedIn = false }) => {
     const [openedCard, setOpenedCard] = useState<ICardItem | null>(null);
     const { setEditCardPopup } = usePopup();
 
+    const [windowSize, setWindowSize] = useState({
+        width: window?.innerWidth,
+        height: window?.innerHeight,
+    });
+
     useEffect(() => setCards(content), [content]);
+
+    /**
+     * update windowSize-state when resizing window,
+     * to rerender canvas
+     **/
+    useLayoutEffect(() => {
+        const updateSize = () => {
+            setWindowSize({
+                width: window.innerWidth,
+                height: window.innerHeight,
+            });
+        };
+        window.addEventListener("resize", updateSize);
+        updateSize();
+        return () => window.removeEventListener("resize", updateSize);
+    }, []);
 
     const addCard = () => {
         let i = cards?.length;
@@ -98,8 +88,14 @@ const LoggedInCanvas: React.FC<Props> = ({ loggedIn = false }) => {
                 }),
             );
             if (item.object) {
-                item.object.set("x", e.target.attrs.x);
-                item.object.set("y", e.target.attrs.y);
+                item.object.set(
+                    "x",
+                    (e.target.attrs.x / window.innerWidth) * 100,
+                );
+                item.object.set(
+                    "y",
+                    (e.target.attrs.y / window.innerHeight) * 100,
+                );
                 item.object.set("rotation", item.rotation);
                 item.object.save();
             }
@@ -121,7 +117,7 @@ const LoggedInCanvas: React.FC<Props> = ({ loggedIn = false }) => {
     return (
         <>
             <div id="main-canvas-container" className="canvas-container">
-                <Stage width={window.innerWidth} height={window.innerHeight}>
+                <Stage width={windowSize.width} height={windowSize.height}>
                     <Layer>
                         {cards?.map((item: ICardItem, index: number) => (
                             <Card
@@ -151,7 +147,11 @@ const LoggedInCanvas: React.FC<Props> = ({ loggedIn = false }) => {
                         deleteCard={deleteCard}
                     />
 
-                    <button className="fab" id="fab" onClick={addCard}>
+                    <button
+                        className="addCard-button"
+                        id="fab"
+                        onClick={addCard}
+                    >
                         +
                     </button>
                 </>

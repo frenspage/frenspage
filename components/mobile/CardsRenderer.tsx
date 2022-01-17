@@ -3,6 +3,7 @@ import { usePageContent } from "../../context/PageContentContext";
 import { ICardItem, TCardItems } from "../../types/types";
 import { usePopup } from "../../context/PopupContext";
 import Card from "./items/Card";
+import FrenCardPopup from "../popups/FrenCardPopup";
 
 interface Props {
     page: any;
@@ -22,23 +23,29 @@ const CardsRenderer: FC<Props> = ({ page = null }) => {
         if (page && content) setCards(content);
     }, [content]);
 
-    const handleClick = () => {};
+    const handleClick = (e: any, item: ICardItem) => {
+        setOpenedCard(item);
+        setFrenCardPopup(true);
+    };
 
     if (!cards) return null;
 
     return (
-        <div className="cards__mobile__container flex flex-column-center">
-            {cards?.map((item: ICardItem, index: number) => {
-                return (
-                    <Card
-                        key={`card__mobile__${index}`}
-                        index={index}
-                        item={item}
-                        handleClick={handleClick}
-                    />
-                );
-            })}
-        </div>
+        <>
+            <div className="cards__mobile__container flex flex-column-center">
+                {cards?.map((item: ICardItem, index: number) => {
+                    return (
+                        <Card
+                            key={`card__mobile__${index}`}
+                            index={index}
+                            item={item}
+                            handleClick={(e: any) => handleClick(e, item)}
+                        />
+                    );
+                })}
+            </div>
+            <FrenCardPopup item={openedCard} setItem={setOpenedCard} />
+        </>
     );
 };
 

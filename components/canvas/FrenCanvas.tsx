@@ -1,47 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { NextPage } from "next";
-import { initLoggedInCanvas } from "../../canvas/main";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import { Stage, Layer, Rect } from "react-konva";
-import EditCardPopup from "../popups/EditCardPopup";
 import Card from "./items/Card";
 import { usePageContent } from "../../context/PageContentContext";
 import { ICardItem, TCardItems } from "../../types/types";
 import FrenCardPopup from "../popups/FrenCardPopup";
 import { usePopup } from "../../context/PopupContext";
-
-const generateShapes = (pX?: number, pY?: number) => {
-    return [...Array(1)].map((_, i) => generateShape(i, pX, pY));
-};
-
-const generateShape = (i: number, pX?: number, pY?: number): ICardItem => {
-    let x =
-        pX ??
-        Math.random() *
-            (window.innerWidth > 200
-                ? window.innerWidth - 200
-                : window.innerWidth);
-    let y =
-        pY ??
-        Math.random() *
-            (window.innerHeight > 300
-                ? window.innerHeight - 300
-                : window.innerHeight);
-    return {
-        id: i.toString(),
-        index: i,
-        x: x,
-        y: y,
-        rotation: 0,
-        isDragging: false,
-        content: {
-            caption: `Caption`,
-            path: "https://lh3.googleusercontent.com/zxbvg7j5quveTfu_gjKK-5PD2DYY5kjJSMkg1gae6sZnmtBsSvxKEu0_hyX67mA2X6gJZPdmy6umGZES91nHoTgqqRIPC1vdQz49ng=s250",
-        },
-        object: null,
-    };
-};
-
-const INITIAL_STATE = generateShapes();
 
 interface Props {
     page: any;
@@ -53,6 +16,11 @@ const FrenCanvas: React.FC<Props> = ({ page }) => {
     const [openedCard, setOpenedCard] = useState<ICardItem | null>(null);
     const { setFrenCardPopup } = usePopup();
 
+    const [windowSize, setWindowSize] = useState({
+        width: window?.innerWidth,
+        height: window?.innerHeight,
+    });
+
     useEffect(() => {
         setFrenPage(page);
     }, [page]);
@@ -60,6 +28,22 @@ const FrenCanvas: React.FC<Props> = ({ page }) => {
     useEffect(() => {
         if (page && content) setCards(content);
     }, [content]);
+
+    /**
+     * update windowSize-state when resizing window,
+     * to rerender canvas
+     **/
+    useLayoutEffect(() => {
+        const updateSize = () => {
+            setWindowSize({
+                width: window.innerWidth,
+                height: window.innerHeight,
+            });
+        };
+        window.addEventListener("resize", updateSize);
+        updateSize();
+        return () => window.removeEventListener("resize", updateSize);
+    }, []);
 
     const handleMouseEnter = (e: any) => {
         const container = e.target?.getStage()?.container();
@@ -84,7 +68,7 @@ const FrenCanvas: React.FC<Props> = ({ page }) => {
     return (
         <>
             <div id="main-canvas-container" className="canvas-container">
-                <Stage width={window?.innerWidth} height={window?.innerHeight}>
+                <Stage width={windowSize.width} height={windowSize.height}>
                     <Layer>
                         {cards?.map((item: ICardItem, index: number) => (
                             <Card

@@ -39,11 +39,14 @@
 
 	@include media-below(tablet)
 		min-width: 90%
-		padding: 3rem 1rem
+		padding: 1rem 0
 
 	&__header
 		height: 4.25rem
 		padding: 1.5rem 2rem
+		@include media-below(phone)
+			padding-top: .5rem
+			height: 3rem
 
 		&--border
 			border-bottom: 2px solid #eee
@@ -61,8 +64,15 @@
 		opacity: 1
 		visibility: visible
 		padding: 1rem 2rem 5rem
+		@include media-below(phone)
+			padding: 1rem 1rem
+			width: 100%
+			max-width: 100%
+
 	&__header--small ~ .content
-			padding: 1rem 2rem
+		padding: 1rem 2rem
+		@include media-below(phone)
+			padding: 1rem 0
 
 	&.transferPopup
 		width: auto

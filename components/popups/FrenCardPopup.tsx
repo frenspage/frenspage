@@ -20,22 +20,22 @@ const FrenCardPopup: FC<Props> = ({ item, setItem }) => {
 
     return (
         <div className={"popupbg" + (!isOpen ? " hidden" : "")}>
-            <div className="popup">
-                <button
-                    className="closepopup"
-                    onClick={closePopup}
-                    tabIndex={0}
-                >
-                    <span>&times;</span>
-                </button>
-                <div
-                    className="content flex flex-direction--column flex-center--vertical padding--none flex--gap"
-                    style={{ width: "100%" }}
-                >
+            <div className="popup width--small">
+                <header className="popup__header">
+                    <button
+                        className="closepopup"
+                        onClick={closePopup}
+                        tabIndex={0}
+                    >
+                        <span>&times;</span>
+                    </button>
+                </header>
+                <div className="content flex flex-direction--column flex-center--vertical padding--none flex--gap">
                     {item.content.path && (
                         <img
                             src={item.content.path}
                             alt={item.content.caption}
+                            className="w-100"
                         />
                     )}
                     {item.content.caption && (
