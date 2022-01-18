@@ -46,7 +46,15 @@ const DonatePopup: FC<Props> = ({ ethAddress }) => {
     };
 
     return (
-        <div className={"popupbg" + (!transferPopup ? " hidden" : "")}>
+        <div
+            className={"popupbg" + (!transferPopup ? " hidden" : "")}
+            onClick={(e) => {
+                e.preventDefault();
+                if (e.target === e.currentTarget) {
+                    setTransferPopup(false);
+                }
+            }}
+        >
             <div className="popup transferPopup">
                 <header className="popup__header">
                     <button

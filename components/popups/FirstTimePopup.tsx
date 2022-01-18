@@ -44,6 +44,12 @@ const FirstTimePopup: React.FC<Props> = ({ editProfilePic, editUsername }) => {
         <div
             id="showfirsttime"
             className={"popupbg" + (!showFirstTimePopup ? " hidden" : "")}
+            onClick={(e) => {
+                e.preventDefault();
+                if (e.target === e.currentTarget) {
+                    setShowFirstTimePopup(false);
+                }
+            }}
         >
             <Confetti
                 width={window.innerWidth}

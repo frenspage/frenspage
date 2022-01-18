@@ -87,7 +87,15 @@ const EditCardPopup: FC<Props> = ({
     };
 
     return (
-        <div className={"popupbg" + (!isOpen ? " hidden" : "")}>
+        <div
+            className={"popupbg" + (!isOpen ? " hidden" : "")}
+            onClick={(e) => {
+                e.preventDefault();
+                if (e.target === e.currentTarget) {
+                    closePopup();
+                }
+            }}
+        >
             <div className="popup width--small">
                 <header className="popup__header popup__header--border">
                     <h3 className="popup__header__title">Add Content</h3>

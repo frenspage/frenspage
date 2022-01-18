@@ -19,7 +19,15 @@ const TwitterAuthPopup: FC<Props> = ({}) => {
     };
 
     return (
-        <div className={"popupbg" + (!twitterAuthPopup ? " hidden" : "")}>
+        <div
+            className={"popupbg" + (!twitterAuthPopup ? " hidden" : "")}
+            onClick={(e) => {
+                e.preventDefault();
+                if (e.target === e.currentTarget) {
+                    setTwitterAuthPopup(false);
+                }
+            }}
+        >
             <div className="popup transferPopup">
                 <header className="popup__header--small">
                     <button

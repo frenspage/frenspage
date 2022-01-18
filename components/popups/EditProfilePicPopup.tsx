@@ -75,6 +75,12 @@ const EditProfilePicPopup: React.FC<Props> = ({ setEditProfilePic }) => {
         <div
             id="profilepicselect_popup"
             className={"popupbg" + (!showEditProfilePicPopup ? " hidden" : "")}
+            onClick={(e) => {
+                e.preventDefault();
+                if (e.target === e.currentTarget) {
+                    setShowEditProfilePicPopup(false);
+                }
+            }}
         >
             <div className="bigpopup">
                 <header className="popup__header--small">

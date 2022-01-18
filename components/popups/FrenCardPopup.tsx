@@ -19,7 +19,15 @@ const FrenCardPopup: FC<Props> = ({ item, setItem }) => {
     if (!item) return null;
 
     return (
-        <div className={"popupbg" + (!isOpen ? " hidden" : "")}>
+        <div
+            className={"popupbg" + (!isOpen ? " hidden" : "")}
+            onClick={(e) => {
+                e.preventDefault();
+                if (e.target === e.currentTarget) {
+                    closePopup();
+                }
+            }}
+        >
             <div className="popup width--small">
                 <header className="popup__header">
                     <button

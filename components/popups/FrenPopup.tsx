@@ -15,7 +15,15 @@ const FrenPopup: React.FC<Props> = ({ pageData, profilePic }) => {
     if (!pageData) return null;
 
     return (
-        <div className={"popupbg" + (!frenPopup ? " hidden" : "")}>
+        <div
+            className={"popupbg" + (!frenPopup ? " hidden" : "")}
+            onClick={(e) => {
+                e.preventDefault();
+                if (e.target === e.currentTarget) {
+                    setFrenPopup(false);
+                }
+            }}
+        >
             <div className="popup">
                 <header className="popup__header">
                     <button
