@@ -18,7 +18,6 @@ const FrenPopup: React.FC<Props> = ({ pageData, profilePic }) => {
         <div
             className={"popupbg" + (!frenPopup ? " hidden" : "")}
             onClick={(e) => {
-                e.preventDefault();
                 if (e.target === e.currentTarget) {
                     setFrenPopup(false);
                 }

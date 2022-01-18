@@ -87,7 +87,6 @@ const EditENSPopup: React.FC<Props> = ({ setEditUsername }) => {
             id="ensselect_popup"
             className={"popupbg" + (!showEditENSPopup ? " hidden" : "")}
             onClick={(e) => {
-                e.preventDefault();
                 if (e.target === e.currentTarget) {
                     setShowEditENSPopup(false);
                 }

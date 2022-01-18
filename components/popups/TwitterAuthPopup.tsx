@@ -22,7 +22,6 @@ const TwitterAuthPopup: FC<Props> = ({}) => {
         <div
             className={"popupbg" + (!twitterAuthPopup ? " hidden" : "")}
             onClick={(e) => {
-                e.preventDefault();
                 if (e.target === e.currentTarget) {
                     setTwitterAuthPopup(false);
                 }

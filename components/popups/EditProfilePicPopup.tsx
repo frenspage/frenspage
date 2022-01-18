@@ -76,7 +76,6 @@ const EditProfilePicPopup: React.FC<Props> = ({ setEditProfilePic }) => {
             id="profilepicselect_popup"
             className={"popupbg" + (!showEditProfilePicPopup ? " hidden" : "")}
             onClick={(e) => {
-                e.preventDefault();
                 if (e.target === e.currentTarget) {
                     setShowEditProfilePicPopup(false);
                 }

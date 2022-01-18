@@ -90,7 +90,6 @@ const EditCardPopup: FC<Props> = ({
         <div
             className={"popupbg" + (!isOpen ? " hidden" : "")}
             onClick={(e) => {
-                e.preventDefault();
                 if (e.target === e.currentTarget) {
                     closePopup();
                 }
