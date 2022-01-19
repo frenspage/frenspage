@@ -20,7 +20,7 @@ export const generateShape = (
         isDragging: false,
         content: {
             caption: `Caption`,
-            path: "/images/punk.png",
+            path: "",
         },
         object: null,
     };

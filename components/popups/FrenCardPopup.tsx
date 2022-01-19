@@ -27,7 +27,7 @@ const FrenCardPopup: FC<Props> = ({ item, setItem }) => {
                 }
             }}
         >
-            <div className="popup width--small">
+            <div className="popup frencard-popup width--small">
                 <header className="popup__header">
                     <button
                         className="closepopup"
