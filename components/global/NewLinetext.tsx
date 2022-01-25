@@ -1,6 +1,6 @@
 import React, { FC, useState, useEffect } from "react";
 import Autolinker from "autolinker";
-import { linkedText } from "../../lib/linkedText";
+import { linkedText } from "../../lib/textLib";
 
 interface Props {
     text: string;

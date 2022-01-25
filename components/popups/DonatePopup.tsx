@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEthereum } from "@fortawesome/free-brands-svg-icons";
 import { usePopup } from "../../context/PopupContext";
 import DonateError from "../errors/DonateError";
+import PopupWrapper from "./PopupWrapper";
 
 interface Props {
     ethAddress: string;
@@ -46,60 +47,45 @@ const DonatePopup: FC<Props> = ({ ethAddress }) => {
     };
 
     return (
-        <div
-            className={"popupbg" + (!transferPopup ? " hidden" : "")}
-            onClick={(e) => {
-                if (e.target === e.currentTarget) {
-                    setTransferPopup(false);
-                }
-            }}
+        <PopupWrapper
+            isOpen={transferPopup}
+            closePopup={() => setTransferPopup(false)}
+            size={"transferPopup"}
+            headerContent={""}
         >
-            <div className="popup transferPopup">
-                <header className="popup__header">
-                    <button
-                        className="closepopup"
-                        onClick={() => setTransferPopup(false)}
-                        tabIndex={0}
-                    >
-                        <span>&times;</span>
-                    </button>{" "}
-                </header>
-                <div className="content flex flex-column-center">
-                    {transferMessage && transferMessage !== "" && (
-                        <div className="paddingBottom">
-                            <p>{transferMessage}</p>
-                        </div>
-                    )}
-                    <p>How much ETH, ser?</p>
-                    <input
-                        className="input width--s center"
-                        value={price}
-                        onChange={(val) => onChange(val.target.value)}
-                        type="number"
-                        step={0.1}
-                        min={0.1}
-                    />
-                    {error && (
-                        <DonateError
-                            errorCode={(error as any).code ?? 400}
-                            errorMessage={error.message ?? ""}
-                        />
-                    )}
-                    <button
-                        className="button black marginTop"
-                        onClick={() => sendDonation()}
-                        disabled={isFetching}
-                        tabIndex={0}
-                    >
-                        Send donation{" "}
-                        <FontAwesomeIcon
-                            icon={faEthereum}
-                            style={{ fontSize: "1rem", height: "1rem" }}
-                        />
-                    </button>
+            {transferMessage && transferMessage !== "" && (
+                <div className="paddingBottom">
+                    <p>{transferMessage}</p>
                 </div>
-            </div>
-        </div>
+            )}
+            <p>How much ETH, ser?</p>
+            <input
+                className="input width--s center"
+                value={price}
+                onChange={(val) => onChange(val.target.value)}
+                type="number"
+                step={0.1}
+                min={0.1}
+            />
+            {error && (
+                <DonateError
+                    errorCode={(error as any).code ?? 400}
+                    errorMessage={error.message ?? ""}
+                />
+            )}
+            <button
+                className="button black marginTop"
+                onClick={() => sendDonation()}
+                disabled={isFetching}
+                tabIndex={0}
+            >
+                Send donation{" "}
+                <FontAwesomeIcon
+                    icon={faEthereum}
+                    style={{ fontSize: "1rem", height: "1rem" }}
+                />
+            </button>
+        </PopupWrapper>
     );
 };
 

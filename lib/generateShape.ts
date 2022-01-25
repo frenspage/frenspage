@@ -9,8 +9,8 @@ export const generateShape = (
     pX?: number,
     pY?: number,
 ): ICardItem => {
-    let x = pX ?? Math.floor(Math.random() * 90);
-    let y = pY ?? Math.floor(Math.random() * 90);
+    let x = pX ?? Math.floor(Math.random() * (90 - 10) + 10);
+    let y = pY ?? Math.floor(Math.random() * (90 - 10) + 10);
     return {
         id: i.toString(),
         index: i,

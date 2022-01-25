@@ -1,7 +1,7 @@
 import React, { FC, useState, useEffect } from "react";
 import { usePopup } from "../../context/PopupContext";
 import { ICardItem } from "../../types/types";
-import { linkedText, linkedTextWithoutBreak } from "../../lib/linkedText";
+import { linkedText, linkedTextWithoutBreak } from "../../lib/textLib";
 
 interface Props {
     item: ICardItem | null;
@@ -47,7 +47,11 @@ const FrenCardPopup: FC<Props> = ({ item, setItem }) => {
                     )}
                     {item.content.caption && (
                         <p
-                            className="centertext"
+                            className={
+                                item.content.path
+                                    ? "centertext w-100"
+                                    : "justifytext w-100"
+                            }
                             dangerouslySetInnerHTML={{
                                 __html: linkedText(item.content.caption),
                             }}

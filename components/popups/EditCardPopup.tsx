@@ -2,7 +2,7 @@ import React, { FC, useState, useEffect } from "react";
 import { ICardItem } from "../../types/types";
 import { usePopup } from "../../context/PopupContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faSave, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { Web3Storage } from "web3.storage";
 import {
     createWithNewFileName,
@@ -12,6 +12,7 @@ import {
 } from "../../lib/storage";
 import Loader from "../global/Loader";
 import LoadingSpinner from "../global/LoadingSpinner";
+import PopupWrapper from "./PopupWrapper";
 
 interface Props {
     openedCard: ICardItem | null;
@@ -87,102 +88,70 @@ const EditCardPopup: FC<Props> = ({
     };
 
     return (
-        <div
-            className={"popupbg" + (!isOpen ? " hidden" : "")}
-            onClick={(e) => {
-                if (e.target === e.currentTarget) {
-                    closePopup();
-                }
-            }}
+        <PopupWrapper
+            isOpen={isOpen}
+            closePopup={closePopup}
+            size={"small"}
+            headerContent={"Add Content"}
         >
-            <div className="popup width--small">
-                <header className="popup__header popup__header--border">
-                    <h3 className="popup__header__title">Add Content</h3>
-                    <button
-                        className="closepopup"
-                        onClick={closePopup}
-                        tabIndex={0}
-                    >
-                        <span>&times;</span>
-                    </button>
-                </header>
-                <div className="flex flex-direction--column flex-space-between h--100">
-                    <div
-                        className="content flex flex-direction--column flex-center--vertical flex--gap padding--none"
-                        style={{ width: "100%" }}
-                    >
-                        <div className="file-upload">
-                            {(file || filePath) && (
-                                <img
-                                    src={
-                                        file
-                                            ? URL.createObjectURL(file)
-                                            : filePath
-                                    }
-                                    alt="image to upload"
-                                    className="file-upload__preview-image"
-                                />
-                            )}
-                            <input
-                                className="file-upload__file-input"
-                                type="file"
-                                multiple={false}
-                                onChange={(e: any) =>
-                                    setFile(e?.target?.files[0])
-                                }
-                            />
-                        </div>
-
-                        <textarea
-                            className="textarea w-100"
-                            name="caption"
-                            value={caption}
-                            onChange={(e) => setCaption(e.target.value)}
-                            placeholder="your caption"
-                            rows={4}
-                        />
-                        {/*<input
-                            className="input"
-                            type="text"
-                            name="filePath"
-                            value={filePath}
-                            onChange={(e) => setFilePath(e.target.value)}
-                            placeholder="File Path (string for testing)"
-                        />*/}
-                        <div className="flex spaceBetween w-100">
-                            <button
-                                className="button black"
-                                onClick={() => deleteCard(openedCard)}
-                            >
-                                <FontAwesomeIcon
-                                    icon={faTrash}
-                                    style={{
-                                        fontSize: "1rem",
-                                        height: "1rem",
-                                    }}
-                                />
-                            </button>
-
-                            <button
-                                className="button black"
-                                onClick={() =>
-                                    saveItemContent(
-                                        caption,
-                                        filePath,
-                                        openedCard as ICardItem,
-                                    )
-                                }
-                            >
-                                Save
-                            </button>
-                        </div>
-                        <div className="flex flex-column-center w-100">
-                            {isLoadingUpload && <LoadingSpinner />}
-                        </div>
-                    </div>
-                </div>
+            <div className="file-upload">
+                {(file || filePath) && (
+                    <img
+                        src={file ? URL.createObjectURL(file) : filePath}
+                        alt="image to upload"
+                        className="file-upload__preview-image"
+                    />
+                )}
+                <input
+                    className="file-upload__file-input"
+                    type="file"
+                    multiple={false}
+                    onChange={(e: any) => setFile(e?.target?.files[0])}
+                />
             </div>
-        </div>
+
+            <textarea
+                className="textarea w-100 marginTop"
+                name="caption"
+                value={caption}
+                onChange={(e) => setCaption(e.target.value)}
+                placeholder="your caption"
+                rows={5}
+            />
+            <footer className="flex spaceBetween w-100 paddingTop">
+                <button
+                    className="button disabled"
+                    onClick={() => deleteCard(openedCard)}
+                >
+                    <FontAwesomeIcon
+                        icon={faTrash}
+                        style={{
+                            fontSize: "1rem",
+                            height: "1rem",
+                        }}
+                    />
+                </button>
+
+                <button
+                    className="button black"
+                    onClick={() =>
+                        saveItemContent(
+                            caption,
+                            filePath,
+                            openedCard as ICardItem,
+                        )
+                    }
+                >
+                    <FontAwesomeIcon
+                        icon={faSave}
+                        style={{ fontSize: "1.4rem", height: "1.4rem" }}
+                    />
+                </button>
+            </footer>
+            <div className="flex flex-column-center w-100">
+                {isLoadingUpload && <LoadingSpinner />}
+            </div>
+        </PopupWrapper>
     );
 };
 

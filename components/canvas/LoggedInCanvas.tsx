@@ -118,7 +118,10 @@ const LoggedInCanvas: React.FC<Props> = ({ loggedIn = false }) => {
     return (
         <>
             <div id="main-canvas-container" className="canvas-container">
-                <Stage width={windowSize.width} height={windowSize.height}>
+                <Stage
+                    width={windowSize.width ?? window.innerWidth}
+                    height={windowSize.height ?? window.innerHeight}
+                >
                     <Layer>
                         {cards?.map((item: ICardItem, index: number) => (
                             <Card

@@ -1,6 +1,7 @@
 import React, { FC, useState } from "react";
 import { usePopup } from "../../context/PopupContext";
 import { useUser } from "../../context/UserContext";
+import PopupWrapper from "./PopupWrapper";
 
 interface Props {}
 
@@ -19,45 +20,30 @@ const TwitterAuthPopup: FC<Props> = ({}) => {
     };
 
     return (
-        <div
-            className={"popupbg" + (!twitterAuthPopup ? " hidden" : "")}
-            onClick={(e) => {
-                if (e.target === e.currentTarget) {
-                    setTwitterAuthPopup(false);
-                }
-            }}
+        <PopupWrapper
+            isOpen={twitterAuthPopup}
+            closePopup={() => setTwitterAuthPopup(false)}
+            size={"transferPopup"}
+            headerContent={""}
         >
-            <div className="popup transferPopup">
-                <header className="popup__header--small">
-                    <button
-                        className="closepopup"
-                        onClick={() => setTwitterAuthPopup(false)}
-                        tabIndex={0}
-                    >
-                        <span>&times;</span>
-                    </button>{" "}
-                </header>
-                <div className="content flex flex-column-center">
-                    <p className="paddingTop paddingBottom">
-                        want to add your twitter acc, ser?
-                    </p>
-                    <input
-                        className="input center font--md"
-                        value={username}
-                        onChange={(val) => setUsername(val.target.value)}
-                        type="text"
-                        placeholder="@username"
-                    />
-                    <button
-                        className="marginTop button black"
-                        onClick={() => saveTwitter()}
-                        tabIndex={0}
-                    >
-                        {twitter ? "update" : "add"}
-                    </button>
-                </div>
-            </div>
-        </div>
+            <p className="paddingTop paddingBottom">
+                want to add your twitter acc, ser?
+            </p>
+            <input
+                className="input center font--md"
+                value={username}
+                onChange={(val) => setUsername(val.target.value)}
+                type="text"
+                placeholder="@username"
+            />
+            <button
+                className="marginTop button black"
+                onClick={() => saveTwitter()}
+                tabIndex={0}
+            >
+                {twitter ? "update" : "add"}
+            </button>
+        </PopupWrapper>
     );
 };
 

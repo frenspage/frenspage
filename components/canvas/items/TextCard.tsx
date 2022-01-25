@@ -1,6 +1,7 @@
 import React, { FC, useRef, useEffect, useState } from "react";
 import { Group, Image, Rect, Text } from "react-konva";
 import { ICardProps } from "../../../types/types";
+import { truncateText } from "../../../lib/textLib";
 
 interface Props extends ICardProps {}
 
@@ -76,12 +77,12 @@ const TextCard: FC<Props> = (props) => {
                 shadowOpacity={item.isDragging ? 0.2 : 0.1}
             />
             <Text
-                text={item.content.caption}
+                text={truncateText(item.content.caption)}
                 fontSize={14}
                 fontFamily={"OCR A Std"}
                 align={"center"}
                 offset={{ x: 0, y: 0 }}
-                padding={8}
+                padding={10}
                 width={200}
                 ref={textNode}
             />

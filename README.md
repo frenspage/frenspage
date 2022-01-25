@@ -14,7 +14,7 @@ All the new Web3 stuff is pretty cool.
 
 This project is based on Next.js using the [Moralis.io API](https://moralis.io) and the [OpenSea API](https://opensea.io).
 
-If you want to join the dev team and help us buidl, feel free to ask for a dev role in the [frens Discord](https://discord.gg/gARsV8SH).
+If you want to join the dev team and help us build, feel free to ask for a dev role in the [frens Discord](https://discord.gg/gARsV8SH).
 
 
 ## Getting Started

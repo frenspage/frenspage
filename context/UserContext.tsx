@@ -30,6 +30,7 @@ interface ContextProps {
     readonly disconnect: () => void;
     readonly hasClaimed: () => boolean | any;
     readonly saveProfile: (editPfp: any, editBio: string) => any;
+    readonly deleteUser: () => boolean;
 }
 
 export const UserContext = createContext<ContextProps>({
@@ -54,6 +55,7 @@ export const UserContext = createContext<ContextProps>({
     disconnect: () => null,
     hasClaimed: () => null,
     saveProfile: () => null,
+    deleteUser: () => false,
 });
 
 export const UserProvider: React.FC = ({ children }) => {
@@ -206,7 +208,10 @@ export const UserProvider: React.FC = ({ children }) => {
                     .then((response) => {
                         setPfp(response);
                     })
-                    .catch((err) => console.error(err));
+                    .catch((err) => {
+                        console.error(err);
+                        //alert(err.message);
+                    });
             } else {
                 //console.log("No PFP yet");
             }
@@ -322,6 +327,12 @@ export const UserProvider: React.FC = ({ children }) => {
         }
     };
 
+    /** Deletes the user and all its data **/
+    const deleteUser = () => {
+        console.log("Delete user");
+        return false;
+    };
+
     return (
         <UserContext.Provider
             value={{
@@ -346,6 +357,7 @@ export const UserProvider: React.FC = ({ children }) => {
                 disconnect,
                 hasClaimed,
                 saveProfile,
+                deleteUser,
             }}
         >
             {children}

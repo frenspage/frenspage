@@ -1,10 +1,11 @@
-import React, { FC, useState, useEffect } from "react";
+import React, { FC } from "react";
 import { ICardProps } from "../../../types/types";
+import { truncateText, breakText } from "../../../lib/textLib";
 
 interface Props extends ICardProps {}
 
 const Card: FC<Props> = (props) => {
-    const { index, item, handleClick } = props;
+    const { item, handleClick } = props;
 
     return (
         <div className="card__mobile" onClick={handleClick}>
@@ -12,7 +13,12 @@ const Card: FC<Props> = (props) => {
                 <img src={item.content.path} alt={item.content.caption ?? ""} />
             )}
             {item.content.caption && (
-                <p className="centertext">{item.content.caption}</p>
+                <p
+                    className="centertext"
+                    dangerouslySetInnerHTML={{
+                        __html: breakText(truncateText(item.content.caption)),
+                    }}
+                />
             )}
         </div>
     );

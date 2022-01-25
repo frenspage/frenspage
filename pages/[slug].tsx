@@ -6,7 +6,7 @@ import { useMoralis } from "react-moralis";
 import UserLoggedIn from "../components/user/UserLoggedIn";
 import FrenPopup from "../components/popups/FrenPopup";
 import { usePopup } from "../context/PopupContext";
-import { punifyCode } from "../lib/lib";
+import { punifyCode } from "../lib/textLib";
 import Loader from "../components/global/Loader";
 import DonatePopup from "../components/popups/DonatePopup";
 import { useRouter } from "next/router";
