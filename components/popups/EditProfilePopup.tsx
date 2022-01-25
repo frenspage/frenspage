@@ -197,7 +197,7 @@ const EditProfilePopup: React.FC<Props> = ({
                 </div>
             )}
 
-            <footer className="flex spaceBetween w-100 paddingTop">
+            <footer className="flex spaceBetween w-100 paddingTop--big">
                 <button
                     className="button grey"
                     onClick={() => {
