@@ -108,6 +108,7 @@ const EditCardPopup: FC<Props> = ({
                     type="file"
                     multiple={false}
                     onChange={handleFileChange}
+                    accept=".gif,.jpg,.jpeg,.png"
                 />
             </div>
 
