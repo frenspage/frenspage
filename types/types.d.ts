@@ -47,3 +47,20 @@ export interface ICardProps {
     handleMouseLeave?: (e: any) => void;
     isUsersOwnPage?: boolean;
 }
+
+/** AWS S3 TYPES **/
+interface IS3Config {
+    bucketName: string;
+    dirName: string;
+    region: string;
+    accessKeyId: string;
+    secretAccessKey: string;
+    s3Url: string;
+}
+
+export interface IS3UploadResponse {
+    bucket?: string;
+    key?: string;
+    location?: string;
+    signedRequest?: any;
+}

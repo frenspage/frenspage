@@ -20,7 +20,7 @@ const EditENSPopup: React.FC<Props> = ({ setEditUsername }) => {
 
     const { showEditENSPopup, setShowEditENSPopup } = usePopup();
     const { Moralis } = useMoralis();
-    const { user, setEnsDomain } = useUser();
+    const { user, setEnsDomain, setIsOpenseaDown } = useUser();
 
     const fetcher = async () => {
         let itemsPerPage: number = maxItemsPerPage;
@@ -31,6 +31,7 @@ const EditENSPopup: React.FC<Props> = ({ setEditUsername }) => {
                 headers: {
                     "X-API-KEY": process.env.NEXT_PUBLIC_OPENSEEKEY + "",
                 },
+                mode: "no-cors",
             };
 
             await fetchPage(ethAddress, options)
@@ -41,7 +42,7 @@ const EditENSPopup: React.FC<Props> = ({ setEditUsername }) => {
                     } else {
                         setHasMore(false);
                     }
-                    setEnsNames((old) => [...old, ...res?.assets]);
+                    //setEnsNames((old) => [...old, ...res?.assets]);
                     setFetchOffset((old) => old + itemsPerPage);
                 })
                 .catch((err) => (itemsPerPage = 0));
@@ -56,7 +57,10 @@ const EditENSPopup: React.FC<Props> = ({ setEditUsername }) => {
             .then((response) => {
                 result = response;
             })
-            .catch((err) => console.error(err));
+            .catch((err) => {
+                console.error(err);
+                setIsOpenseaDown(true);
+            });
         return result;
     };
 

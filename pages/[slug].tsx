@@ -41,7 +41,14 @@ const UserPage: NextPage<Props> = ({}) => {
     const slug = punifyCode(lowercasedSlug);
 
     const { isInitialized, Moralis } = useMoralis();
-    const { user, isAuthenticated, authenticate, disconnect } = useUser();
+    const {
+        user,
+        isAuthenticated,
+        authenticate,
+        disconnect,
+        isOpenseaDown,
+        setIsOpenseaDown,
+    } = useUser();
 
     const { setFrenPopup } = usePopup();
 
@@ -97,7 +104,13 @@ const UserPage: NextPage<Props> = ({}) => {
                     if (pfp && pfp?.isDataAvailable()) {
                         let ta = pfp.get("token_address");
                         let ti = pfp.get("token_id");
-                        const options = { method: "GET" };
+                        const options: any = {
+                            method: "GET",
+                            headers: {
+                                "X-API-KEY":
+                                    process.env.NEXT_PUBLIC_OPENSEEKEY + "",
+                            },
+                        };
                         await fetch(
                             `https://api.opensea.io/api/v1/asset/${ta}/${ti}/`,
                             options,
@@ -110,7 +123,10 @@ const UserPage: NextPage<Props> = ({}) => {
                                 setPfp(response);
                                 setIsLoading(false);
                             })
-                            .catch((err) => setError(err));
+                            .catch((err) => {
+                                setError(err);
+                                setIsOpenseaDown(true);
+                            });
                     } else {
                         /**********************
                          *  User has no PFP

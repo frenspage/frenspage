@@ -1,18 +1,12 @@
 import React, { FC, useState, useEffect } from "react";
-import { ICardItem } from "../../types/types";
+import { ICardItem, IS3Config, IS3UploadResponse } from "../../types/types";
 import { usePopup } from "../../context/PopupContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faTrash } from "@fortawesome/free-solid-svg-icons";
-import { Web3Storage } from "web3.storage";
-import {
-    createWithNewFileName,
-    retrieveFiles,
-    storeFiles,
-    storeWithProgress,
-} from "../../lib/storage";
-import Loader from "../global/Loader";
+import { useS3Upload } from "next-s3-upload";
 import LoadingSpinner from "../global/LoadingSpinner";
 import PopupWrapper from "./PopupWrapper";
+import { createWithNewFileName } from "../../lib/storage";
 
 interface Props {
     openedCard: ICardItem | null;
@@ -34,7 +28,7 @@ const EditCardPopup: FC<Props> = ({
     const [caption, setCaption] = useState(openedCard?.content?.caption ?? "");
     const [filePath, setFilePath] = useState(openedCard?.content?.path ?? "");
     const [file, setFile] = useState<any>(null);
-    const [uploadProgress, setUploadProgress] = useState("0");
+    const { uploadToS3 } = useS3Upload();
 
     useEffect(() => {
         setCaption(openedCard?.content?.caption ?? "");
@@ -45,18 +39,25 @@ const EditCardPopup: FC<Props> = ({
         setIsOpen(false);
         setOpenedCard(null);
         setFile(null);
-        setUploadProgress("0");
     };
 
-    const uploadImage = async () => {
-        if (file) {
-            const newFile = createWithNewFileName(file);
-            let cid = await storeFiles(newFile); //storeWithProgress(file, setUploadProgress);
-            let retrievedFile = await retrieveFiles(cid);
-            let path = `https://${cid}.ipfs.dweb.link/${retrievedFile.name}`;
-            return path;
-        }
+    const handleFileChange = async (e: any) => {
+        let pFile = e?.target?.files[0];
+        let newFile: File = createWithNewFileName(pFile);
+        console.log("file: ", newFile);
+
+        setFile(newFile);
     };
+
+    async function uploadImage() {
+        if (file) {
+            let { url } = await uploadToS3(file);
+            console.log("url: ", url);
+            return url;
+        } else {
+            return null;
+        }
+    }
 
     const saveItemContent = async (
         caption: string,
@@ -106,7 +107,7 @@ const EditCardPopup: FC<Props> = ({
                     className="file-upload__file-input"
                     type="file"
                     multiple={false}
-                    onChange={(e: any) => setFile(e?.target?.files[0])}
+                    onChange={handleFileChange}
                 />
             </div>
 

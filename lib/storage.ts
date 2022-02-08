@@ -1,12 +1,6 @@
-import { Web3Storage } from "web3.storage";
+/** File and Storage library **/
 
-export const makeStorageClient = () => {
-    return new Web3Storage({
-        token: process.env.NEXT_PUBLIC_WEB3STORAGE_TOKEN ?? "",
-    });
-};
-
-export const createWithNewFileName = (file: File) => {
+export const createWithNewFileName = (file: File): File => {
     let fileName = `${Math.floor(Math.random() * 1000)}_${+new Date()}_${
         file.name
     }`;
@@ -29,55 +23,4 @@ export const makeFileObjects = () => {
         new File([blob], "hello.json"),
     ];
     return files;
-};
-
-export const storeFiles = async (file: any) => {
-    const client = makeStorageClient();
-    const cid = await client.put([file]);
-    //console.log("stored files with cid:", cid);
-    return cid;
-};
-
-export const storeWithProgress = (
-    file: any,
-    setUploadProgress: (val: any) => void,
-) => {
-    if (!file) return;
-    // show the root cid as soon as it's ready
-    const onRootCidReady = (cid: any) => {
-        console.log("uploading file with cid:", cid);
-    };
-
-    // when each chunk is stored, update the percentage complete and display
-    const totalSize = file.size;
-    let uploaded = 0;
-
-    const onStoredChunk = (size: any) => {
-        uploaded += size;
-        const pct = totalSize / uploaded;
-        const number = pct.toFixed(2);
-        setUploadProgress(number);
-        console.log(`Uploading... ${number}% complete`);
-    };
-
-    // makeStorageClient returns an authorized Web3.Storage client instance
-    const client = makeStorageClient();
-
-    // client.put will invoke our callbacks during the upload
-    // and return the root cid when the upload completes
-    return client.put([file], { onRootCidReady, onStoredChunk });
-};
-
-export const retrieveFiles = async (cid: any) => {
-    const client = makeStorageClient();
-    const res = await client.get(cid);
-    if (!res?.ok) {
-        throw new Error(`failed to get ${cid}`);
-    }
-
-    const files: any = await res.files();
-    if (files.length > 0) {
-        return files[0];
-    }
-    return null;
 };

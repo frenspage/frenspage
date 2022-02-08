@@ -31,6 +31,8 @@ interface ContextProps {
     readonly hasClaimed: () => boolean | any;
     readonly saveProfile: (editPfp: any, editBio: string) => any;
     readonly deleteUser: () => boolean;
+    readonly isOpenseaDown: boolean;
+    readonly setIsOpenseaDown: (val: boolean) => void;
 }
 
 export const UserContext = createContext<ContextProps>({
@@ -56,6 +58,8 @@ export const UserContext = createContext<ContextProps>({
     hasClaimed: () => null,
     saveProfile: () => null,
     deleteUser: () => false,
+    isOpenseaDown: false,
+    setIsOpenseaDown: () => null,
 });
 
 export const UserProvider: React.FC = ({ children }) => {
@@ -78,6 +82,7 @@ export const UserProvider: React.FC = ({ children }) => {
     const [page, setPage] = useState<any>(null);
     const [biography, setBiography] = useState<string | any>(null);
     const [twitter, setTwitter] = useState<string>("");
+    const [isOpenseaDown, setIsOpenseaDown] = useState(false);
 
     /** saves all data in states when loggedin (user-obeject changes) **/
     useEffect(() => {
@@ -199,7 +204,12 @@ export const UserProvider: React.FC = ({ children }) => {
             if (object && object.isDataAvailable()) {
                 let ta = object.get("token_address");
                 let ti = object.get("token_id");
-                const options = { method: "GET" };
+                const options: any = {
+                    method: "GET",
+                    headers: {
+                        "X-API-KEY": process.env.NEXT_PUBLIC_OPENSEEKEY + "",
+                    },
+                };
                 fetch(
                     `https://api.opensea.io/api/v1/asset/${ta}/${ti}/`,
                     options,
@@ -209,8 +219,8 @@ export const UserProvider: React.FC = ({ children }) => {
                         setPfp(response);
                     })
                     .catch((err) => {
-                        console.error(err);
-                        //alert(err.message);
+                        console.error("usercontext loadPfp error: ", err);
+                        setIsOpenseaDown(true);
                     });
             } else {
                 //console.log("No PFP yet");
@@ -358,6 +368,8 @@ export const UserProvider: React.FC = ({ children }) => {
                 hasClaimed,
                 saveProfile,
                 deleteUser,
+                isOpenseaDown,
+                setIsOpenseaDown,
             }}
         >
             {children}
