@@ -28,6 +28,7 @@ const EditCardPopup: FC<Props> = ({
     const [caption, setCaption] = useState(openedCard?.content?.caption ?? "");
     const [filePath, setFilePath] = useState(openedCard?.content?.path ?? "");
     const [file, setFile] = useState<any>(null);
+    const [error, setError] = useState<string>("");
     const { uploadToS3 } = useS3Upload();
 
     useEffect(() => {
@@ -44,7 +45,13 @@ const EditCardPopup: FC<Props> = ({
     const handleFileChange = async (e: any) => {
         let pFile = e?.target?.files[0];
         let newFile: File = createWithNewFileName(pFile);
-        setFile(newFile);
+        let size = newFile.size / 1024 / 1024;
+        if (size < 3.1) {
+            setFile(newFile);
+            setError("");
+        } else {
+            setError("Filesize is too large. \nmax. 3 MB");
+        }
     };
 
     async function uploadImage() {
@@ -117,6 +124,14 @@ const EditCardPopup: FC<Props> = ({
                 placeholder="your caption"
                 rows={5}
             />
+            {error && error !== "" && (
+                <div
+                    className="paddingTop centertext"
+                    style={{ fontSize: ".8rem" }}
+                >
+                    <p>{error}</p>
+                </div>
+            )}
             <footer className="flex spaceBetween w-100 paddingTop">
                 <button
                     className="button disabled"
