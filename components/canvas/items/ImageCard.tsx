@@ -32,7 +32,8 @@ const ImageCard: FC<Props> = (props) => {
             setMousePosition({ x: e.clientX, y: e.clientY });
             if (item.isDragging) {
                 if (oldMousePosition.x > mousePosition.x) setRotation(3);
-                else setRotation(-3);
+                else if (oldMousePosition.x < mousePosition.x) setRotation(-3);
+                else setRotation(0);
                 item.rotation = rotation;
             }
         };
