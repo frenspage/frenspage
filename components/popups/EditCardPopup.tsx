@@ -44,15 +44,12 @@ const EditCardPopup: FC<Props> = ({
     const handleFileChange = async (e: any) => {
         let pFile = e?.target?.files[0];
         let newFile: File = createWithNewFileName(pFile);
-        console.log("file: ", newFile);
-
         setFile(newFile);
     };
 
     async function uploadImage() {
         if (file) {
             let { url } = await uploadToS3(file);
-            console.log("url: ", url);
             return url;
         } else {
             return null;
