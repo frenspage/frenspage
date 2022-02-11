@@ -5,7 +5,7 @@ import { useMoralis } from "react-moralis";
 
 interface ContextProps {
     readonly content: TCardItems;
-    readonly addContent: (val: any) => void;
+    readonly addContent: (val: any) => Promise<boolean>;
     readonly deleteContent: (val: any) => void;
     readonly modifyContentItem: (val: any) => void;
     readonly setFrenPage: (val: any) => void;
@@ -13,7 +13,7 @@ interface ContextProps {
 
 export const PageContentContext = createContext<ContextProps>({
     content: [],
-    addContent: () => null,
+    addContent: () => Promise.resolve(false),
     deleteContent: () => null,
     modifyContentItem: () => null,
     setFrenPage: () => null,
@@ -21,7 +21,7 @@ export const PageContentContext = createContext<ContextProps>({
 
 export const PageContextProvider: React.FC = ({ children }) => {
     const { Moralis } = useMoralis();
-    const { page: userPage } = useUser();
+    const { page: userPage, user, ensDomain } = useUser();
     const [page, setPage] = useState<any>(userPage);
     const [content, setContent] = useState<any>([]);
 
@@ -61,7 +61,7 @@ export const PageContextProvider: React.FC = ({ children }) => {
             const SlugObject = Moralis.Object.extend("Content");
             const query = new Moralis.Query(SlugObject);
             query.equalTo("page", page);
-            query.descending("createdAt");
+            query.ascending("createdAt");
             const object: any = await query.find();
 
             if (object) {
@@ -75,7 +75,7 @@ export const PageContextProvider: React.FC = ({ children }) => {
         }
     };
 
-    const addContent = (newItem: ICardItem) => {
+    const addContent = async (newItem: ICardItem) => {
         if (!newItem || !page) return;
 
         let ContentObject = Moralis.Object.extend("Content");
@@ -88,7 +88,7 @@ export const PageContextProvider: React.FC = ({ children }) => {
         contentItem.set("x", newItem?.x ?? 16);
         contentItem.set("y", newItem?.y ?? 16);
 
-        contentItem
+        return await contentItem
             .save()
             .then((item: any) => {
                 let card: ICardItem = getCardItemFromObject(
@@ -96,24 +96,62 @@ export const PageContextProvider: React.FC = ({ children }) => {
                     content.length,
                 );
                 setContent((old: any) => [...old, card]);
+                return true;
             })
             .catch((error: any) => {
                 // Execute any logic that should take place if the save fails.
                 // error is a Moralis.Error with an error code and message.
                 alert("Failed to save card, with error code: " + error.message);
+                return false;
             });
     };
 
     const deleteContent = async (item: ICardItem) => {
         if (!item || !page) return;
+        let tempItemContent = item.content;
+
         await item.object
             ?.destroy()
             .then(async (res: any) => {
-                //console.log("cardWasDeleted: ", res.id);
-                //console.log("contentBeforeDelete: ", content);
+                console.log("cardWasDeleted: ", res);
+                console.log("contentBeforeDelete: ", tempItemContent);
+
+                if (tempItemContent.path && tempItemContent.path !== "") {
+                    const bodyData = {
+                        imageUrl: tempItemContent.path,
+                        userId: ensDomain?.name ?? "",
+                    };
+
+                    await fetch("/api/s3-delete", {
+                        method: "POST",
+                        body: JSON.stringify(bodyData),
+                    })
+                        .then((res) => res.json())
+                        .then((res) =>
+                            console.log("Delete image response: ", res),
+                        )
+                        .catch((err) =>
+                            console.error("delete image error: ", err),
+                        );
+                }
+                /*let filteredItems = content.filter(
+                    (it: ICardItem) => it.id !== res.id,
+                );
+
+                let reindexedItems = filteredItems.map(
+                    (it: ICardItem, itIndex: number) => {
+                        return { ...it, index: itIndex };
+                    },
+                );
+
                 await setContent((old: any) =>
                     old.filter((item: ICardItem) => item.id !== res.id),
                 );
+
+                await setContent(reindexedItems);
+
+                /** AWS IMAGE DELETE **/
+                await loadContent();
             })
             .catch((err: any) => console.error(err));
     };

@@ -1,5 +1,10 @@
 import React, { FC, useState, useEffect } from "react";
-import { ICardItem, IS3Config, IS3UploadResponse } from "../../types/types";
+import {
+    ICardItem,
+    IS3Config,
+    IS3UploadResponse,
+    TCardItems,
+} from "../../types/types";
 import { usePopup } from "../../context/PopupContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faTrash } from "@fortawesome/free-solid-svg-icons";
@@ -7,6 +12,7 @@ import { useS3Upload } from "next-s3-upload";
 import LoadingSpinner from "../global/LoadingSpinner";
 import PopupWrapper from "./PopupWrapper";
 import { createWithNewFileName } from "../../lib/storage";
+import { usePageContent } from "../../context/PageContentContext";
 
 interface Props {
     openedCard: ICardItem | null;
@@ -14,6 +20,7 @@ interface Props {
     deleteCard: (item: ICardItem | null) => void;
     isLoadingUpload: boolean;
     setLoadingUpload: (val: boolean) => void;
+    setCards: (val: TCardItems) => void;
 }
 
 const EditCardPopup: FC<Props> = ({
@@ -22,9 +29,10 @@ const EditCardPopup: FC<Props> = ({
     deleteCard,
     isLoadingUpload,
     setLoadingUpload,
+    setCards,
 }) => {
     const { editCardPopup: isOpen, setEditCardPopup: setIsOpen } = usePopup();
-
+    const { addContent } = usePageContent();
     const [caption, setCaption] = useState(openedCard?.content?.caption ?? "");
     const [filePath, setFilePath] = useState(openedCard?.content?.path ?? "");
     const [file, setFile] = useState<any>(null);
@@ -70,25 +78,33 @@ const EditCardPopup: FC<Props> = ({
     ) => {
         setLoadingUpload(true);
         if (item) {
+            console.log("Save new Card");
             if (file) {
                 let uploadedFilePath = await uploadImage();
                 //if (filePath !== item.content.path) {
                 if (uploadedFilePath) {
                     item.content.path = uploadedFilePath;
-                    item.object.set("filePath", uploadedFilePath);
+                    item.object?.set("filePath", uploadedFilePath);
                 }
             }
             if (caption !== item.content.caption) {
                 item.content.caption = caption;
-                item.object.set("caption", caption);
+                item.object?.set("caption", caption);
             }
 
-            item.object.save().then((res: any) => {
-                if (res) {
-                    closePopup();
-                }
+            if (item.object) {
+                item.object.save().then((res: any) => {
+                    if (res) {
+                        closePopup();
+                    }
+                    setLoadingUpload(false);
+                });
+            } else {
+                let isSaved = await addContent(item).then((res) => res);
+                if (isSaved) closePopup();
                 setLoadingUpload(false);
-            });
+                setCards((old: any) => [...old, item]);
+            }
         }
     };
 

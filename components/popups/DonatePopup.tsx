@@ -5,6 +5,7 @@ import { faEthereum } from "@fortawesome/free-brands-svg-icons";
 import { usePopup } from "../../context/PopupContext";
 import DonateError from "../errors/DonateError";
 import PopupWrapper from "./PopupWrapper";
+import { usePageContent } from "../../context/PageContentContext";
 
 interface Props {
     ethAddress: string;

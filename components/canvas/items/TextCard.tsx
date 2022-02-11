@@ -54,7 +54,7 @@ const TextCard: FC<Props> = (props) => {
             id={item.id}
             overflow={"hidden"}
             width={200}
-            height={textNode?.current?._partialTextY + 24}
+            height={textNode?.current?._partialTextY + 24 || 200}
             cursor={"pointer"}
             rotation={item.rotation}
             offset={{

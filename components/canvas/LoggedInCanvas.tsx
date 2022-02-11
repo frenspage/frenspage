@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { NextPage } from "next";
 import { initLoggedInCanvas } from "../../canvas/main";
 import { Stage, Layer, Rect, Text } from "react-konva";
@@ -19,6 +19,7 @@ const LoggedInCanvas: React.FC<Props> = ({ loggedIn = false }) => {
     const [cards, setCards] = useState<TCardItems>(content);
     const [openedCard, setOpenedCard] = useState<ICardItem | null>(null);
     const { setEditCardPopup } = usePopup();
+    const stage = useRef<any>(null);
 
     const [windowSize, setWindowSize] = useState({
         width: window?.innerWidth,
@@ -46,8 +47,12 @@ const LoggedInCanvas: React.FC<Props> = ({ loggedIn = false }) => {
     const addCard = () => {
         let i = cards?.length;
         let card = generateShape(i ?? 0, undefined, undefined);
-        setCards((old: any) => [...old, card]);
-        addContent(card);
+
+        setEditCardPopup(true);
+        setOpenedCard(card);
+
+        //setCards((old: any) => [...old, card]);
+        //addContent(card);
     };
 
     const handleMouseEnter = (e: any) => {
@@ -122,7 +127,7 @@ const LoggedInCanvas: React.FC<Props> = ({ loggedIn = false }) => {
                     width={windowSize.width ?? window.innerWidth}
                     height={windowSize.height ?? window.innerHeight}
                 >
-                    <Layer>
+                    <Layer ref={stage}>
                         {cards?.map((item: ICardItem, index: number) => (
                             <Card
                                 key={`card__${index}`}
@@ -151,6 +156,7 @@ const LoggedInCanvas: React.FC<Props> = ({ loggedIn = false }) => {
                         deleteCard={deleteCard}
                         isLoadingUpload={isLoadingUpload}
                         setLoadingUpload={setLoadingUpload}
+                        setCards={setCards}
                     />
 
                     <button

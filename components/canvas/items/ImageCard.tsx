@@ -63,7 +63,7 @@ const ImageCard: FC<Props> = (props) => {
         >
             <Rect
                 width={200}
-                height={200 + textNode?.current?._partialTextY + 24}
+                height={200 + textNode?.current?._partialTextY + 24 || 250}
                 fill="#ffffff"
                 shadowColor={"black"}
                 cornerRadius={5}

@@ -42,6 +42,7 @@ const EditProfilePicPopup: React.FC<Props> = ({ setEditProfilePic }) => {
                     } else {
                         setHasMore(false);
                     }
+                    /** TODO **/
                     //setNfts((old) => [...old, ...res?.assets]);
                     setFetchOffset((old) => old + itemsPerPage);
                 })
@@ -60,7 +61,7 @@ const EditProfilePicPopup: React.FC<Props> = ({ setEditProfilePic }) => {
                 result = response;
             })
             .catch((err) => {
-                console.log("OpenSea is down", err);
+                console.error("OpenSea is down", err);
                 setIsOpenseaDown(true);
             });
         return result;
