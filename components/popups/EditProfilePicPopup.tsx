@@ -43,7 +43,7 @@ const EditProfilePicPopup: React.FC<Props> = ({ setEditProfilePic }) => {
                         setHasMore(false);
                     }
                     /** TODO **/
-                    //setNfts((old) => [...old, ...res?.assets]);
+                    setNfts((old) => [...old, ...res?.assets]);
                     setFetchOffset((old) => old + itemsPerPage);
                 })
                 .catch((err) => {

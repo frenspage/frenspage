@@ -43,7 +43,7 @@ const EditENSPopup: React.FC<Props> = ({ setEditUsername }) => {
                         setHasMore(false);
                     }
                     /** TODO **/
-                    //setEnsNames((old) => [...old, ...res?.assets]);
+                    setEnsNames((old) => [...old, ...res?.assets]);
                     setFetchOffset((old) => old + itemsPerPage);
                 })
                 .catch((err) => (itemsPerPage = 0));
