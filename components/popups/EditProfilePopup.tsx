@@ -81,6 +81,8 @@ const EditProfilePopup: React.FC<Props> = ({
         if (text.split("\n").length <= 4) setEditBiography(text);
     };
 
+    //if (!showEditProfilePopup) return null;
+
     return (
         <PopupWrapper
             isOpen={showEditProfilePopup}

@@ -1,6 +1,4 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { NextPage } from "next";
-import { initLoggedInCanvas } from "../../canvas/main";
 import { Stage, Layer, Rect, Text } from "react-konva";
 import EditCardPopup from "../popups/EditCardPopup";
 import Card from "./items/Card";

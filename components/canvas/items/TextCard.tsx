@@ -26,11 +26,17 @@ const TextCard: FC<Props> = (props) => {
 
     useEffect(() => {
         const setFromEvent = (e: any) => {
-            setOldMousePosition(mousePosition);
+            if (
+                mousePosition.x > oldMousePosition.x + 20 ||
+                mousePosition.x < oldMousePosition.x - 20
+            )
+                setOldMousePosition(mousePosition);
+
             setMousePosition({ x: e.clientX, y: e.clientY });
             if (item.isDragging) {
-                if (oldMousePosition.x > mousePosition.x) setRotation(3);
-                else setRotation(-3);
+                if (mousePosition.x > oldMousePosition.x) setRotation(-3);
+                else if (mousePosition.x < oldMousePosition.x) setRotation(3);
+                else setRotation(0);
                 item.rotation = rotation;
             }
         };
