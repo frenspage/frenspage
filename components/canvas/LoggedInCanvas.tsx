@@ -155,6 +155,7 @@ const LoggedInCanvas: React.FC<Props> = ({ loggedIn = false }) => {
                         isLoadingUpload={isLoadingUpload}
                         setLoadingUpload={setLoadingUpload}
                         setCards={setCards}
+                        cards={cards}
                     />
 
                     <button

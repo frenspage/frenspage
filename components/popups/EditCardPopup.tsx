@@ -13,6 +13,8 @@ import LoadingSpinner from "../global/LoadingSpinner";
 import PopupWrapper from "./PopupWrapper";
 import { createWithNewFileName } from "../../lib/storage";
 import { usePageContent } from "../../context/PageContentContext";
+import { useRouter } from "next/router";
+import { useUser } from "../../context/UserContext";
 
 interface Props {
     openedCard: ICardItem | null;
@@ -20,6 +22,7 @@ interface Props {
     deleteCard: (item: ICardItem | null) => void;
     isLoadingUpload: boolean;
     setLoadingUpload: (val: boolean) => void;
+    cards: TCardItems;
     setCards: (val: TCardItems) => void;
 }
 
@@ -29,15 +32,18 @@ const EditCardPopup: FC<Props> = ({
     deleteCard,
     isLoadingUpload,
     setLoadingUpload,
+    cards,
     setCards,
 }) => {
     const { editCardPopup: isOpen, setEditCardPopup: setIsOpen } = usePopup();
-    const { addContent } = usePageContent();
+    const { addContent, loadContent } = usePageContent();
+    const { ensDomain } = useUser();
     const [caption, setCaption] = useState(openedCard?.content?.caption ?? "");
     const [filePath, setFilePath] = useState(openedCard?.content?.path ?? "");
     const [file, setFile] = useState<any>(null);
     const [error, setError] = useState<string>("");
     const { uploadToS3 } = useS3Upload();
+    const router = useRouter();
 
     useEffect(() => {
         setCaption(openedCard?.content?.caption ?? "");
@@ -76,10 +82,12 @@ const EditCardPopup: FC<Props> = ({
         filePath: string,
         item: ICardItem | null,
     ) => {
+        let oldFilePath = "";
+
         setLoadingUpload(true);
         if (item) {
-            console.log("Save new Card");
             if (file) {
+                oldFilePath = item.content.path;
                 let uploadedFilePath = await uploadImage();
                 //if (filePath !== item.content.path) {
                 if (uploadedFilePath) {
@@ -93,8 +101,27 @@ const EditCardPopup: FC<Props> = ({
             }
 
             if (item.object) {
-                item.object.save().then((res: any) => {
+                await item.object.save().then(async (res: any) => {
                     if (res) {
+                        const bodyData = {
+                            imageUrl: oldFilePath,
+                            userId: ensDomain?.name ?? "",
+                        };
+
+                        await fetch("/api/s3-delete", {
+                            method: "POST",
+                            body: JSON.stringify(bodyData),
+                        })
+                            .then((res) => res.json())
+                            .then((res) =>
+                                console.log("Delete image response: ", res),
+                            )
+                            .catch((err) =>
+                                console.error("delete image error: ", err),
+                            );
+
+                        //router.reload();
+                        //loadContent()
                         closePopup();
                     }
                     setLoadingUpload(false);

@@ -20,23 +20,30 @@ export default async (req: NextApiRequest, res: NextApiResponse<Data>) => {
                     region: process.env.S3_UPLOAD_REGION,
                 });
 
-                let nameArray = imageUrl.split("/");
-                let name = nameArray[nameArray.length - 1];
+                let nameArray = imageUrl.split(process.env.S3_URL);
+                if (nameArray.length > 0) {
+                    let name = nameArray[nameArray.length - 1];
 
-                console.log("name: ", name);
+                    console.log("name: ", name);
 
-                const bucketParams = {
-                    Bucket: process.env.S3_UPLOAD_BUCKET,
-                    Key: name,
-                };
+                    const bucketParams = {
+                        Bucket: process.env.S3_UPLOAD_BUCKET,
+                        Key: name,
+                    };
 
-                const data = await s3Client.send(
-                    new DeleteObjectCommand(bucketParams),
-                );
+                    const data = await s3Client.send(
+                        new DeleteObjectCommand(bucketParams),
+                    );
 
-                console.log("Success. Object deleted.", data);
+                    console.log("Success. Object deleted.", data);
 
-                res.status(200).json({ success: true, data: data });
+                    res.status(200).json({ success: true, data: data });
+                } else {
+                    res.status(400).json({
+                        success: false,
+                        error: "deleting was not possible",
+                    });
+                }
             } catch (err) {
                 res.status(400).json({
                     success: false,

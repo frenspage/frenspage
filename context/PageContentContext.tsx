@@ -5,6 +5,7 @@ import { useMoralis } from "react-moralis";
 
 interface ContextProps {
     readonly content: TCardItems;
+    readonly loadContent: () => void;
     readonly addContent: (val: any) => Promise<boolean>;
     readonly deleteContent: (val: any) => void;
     readonly modifyContentItem: (val: any) => void;
@@ -13,6 +14,7 @@ interface ContextProps {
 
 export const PageContentContext = createContext<ContextProps>({
     content: [],
+    loadContent: () => null,
     addContent: () => Promise.resolve(false),
     deleteContent: () => null,
     modifyContentItem: () => null,
@@ -164,6 +166,7 @@ export const PageContextProvider: React.FC = ({ children }) => {
         <PageContentContext.Provider
             value={{
                 content,
+                loadContent,
                 addContent,
                 deleteContent,
                 modifyContentItem,

@@ -64,6 +64,7 @@ const LoggedInCardsRenderer: FC<Props> = ({ loggedIn }) => {
                         isLoadingUpload={isLoadingUpload}
                         setLoadingUpload={setLoadingUpload}
                         setCards={setCards}
+                        cards={cards}
                     />
 
                     <button
