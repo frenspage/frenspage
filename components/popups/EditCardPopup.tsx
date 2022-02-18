@@ -15,6 +15,8 @@ import { createWithNewFileName } from "../../lib/storage";
 import { usePageContent } from "../../context/PageContentContext";
 import { useRouter } from "next/router";
 import { useUser } from "../../context/UserContext";
+import Cropper from "react-easy-crop";
+import { Point, Area } from "react-easy-crop/types";
 
 interface Props {
     openedCard: ICardItem | null;
@@ -42,6 +44,8 @@ const EditCardPopup: FC<Props> = ({
     const [filePath, setFilePath] = useState(openedCard?.content?.path ?? "");
     const [file, setFile] = useState<any>(null);
     const [error, setError] = useState<string>("");
+    const [crop, setCrop] = useState<Point>({ x: 0, y: 0 });
+    const [zoom, setZoom] = useState(1);
     const { uploadToS3 } = useS3Upload();
     const router = useRouter();
 
@@ -144,11 +148,22 @@ const EditCardPopup: FC<Props> = ({
         >
             <div className="file-upload">
                 {(file || filePath) && (
-                    <img
-                        src={file ? URL.createObjectURL(file) : filePath}
-                        alt="image to upload"
-                        className="file-upload__preview-image"
-                    />
+                    <>
+                        {/**<img
+                            src={file ? URL.createObjectURL(file) : filePath}
+                            alt="image to upload"
+                            className="file-upload__preview-image"
+                        />**/}
+
+                        <Cropper
+                            image={file ? URL.createObjectURL(file) : filePath}
+                            crop={crop}
+                            zoom={zoom}
+                            aspect={1 / 1}
+                            onCropChange={setCrop}
+                            onZoomChange={setZoom}
+                        />
+                    </>
                 )}
                 <input
                     className="file-upload__file-input"

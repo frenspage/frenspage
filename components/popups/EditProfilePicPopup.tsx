@@ -61,8 +61,8 @@ const EditProfilePicPopup: React.FC<Props> = ({ setEditProfilePic }) => {
                 result = response;
             })
             .catch((err) => {
-                console.error("OpenSea is down", err);
-                setIsOpenseaDown(true);
+                console.error("OpenSea error", err);
+                //setIsOpenseaDown(true);
             });
         return result;
     };
