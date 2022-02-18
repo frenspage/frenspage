@@ -31,7 +31,6 @@ const EditProfilePicPopup: React.FC<Props> = ({ setEditProfilePic }) => {
                 headers: {
                     "X-API-KEY": process.env.NEXT_PUBLIC_OPENSEEKEY + "",
                 },
-                mode: "no-cors",
             };
 
             await fetchPage(ethAddress, options)
@@ -42,13 +41,10 @@ const EditProfilePicPopup: React.FC<Props> = ({ setEditProfilePic }) => {
                     } else {
                         setHasMore(false);
                     }
-                    /** TODO **/
-                    //setNfts((old) => [...old, ...res?.assets]);
+                    setNfts((old) => [...old, ...res?.assets]);
                     setFetchOffset((old) => old + itemsPerPage);
                 })
-                .catch((err) => {
-                    itemsPerPage = 0;
-                });
+                .catch((err) => (itemsPerPage = 0));
         }
     };
 
@@ -60,10 +56,7 @@ const EditProfilePicPopup: React.FC<Props> = ({ setEditProfilePic }) => {
             .then((response) => {
                 result = response;
             })
-            .catch((err) => {
-                console.error("OpenSea error", err);
-                //setIsOpenseaDown(true);
-            });
+            .catch((err) => console.error(err));
         return result;
     };
 

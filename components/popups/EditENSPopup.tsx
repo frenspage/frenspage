@@ -31,7 +31,6 @@ const EditENSPopup: React.FC<Props> = ({ setEditUsername }) => {
                 headers: {
                     "X-API-KEY": process.env.NEXT_PUBLIC_OPENSEEKEY + "",
                 },
-                mode: "no-cors",
             };
 
             await fetchPage(ethAddress, options)
@@ -42,8 +41,7 @@ const EditENSPopup: React.FC<Props> = ({ setEditUsername }) => {
                     } else {
                         setHasMore(false);
                     }
-                    /** TODO **/
-                    //setEnsNames((old) => [...old, ...res?.assets]);
+                    setEnsNames((old) => [...old, ...res?.assets]);
                     setFetchOffset((old) => old + itemsPerPage);
                 })
                 .catch((err) => (itemsPerPage = 0));
@@ -58,10 +56,7 @@ const EditENSPopup: React.FC<Props> = ({ setEditUsername }) => {
             .then((response) => {
                 result = response;
             })
-            .catch((err) => {
-                console.error(err);
-                setIsOpenseaDown(true);
-            });
+            .catch((err) => console.error(err));
         return result;
     };
 
@@ -192,5 +187,4 @@ const EditENSPopup: React.FC<Props> = ({ setEditUsername }) => {
         </PopupWrapper>
     );
 };
-
 export default EditENSPopup;
