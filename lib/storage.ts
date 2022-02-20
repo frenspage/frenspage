@@ -1,6 +1,7 @@
 /** File and Storage library **/
 
-export const createWithNewFileName = (file: File): File => {
+export const createWithNewFileName = (file: File): File | null => {
+    if (!file) return null;
     let fileName = `${Math.floor(Math.random() * 1000)}_${+new Date()}_${
         file.name
     }`;

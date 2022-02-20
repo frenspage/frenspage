@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useMoralis } from "react-moralis";
+import { TUser } from "../types/types";
 
 export interface IEnsDomain {
     name?: string;
@@ -11,7 +12,7 @@ export type TEnsDomain = IEnsDomain | any;
 interface ContextProps {
     readonly isAuthenticated: boolean;
     readonly setIsAuthenticated: (val: boolean) => void;
-    readonly user: any;
+    readonly user: TUser;
     readonly setUser: (val: any) => void;
     readonly username: string;
     readonly setUsername: (val: any) => void;
@@ -75,7 +76,7 @@ export const UserProvider: React.FC = ({ children }) => {
     } = useMoralis();
 
     const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [user, setUser] = useState<any>(null);
+    const [user, setUser] = useState<TUser>(null);
     const [ensDomain, setEnsDomain] = useState<any>(null);
     const [username, setUsername] = useState<string>("");
     const [pfp, setPfp] = useState<any>(null);

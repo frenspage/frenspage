@@ -19,6 +19,10 @@ interface ContextProps {
     readonly setEditCardPopup: (value: boolean) => void;
     readonly frenCardPopup: boolean;
     readonly setFrenCardPopup: (value: boolean) => void;
+    readonly cropImagePopup: boolean;
+    readonly setCropImagePopup: (value: boolean) => void;
+    readonly confirmPopup: boolean;
+    readonly setConfirmPopup: (value: boolean) => void;
 }
 
 export const PopupContext = createContext<ContextProps>({
@@ -40,6 +44,10 @@ export const PopupContext = createContext<ContextProps>({
     setEditCardPopup: () => null,
     frenCardPopup: false,
     setFrenCardPopup: () => null,
+    cropImagePopup: false,
+    setCropImagePopup: () => null,
+    confirmPopup: false,
+    setConfirmPopup: () => null,
 });
 
 export const PopupProvider: React.FC = ({ children }) => {
@@ -53,6 +61,8 @@ export const PopupProvider: React.FC = ({ children }) => {
     const [twitterAuthPopup, _setTwitterAuthPopup] = useState(false);
     const [editCardPopup, _setEditCardPopup] = useState(false);
     const [frenCardPopup, _setFrenCardPopup] = useState(false);
+    const [cropImagePopup, _setCropImagePopup] = useState(false);
+    const [confirmPopup, _setConfirmPopup] = useState(false);
 
     /** Opened-Popup timeline/history, to track which popup should be closed at first with escape-key **/
     const [timeline, _setTimeline] = useState<Array<string>>([]);
@@ -102,6 +112,12 @@ export const PopupProvider: React.FC = ({ children }) => {
                         break;
                     case "frenCardPopup":
                         setFrenCardPopup(false);
+                        break;
+                    case "cropImagePopup":
+                        setCropImagePopup(false);
+                        break;
+                    case "confirmPopup":
+                        setConfirmPopup(false);
                         break;
                 }
             }
@@ -153,6 +169,14 @@ export const PopupProvider: React.FC = ({ children }) => {
         changeTimeline(val, "frenCardPopup");
         _setFrenCardPopup(val);
     };
+    const setCropImagePopup = (val: boolean) => {
+        changeTimeline(val, "cropImagePopup");
+        _setCropImagePopup(val);
+    };
+    const setConfirmPopup = (val: boolean) => {
+        changeTimeline(val, "confirmPopup");
+        _setConfirmPopup(val);
+    };
 
     return (
         <PopupContext.Provider
@@ -175,6 +199,10 @@ export const PopupProvider: React.FC = ({ children }) => {
                 setEditCardPopup,
                 frenCardPopup,
                 setFrenCardPopup,
+                cropImagePopup,
+                setCropImagePopup,
+                confirmPopup,
+                setConfirmPopup,
             }}
         >
             {children}

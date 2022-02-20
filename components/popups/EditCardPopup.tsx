@@ -17,6 +17,7 @@ import { useRouter } from "next/router";
 import { useUser } from "../../context/UserContext";
 import Cropper from "react-easy-crop";
 import { Point, Area } from "react-easy-crop/types";
+import CropImagePopup from "./CropImagePopup";
 
 interface Props {
     openedCard: ICardItem | null;
@@ -37,15 +38,19 @@ const EditCardPopup: FC<Props> = ({
     cards,
     setCards,
 }) => {
-    const { editCardPopup: isOpen, setEditCardPopup: setIsOpen } = usePopup();
+    const {
+        editCardPopup: isOpen,
+        setEditCardPopup: setIsOpen,
+        setCropImagePopup,
+    } = usePopup();
     const { addContent, loadContent } = usePageContent();
     const { ensDomain } = useUser();
     const [caption, setCaption] = useState(openedCard?.content?.caption ?? "");
     const [filePath, setFilePath] = useState(openedCard?.content?.path ?? "");
     const [file, setFile] = useState<any>(null);
+
     const [error, setError] = useState<string>("");
-    const [crop, setCrop] = useState<Point>({ x: 0, y: 0 });
-    const [zoom, setZoom] = useState(1);
+
     const { uploadToS3 } = useS3Upload();
     const router = useRouter();
 
@@ -62,13 +67,16 @@ const EditCardPopup: FC<Props> = ({
 
     const handleFileChange = async (e: any) => {
         let pFile = e?.target?.files[0];
-        let newFile: File = createWithNewFileName(pFile);
-        let size = newFile.size / 1024 / 1024;
-        if (size < 3.1) {
-            setFile(newFile);
-            setError("");
-        } else {
-            setError("Filesize is too large. \nmax. 3 MB");
+        let newFile: File | null = createWithNewFileName(pFile);
+        if (newFile) {
+            let size = newFile.size / 1024 / 1024;
+            if (size < 3.1) {
+                setFile(newFile);
+                setError("");
+                setCropImagePopup(true);
+            } else {
+                setError("Filesize is too large. \nmax. 3 MB");
+            }
         }
     };
 
@@ -110,6 +118,7 @@ const EditCardPopup: FC<Props> = ({
                         const bodyData = {
                             imageUrl: oldFilePath,
                             userId: ensDomain?.name ?? "",
+                            userToken: "",
                         };
 
                         await fetch("/api/s3-delete", {
@@ -149,19 +158,10 @@ const EditCardPopup: FC<Props> = ({
             <div className="file-upload">
                 {(file || filePath) && (
                     <>
-                        {/**<img
+                        <img
                             src={file ? URL.createObjectURL(file) : filePath}
                             alt="image to upload"
                             className="file-upload__preview-image"
-                        />**/}
-
-                        <Cropper
-                            image={file ? URL.createObjectURL(file) : filePath}
-                            crop={crop}
-                            zoom={zoom}
-                            aspect={1 / 1}
-                            onCropChange={setCrop}
-                            onZoomChange={setZoom}
                         />
                     </>
                 )}
@@ -223,6 +223,7 @@ const EditCardPopup: FC<Props> = ({
             <div className="flex flex-column-center w-100">
                 {isLoadingUpload && <LoadingSpinner />}
             </div>
+            <CropImagePopup file={file} setFile={setFile} />
         </PopupWrapper>
     );
 };

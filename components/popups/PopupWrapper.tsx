@@ -6,6 +6,8 @@ interface Props {
     size: "normal" | "small" | "full" | "transferPopup" | null;
     headerContent: string;
     flexWrapper?: boolean;
+    addClass?: string;
+    addClassBg?: string;
 }
 
 const PopupWrapper: FC<Props> = ({
@@ -15,17 +17,28 @@ const PopupWrapper: FC<Props> = ({
     size = "small",
     headerContent = "",
     flexWrapper = true,
+    addClass,
+    addClassBg,
 }) => {
     return (
         <div
-            className={"popupbg" + (!isOpen ? " hidden" : "")}
+            className={
+                "popupbg" +
+                (!isOpen ? " hidden" : "") +
+                (addClassBg ? " " + addClassBg : "")
+            }
             onClick={(e) => {
                 if (e.target === e.currentTarget) {
                     closePopup();
                 }
             }}
         >
-            <div className={size === "full" ? "bigpopup" : "popup " + size}>
+            <div
+                className={
+                    (size === "full" ? "bigpopup" : "popup " + size) +
+                    (addClass ? " " + addClass : "")
+                }
+            >
                 <header
                     className={
                         headerContent !== ""

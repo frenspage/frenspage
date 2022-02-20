@@ -201,7 +201,7 @@ const EditProfilePopup: React.FC<Props> = ({
 
             <footer className="flex spaceBetween w-100 paddingTop--big">
                 <button
-                    className="button grey"
+                    className="button disabled"
                     onClick={() => {
                         deleteUser();
                     }}

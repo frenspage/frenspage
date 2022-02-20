@@ -1,3 +1,33 @@
+export interface IUserProps {
+    id: string;
+    attributes: {
+        ACL?: any;
+        accounts?: string[] | any;
+        authData?:
+            | any
+            | {
+                  moralisEth?: {
+                      data?: string;
+                      id?: string;
+                      signature?: string;
+                  };
+              };
+        className?: string;
+        createdAt?: string | any;
+        ensusername?: string;
+        ethAddress?: string;
+        hasClaimed?: boolean | string;
+        objectId?: string;
+        sessionToken?: string;
+        updatedAt?: string | any;
+        username?: string;
+    };
+    get: (val: any) => any;
+    set: (name: string, val: any) => any;
+}
+
+export type TUser = IUserProps | null;
+
 export interface INFT {
     amount?: string;
     block_number?: string;
