@@ -46,6 +46,8 @@ const CropImagePopup: FC<Props> = ({ file, setFile }) => {
                 setFile(newCroppedFile);
                 setUncroppedImage(null);
                 setCropImagePopup(false);
+                setCrop({ x: 0, y: 0 });
+                setZoom(1);
             } catch (e) {
                 console.error(e);
             }
