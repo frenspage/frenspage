@@ -16,10 +16,9 @@ const CropImagePopup: FC<Props> = ({ file, setFile }) => {
     const [uncroppedImage, setUncroppedImage] = useState(file);
     const [crop, setCrop] = useState<Point>({ x: 0, y: 0 });
     const [zoom, setZoom] = useState(1);
-    const [editedImage, setEditedImage] = useState<any>(null);
 
     useEffect(() => {
-        if (!editedImage) setUncroppedImage(file);
+        setUncroppedImage(file);
     }, [file, setFile]);
 
     const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
@@ -44,8 +43,8 @@ const CropImagePopup: FC<Props> = ({ file, setFile }) => {
                     return file;
                 });
 
-                setEditedImage(newCroppedFile);
                 setFile(newCroppedFile);
+                setUncroppedImage(null);
                 setCropImagePopup(false);
             } catch (e) {
                 console.error(e);
