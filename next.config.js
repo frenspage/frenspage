@@ -10,4 +10,7 @@ module.exports = {
             },
         ];
     },
+    images: {
+        domains: ["frenspage-assets-dev.s3.eu-central-1.amazonaws.com"],
+    },
 };
