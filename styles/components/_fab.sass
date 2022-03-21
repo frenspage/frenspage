@@ -9,7 +9,7 @@
     position: fixed
     bottom: 2rem
     right: 2rem
-    border: none
+    border: 2px solid $black
     background: $black
     width: 3rem
     height: 3rem
@@ -22,6 +22,9 @@
     &:hover
         box-shadow: 0 1px 10px 2px rgba(0, 0, 0, 0.2)
         cursor: pointer
+        background: $white
+        color: $black
+
 
     @include media-below(phone)
         bottom: initial
