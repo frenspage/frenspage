@@ -2,6 +2,8 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { ICardItem, TCardItems } from "../types/types";
 import { useUser } from "./UserContext";
 import { useMoralis } from "react-moralis";
+import { useRouter } from "next/router";
+import { punifyCode } from "../lib/textLib";
 
 interface ContextProps {
     readonly content: TCardItems;
@@ -27,6 +29,11 @@ export const PageContextProvider: React.FC = ({ children }) => {
     const [page, setPage] = useState<any>(userPage);
     const [content, setContent] = useState<any>([]);
 
+    const router = useRouter();
+    const routeredSlug: string = router?.query?.slug as string;
+    const lowercasedSlug = routeredSlug?.toLowerCase();
+    const slug = punifyCode(lowercasedSlug);
+
     useEffect(() => {
         if (page) {
             loadContent().then((res) => {});
@@ -34,6 +41,11 @@ export const PageContextProvider: React.FC = ({ children }) => {
             if (userPage) setPage(userPage);
         }
     }, [page, userPage]);
+
+    /*** Trigger the useEffect above when the slug changes
+    useEffect(() => {
+        if (userPage) setPage(userPage);
+    }, [slug]);***/
 
     const setFrenPage = (newPage: any) => {
         if (newPage) {
@@ -72,6 +84,7 @@ export const PageContextProvider: React.FC = ({ children }) => {
                     let card: ICardItem = getCardItemFromObject(item, index);
                     result?.push(card);
                 });
+                console.log("Result: ", result);
                 if (result) setContent(result);
             }
         }

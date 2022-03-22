@@ -5,6 +5,8 @@ import { usePageContent } from "../../context/PageContentContext";
 import { ICardItem, TCardItems } from "../../types/types";
 import FrenCardPopup from "../popups/FrenCardPopup";
 import { usePopup } from "../../context/PopupContext";
+import { useRouter } from "next/router";
+import { punifyCode } from "../../lib/textLib";
 
 interface Props {
     page: any;
@@ -16,6 +18,11 @@ const FrenCanvas: React.FC<Props> = ({ page }) => {
     const [openedCard, setOpenedCard] = useState<ICardItem | null>(null);
     const { setFrenCardPopup } = usePopup();
 
+    const router = useRouter();
+    const routeredSlug: string = router?.query?.slug as string;
+    const lowercasedSlug = routeredSlug?.toLowerCase();
+    const slug = punifyCode(lowercasedSlug);
+
     const [windowSize, setWindowSize] = useState({
         width: window?.innerWidth,
         height: window?.innerHeight,
@@ -23,7 +30,7 @@ const FrenCanvas: React.FC<Props> = ({ page }) => {
 
     useEffect(() => {
         setFrenPage(page);
-    }, [page]);
+    }, [page, slug]);
 
     useEffect(() => {
         if (page && content) setCards(content);
