@@ -25,8 +25,8 @@ export const PageContentContext = createContext<ContextProps>({
 
 export const PageContextProvider: React.FC = ({ children }) => {
     const { Moralis } = useMoralis();
-    const { page: userPage, user, ensDomain } = useUser();
-    const [page, setPage] = useState<any>(userPage);
+    const { page: userPage, user, ensDomain, username } = useUser();
+    const [page, setPage] = useState<any>();
     const [content, setContent] = useState<any>([]);
 
     const router = useRouter();
@@ -38,19 +38,22 @@ export const PageContextProvider: React.FC = ({ children }) => {
         if (page) {
             loadContent().then((res) => {});
         } else {
-            if (userPage) setPage(userPage);
+            if (userPage && username === slug) setPage(userPage);
         }
     }, [page, userPage]);
 
-    /*** Trigger the useEffect above when the slug changes
+    /*** Trigger the useEffect above when the slug changes ***/
     useEffect(() => {
-        if (userPage) setPage(userPage);
-    }, [slug]);***/
+        if (userPage && username === slug) {
+            setPage(userPage);
+            loadContent(userPage).then((res) => {});
+        }
+    }, [router]);
 
     const setFrenPage = (newPage: any) => {
         if (newPage) {
             setPage(newPage);
-            loadContent().then((res) => {});
+            loadContent(newPage).then((res) => {});
         }
     };
 
@@ -70,11 +73,12 @@ export const PageContextProvider: React.FC = ({ children }) => {
         };
     };
 
-    const loadContent = async () => {
-        if (page) {
+    const loadContent = async (newPage: any | (() => void) = null) => {
+        let pageToUse = newPage ?? page;
+        if (pageToUse) {
             const SlugObject = Moralis.Object.extend("Content");
             const query = new Moralis.Query(SlugObject);
-            query.equalTo("page", page);
+            query.equalTo("page", pageToUse);
             query.ascending("createdAt");
             const object: any = await query.find();
 
@@ -84,7 +88,8 @@ export const PageContextProvider: React.FC = ({ children }) => {
                     let card: ICardItem = getCardItemFromObject(item, index);
                     result?.push(card);
                 });
-                console.log("Result: ", result);
+
+                //console.log("Result: ", result);
                 if (result) setContent(result);
             }
         }

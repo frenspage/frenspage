@@ -19,9 +19,6 @@ const FrenCanvas: React.FC<Props> = ({ page }) => {
     const { setFrenCardPopup } = usePopup();
 
     const router = useRouter();
-    const routeredSlug: string = router?.query?.slug as string;
-    const lowercasedSlug = routeredSlug?.toLowerCase();
-    const slug = punifyCode(lowercasedSlug);
 
     const [windowSize, setWindowSize] = useState({
         width: window?.innerWidth,
@@ -30,7 +27,7 @@ const FrenCanvas: React.FC<Props> = ({ page }) => {
 
     useEffect(() => {
         setFrenPage(page);
-    }, [page, slug]);
+    }, [page, router]);
 
     useEffect(() => {
         if (page && content) setCards(content);
