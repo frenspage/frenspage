@@ -143,7 +143,6 @@ const EditCardPopup: FC<Props> = ({
                 let isSaved = await addContent(item).then((res) => res);
                 if (isSaved) closePopup();
                 setLoadingUpload(false);
-                setCards((old: any) => [...old, item]);
             }
         }
     };
