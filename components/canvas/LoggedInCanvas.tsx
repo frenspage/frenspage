@@ -6,13 +6,18 @@ import { usePageContent } from "../../context/PageContentContext";
 import { ICardItem, TCardItems } from "../../types/types";
 import { usePopup } from "../../context/PopupContext";
 import { generateShape } from "../../lib/generateShape";
+import { useRouter } from "next/router";
 
 interface Props {
     loggedIn: boolean;
+    page: any;
 }
 
-const LoggedInCanvas: React.FC<Props> = ({ loggedIn = false }) => {
-    const { content, addContent, deleteContent } = usePageContent();
+const LoggedInCanvas: React.FC<Props> = ({ loggedIn = false, page }) => {
+    const router = useRouter();
+
+    const { content, addContent, deleteContent, setFrenPage } =
+        usePageContent();
     const [isLoadingUpload, setLoadingUpload] = useState(false);
     const [cards, setCards] = useState<TCardItems>(content);
     const [openedCard, setOpenedCard] = useState<ICardItem | null>(null);
@@ -24,7 +29,14 @@ const LoggedInCanvas: React.FC<Props> = ({ loggedIn = false }) => {
         height: window?.innerHeight,
     });
 
-    useEffect(() => setCards(content), [content]);
+    useEffect(() => {
+        const fetcher = async () => {
+            let res = await setFrenPage(page);
+            await setCards(res);
+            console.log("res: ", res);
+        };
+        fetcher().then(() => {});
+    }, [page, router]);
 
     /**
      * update windowSize-state when resizing window,
@@ -141,6 +153,7 @@ const LoggedInCanvas: React.FC<Props> = ({ loggedIn = false }) => {
                                 handleMouseEnter={handleMouseEnter}
                                 handleMouseLeave={handleMouseLeave}
                                 isUsersOwnPage={true}
+                                cards={cards}
                             />
                         ))}
                     </Layer>

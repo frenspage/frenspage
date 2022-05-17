@@ -93,7 +93,7 @@ export const PageContextProvider: React.FC = ({ children }) => {
 
                 //console.log("Result: ", result);
                 if (result) {
-                    setContent(result);
+                    await setContent(result);
                     return result;
                 }
             }

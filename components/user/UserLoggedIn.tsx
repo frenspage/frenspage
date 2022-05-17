@@ -24,18 +24,20 @@ const LoggedInCanvas = dynamic(() => import("../canvas/LoggedInCanvas"), {
 interface Props {
     showCanvas?: boolean;
     loadBeforeRedirect?: boolean;
+    page?: any;
 }
 
 const UserLoggedIn: FC<Props> = ({
     showCanvas = false,
     loadBeforeRedirect = false,
+    page = null,
 }) => {
     const {
         user,
         username,
         pfp,
         setPfp,
-        page,
+        page: userPage,
         authenticate,
         disconnect,
         twitter,
@@ -175,7 +177,7 @@ const UserLoggedIn: FC<Props> = ({
             </div>
             {showCanvas && (
                 <Hide down={"phone"}>
-                    <LoggedInCanvas loggedIn={true} />
+                    <LoggedInCanvas loggedIn={true} page={page} />
                 </Hide>
             )}
             {showCanvas && (

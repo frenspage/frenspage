@@ -183,7 +183,7 @@ const UserPage: NextPage<Props> = ({}) => {
         isAuthenticated &&
         user?.id === page?.get("owner")?.id
     )
-        return <UserLoggedIn showCanvas={showCanvas} />;
+        return <UserLoggedIn showCanvas={showCanvas} page={page} />;
 
     /**** IF PAGE *****/
     return (
