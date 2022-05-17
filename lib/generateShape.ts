@@ -19,7 +19,7 @@ export const generateShape = (
         rotation: 0,
         isDragging: false,
         content: {
-            caption: `Caption`,
+            caption: ``,
             path: "",
         },
         object: null,
