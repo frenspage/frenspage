@@ -33,7 +33,6 @@ const LoggedInCanvas: React.FC<Props> = ({ loggedIn = false, page }) => {
         const fetcher = async () => {
             let res = await setFrenPage(page);
             await setCards(res);
-            console.log("res: ", res);
         };
         fetcher().then(() => {});
     }, [page, router]);
