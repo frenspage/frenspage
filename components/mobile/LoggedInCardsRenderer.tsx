@@ -23,8 +23,9 @@ const LoggedInCardsRenderer: FC<Props> = ({ loggedIn }) => {
     const addCard = () => {
         let i = cards?.length;
         let card = generateShape(i ?? 0, undefined, undefined);
-        setCards((old: any) => [...old, card]);
-        addContent(card);
+
+        setEditCardPopup(true);
+        setOpenedCard(card);
     };
 
     const handleClick = (e: any, item: ICardItem) => {
