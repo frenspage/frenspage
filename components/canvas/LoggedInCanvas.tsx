@@ -29,12 +29,17 @@ const LoggedInCanvas: React.FC<Props> = ({ loggedIn = false, page }) => {
         height: window?.innerHeight,
     });
 
+    useEffect(() => setCards(content), [content]);
+
     useEffect(() => {
         const fetcher = async () => {
             let res = await setFrenPage(page);
             await setCards(res);
         };
         fetcher().then(() => {});
+        return () => {
+            setCards(null);
+        };
     }, [page, router]);
 
     /**

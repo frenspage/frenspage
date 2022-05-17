@@ -31,6 +31,9 @@ const FrenCanvas: React.FC<Props> = ({ page }) => {
             await setCards(res);
         };
         fetcher().then(() => {});
+        return () => {
+            setCards(null);
+        };
     }, [page, router]);
 
     /**

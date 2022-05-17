@@ -1,10 +1,5 @@
 import React, { FC, useState, useEffect } from "react";
-import {
-    ICardItem,
-    IS3Config,
-    IS3UploadResponse,
-    TCardItems,
-} from "../../types/types";
+import { ICardItem, ICardProps, TCardItems } from "../../types/types";
 import { usePopup } from "../../context/PopupContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave, faTrash } from "@fortawesome/free-solid-svg-icons";
@@ -15,8 +10,6 @@ import { createWithNewFileName } from "../../lib/storage";
 import { usePageContent } from "../../context/PageContentContext";
 import { useRouter } from "next/router";
 import { useUser } from "../../context/UserContext";
-import Cropper from "react-easy-crop";
-import { Point, Area } from "react-easy-crop/types";
 import CropImagePopup from "./CropImagePopup";
 
 interface Props {
@@ -26,7 +19,7 @@ interface Props {
     isLoadingUpload: boolean;
     setLoadingUpload: (val: boolean) => void;
     cards: TCardItems;
-    setCards: (val: TCardItems) => void;
+    setCards: React.Dispatch<React.SetStateAction<TCardItems>>;
 }
 
 const EditCardPopup: FC<Props> = ({
@@ -48,6 +41,8 @@ const EditCardPopup: FC<Props> = ({
     const [caption, setCaption] = useState(openedCard?.content?.caption ?? "");
     const [filePath, setFilePath] = useState(openedCard?.content?.path ?? "");
     const [file, setFile] = useState<any>(null);
+
+    const [temporaryFile, setTemporaryFile] = useState<any>(null);
 
     const [error, setError] = useState<string>("");
 
@@ -71,7 +66,8 @@ const EditCardPopup: FC<Props> = ({
         if (newFile) {
             let size = newFile.size / 1024 / 1024;
             if (size < 3.1) {
-                setFile(newFile);
+                setFile(null);
+                setTemporaryFile(newFile);
                 setError("");
                 setCropImagePopup(true);
             } else {
@@ -134,7 +130,7 @@ const EditCardPopup: FC<Props> = ({
                             );
 
                         //router.reload();
-                        //loadContent()
+                        //loadContent();
                         closePopup();
                     }
                     setLoadingUpload(false);
@@ -222,7 +218,7 @@ const EditCardPopup: FC<Props> = ({
             <div className="flex flex-column-center w-100">
                 {isLoadingUpload && <LoadingSpinner />}
             </div>
-            <CropImagePopup file={file} setFile={setFile} />
+            <CropImagePopup file={temporaryFile} setFile={setFile} />
         </PopupWrapper>
     );
 };
