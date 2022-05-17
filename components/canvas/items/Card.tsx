@@ -3,17 +3,18 @@ import { Group, Text, Rect, Image } from "react-konva";
 import { ICardProps } from "../../../types/types";
 import ImageCard from "./ImageCard";
 import TextCard from "./TextCard";
+import { usePageContent } from "../../../context/PageContentContext";
 
 interface Props extends ICardProps {}
 
 const Card: FC<Props> = (props) => {
-    const { index, item, handleDragStart, handleDragEnd, handleClick } = props;
+    const { item, cards } = props;
 
     const [file, setFile] = useState<any>();
 
     useEffect(() => {
         loadFile();
-    }, []);
+    }, [cards]);
 
     const loadFile = () => {
         if (item.content.path) {

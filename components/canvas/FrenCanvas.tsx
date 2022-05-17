@@ -14,7 +14,7 @@ interface Props {
 
 const FrenCanvas: React.FC<Props> = ({ page }) => {
     const { content, addContent, setFrenPage } = usePageContent();
-    const [cards, setCards] = useState<TCardItems>(content);
+    const [cards, setCards] = useState<TCardItems>();
     const [openedCard, setOpenedCard] = useState<ICardItem | null>(null);
     const { setFrenCardPopup } = usePopup();
 
@@ -26,12 +26,12 @@ const FrenCanvas: React.FC<Props> = ({ page }) => {
     });
 
     useEffect(() => {
-        setFrenPage(page);
+        const fetcher = async () => {
+            let res = await setFrenPage(page);
+            await setCards(res);
+        };
+        fetcher().then(() => {});
     }, [page, router]);
-
-    useEffect(() => {
-        if (page && content) setCards(content);
-    }, [content]);
 
     /**
      * update windowSize-state when resizing window,
@@ -92,6 +92,7 @@ const FrenCanvas: React.FC<Props> = ({ page }) => {
                                 handleMouseEnter={handleMouseEnter}
                                 handleMouseLeave={handleMouseLeave}
                                 isUsersOwnPage={false}
+                                cards={cards}
                             />
                         ))}
                     </Layer>

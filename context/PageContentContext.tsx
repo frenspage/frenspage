@@ -7,11 +7,11 @@ import { punifyCode } from "../lib/textLib";
 
 interface ContextProps {
     readonly content: TCardItems;
-    readonly loadContent: () => void;
+    readonly loadContent: () => any;
     readonly addContent: (val: any) => Promise<boolean>;
     readonly deleteContent: (val: any) => void;
     readonly modifyContentItem: (val: any) => void;
-    readonly setFrenPage: (val: any) => void;
+    readonly setFrenPage: (val: any) => TCardItems | null;
 }
 
 export const PageContentContext = createContext<ContextProps>({
@@ -40,21 +40,22 @@ export const PageContextProvider: React.FC = ({ children }) => {
         } else {
             if (userPage && username === slug) setPage(userPage);
         }
-    }, [page, userPage]);
+    }, [page, userPage, router]);
 
-    /*** Trigger the useEffect above when the slug changes ***/
+    /*** Trigger the useEffect above when the slug changes
     useEffect(() => {
         if (userPage && username === slug) {
             setPage(userPage);
             loadContent(userPage).then((res) => {});
         }
-    }, [router]);
+    }, [router]);***/
 
-    const setFrenPage = (newPage: any) => {
+    const setFrenPage = async (newPage: any) => {
         if (newPage) {
-            setPage(newPage);
-            loadContent(newPage).then((res) => {});
+            await setPage(newPage);
+            return await loadContent(newPage).then((res) => res);
         }
+        return null;
     };
 
     const getCardItemFromObject = (object: any, index: number) => {
@@ -75,6 +76,7 @@ export const PageContextProvider: React.FC = ({ children }) => {
 
     const loadContent = async (newPage: any | (() => void) = null) => {
         let pageToUse = newPage ?? page;
+        await setContent(null);
         if (pageToUse) {
             const SlugObject = Moralis.Object.extend("Content");
             const query = new Moralis.Query(SlugObject);
@@ -90,9 +92,13 @@ export const PageContextProvider: React.FC = ({ children }) => {
                 });
 
                 //console.log("Result: ", result);
-                if (result) setContent(result);
+                if (result) {
+                    setContent(result);
+                    return result;
+                }
             }
         }
+        return null;
     };
 
     const addContent = async (newItem: ICardItem) => {

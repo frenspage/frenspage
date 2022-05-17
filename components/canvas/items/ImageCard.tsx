@@ -19,6 +19,10 @@ const ImageCard: FC<Props> = (props) => {
         isUsersOwnPage,
     } = props;
 
+    useEffect(() => {
+        //console.log("ImageCard: ", item?.content?.path);
+    }, []);
+
     const textNode = useRef<any>(null);
     const imageNode = useRef<any>(null);
 

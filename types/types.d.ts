@@ -76,6 +76,7 @@ export interface ICardProps {
     handleMouseEnter?: (e: any) => void;
     handleMouseLeave?: (e: any) => void;
     isUsersOwnPage?: boolean;
+    cards?: TCardItems;
 }
 
 /** AWS S3 TYPES **/
