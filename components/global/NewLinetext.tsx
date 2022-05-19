@@ -1,5 +1,6 @@
 import React, { FC, useState, useEffect } from "react";
 import Autolinker from "autolinker";
+import { linkedText } from "../../lib/textLib";
 
 interface Props {
     text: string;
@@ -9,11 +10,11 @@ interface Props {
 const NewLineText: FC<Props> = ({ text, addClass }) => {
     if (!text) return null;
 
-    const replacedText = Autolinker.link(text);
-    const newText = replacedText.replaceAll("\n", "<br />");
-
     return (
-        <p className={addClass} dangerouslySetInnerHTML={{ __html: newText }} />
+        <p
+            className={addClass}
+            dangerouslySetInnerHTML={{ __html: linkedText(text) }}
+        />
     );
 };
 

@@ -6,28 +6,38 @@ import EditProfilePicPopup from "../popups/EditProfilePicPopup";
 import EditENSPopup from "../popups/EditENSPopup";
 import FirstTimePopup from "../popups/FirstTimePopup";
 import { usePopup } from "../../context/PopupContext";
-import PostitCanvas from "../canvas/PostitCanvas";
 import Loader from "../global/Loader";
 import { useUser } from "../../context/UserContext";
 import TwitterAuthPopup from "../popups/TwitterAuthPopup";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTwitter } from "@fortawesome/free-brands-svg-icons";
 import NewLineText from "../global/NewLinetext";
+import dynamic from "next/dynamic";
+import Hide from "../global/Hide";
+import CardsRenderer from "../mobile/CardsRenderer";
+import LoggedInCardsRenderer from "../mobile/LoggedInCardsRenderer";
+
+const LoggedInCanvas = dynamic(() => import("../canvas/LoggedInCanvas"), {
+    ssr: false,
+});
 
 interface Props {
     showCanvas?: boolean;
     loadBeforeRedirect?: boolean;
+    page?: any;
 }
 
 const UserLoggedIn: FC<Props> = ({
     showCanvas = false,
     loadBeforeRedirect = false,
+    page = null,
 }) => {
     const {
         user,
         username,
         pfp,
         setPfp,
+        page: userPage,
         authenticate,
         disconnect,
         twitter,
@@ -39,6 +49,8 @@ const UserLoggedIn: FC<Props> = ({
     const [editBiography, setEditBiography] = useState<string>(biography ?? ""); // this is the username that is displayed in the preview/edit box
 
     const { setShowEditProfilePopup } = usePopup();
+
+    /** Canvas Active state **/
 
     /**
      * Loads the page information from the DB
@@ -58,7 +70,7 @@ const UserLoggedIn: FC<Props> = ({
     if (loadBeforeRedirect) return <Loader />;
 
     return (
-        <Layout>
+        <Layout addClass="root-user">
             <div className="container">
                 <div id="loggedincontent" className="content">
                     <div className="frenpage user-container">
@@ -163,7 +175,16 @@ const UserLoggedIn: FC<Props> = ({
                     <TwitterAuthPopup />
                 </div>
             </div>
-            {showCanvas && <PostitCanvas />}
+            {showCanvas && (
+                <Hide down={"phone"}>
+                    <LoggedInCanvas loggedIn={true} page={page} />
+                </Hide>
+            )}
+            {showCanvas && (
+                <Hide up={"phone"}>
+                    <LoggedInCardsRenderer loggedIn={true} />
+                </Hide>
+            )}
         </Layout>
     );
 };

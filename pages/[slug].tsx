@@ -1,14 +1,12 @@
 import type { NextPage } from "next";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { init as initCanvas } from "../canvas/main";
 import Layout from "../components/global/Layout";
 import { useMoralis } from "react-moralis";
-import PostitCanvas from "../components/canvas/PostitCanvas";
 import UserLoggedIn from "../components/user/UserLoggedIn";
 import FrenPopup from "../components/popups/FrenPopup";
 import { usePopup } from "../context/PopupContext";
-import { punifyCode } from "../lib/lib";
+import { punifyCode } from "../lib/textLib";
 import Loader from "../components/global/Loader";
 import DonatePopup from "../components/popups/DonatePopup";
 import { useRouter } from "next/router";
@@ -16,10 +14,17 @@ import { useUser } from "../context/UserContext";
 import NewLineText from "../components/global/NewLinetext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTwitter } from "@fortawesome/free-brands-svg-icons";
+import dynamic from "next/dynamic";
+import CardsRenderer from "../components/mobile/CardsRenderer";
+import Hide from "../components/global/Hide";
+
+const FrenCanvas = dynamic(() => import("../components/canvas/FrenCanvas"), {
+    ssr: false,
+});
 
 interface Props {}
 
-const showCanvas = false;
+const showCanvas = true;
 
 const UserPage: NextPage<Props> = ({}) => {
     const router = useRouter();
@@ -36,7 +41,14 @@ const UserPage: NextPage<Props> = ({}) => {
     const slug = punifyCode(lowercasedSlug);
 
     const { isInitialized, Moralis } = useMoralis();
-    const { user, isAuthenticated, authenticate, disconnect } = useUser();
+    const {
+        user,
+        isAuthenticated,
+        authenticate,
+        disconnect,
+        isOpenseaDown,
+        setIsOpenseaDown,
+    } = useUser();
 
     const { setFrenPopup } = usePopup();
 
@@ -56,8 +68,6 @@ const UserPage: NextPage<Props> = ({}) => {
     }, [user, isAuthenticated, Moralis.Web3API.account]);
 
     const load = async () => {
-        /** Initial load function **/
-        if (false) await initCanvas(); //this was causing an error with the connect wallet button
         await loadData().then(() => {});
     };
 
@@ -94,7 +104,13 @@ const UserPage: NextPage<Props> = ({}) => {
                     if (pfp && pfp?.isDataAvailable()) {
                         let ta = pfp.get("token_address");
                         let ti = pfp.get("token_id");
-                        const options = { method: "GET" };
+                        const options: any = {
+                            method: "GET",
+                            headers: {
+                                "X-API-KEY":
+                                    process.env.NEXT_PUBLIC_OPENSEEKEY + "",
+                            },
+                        };
                         await fetch(
                             `https://api.opensea.io/api/v1/asset/${ta}/${ti}/`,
                             options,
@@ -107,7 +123,10 @@ const UserPage: NextPage<Props> = ({}) => {
                                 setPfp(response);
                                 setIsLoading(false);
                             })
-                            .catch((err) => setError(err));
+                            .catch((err) => {
+                                setError(err);
+                                setIsOpenseaDown(true);
+                            });
                     } else {
                         /**********************
                          *  User has no PFP
@@ -164,11 +183,11 @@ const UserPage: NextPage<Props> = ({}) => {
         isAuthenticated &&
         user?.id === page?.get("owner")?.id
     )
-        return <UserLoggedIn />;
+        return <UserLoggedIn showCanvas={showCanvas} page={page} />;
 
     /**** IF PAGE *****/
     return (
-        <Layout addClass="root-user">
+        <Layout addClass="root-user root-user__mobile">
             <div className="user-container">
                 <div id="profilepicbox">
                     <img
@@ -264,7 +283,16 @@ const UserPage: NextPage<Props> = ({}) => {
                 )
             }
 
-            {showCanvas && <PostitCanvas />}
+            {showCanvas && (
+                <Hide down={"phone"}>
+                    <FrenCanvas page={page} />
+                </Hide>
+            )}
+            {showCanvas && (
+                <Hide up={"phone"}>
+                    <CardsRenderer page={page} />
+                </Hide>
+            )}
         </Layout>
     );
 };

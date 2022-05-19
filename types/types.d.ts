@@ -1,3 +1,33 @@
+export interface IUserProps {
+    id: string;
+    attributes: {
+        ACL?: any;
+        accounts?: string[] | any;
+        authData?:
+            | any
+            | {
+                  moralisEth?: {
+                      data?: string;
+                      id?: string;
+                      signature?: string;
+                  };
+              };
+        className?: string;
+        createdAt?: string | any;
+        ensusername?: string;
+        ethAddress?: string;
+        hasClaimed?: boolean | string;
+        objectId?: string;
+        sessionToken?: string;
+        updatedAt?: string | any;
+        username?: string;
+    };
+    get: (val: any) => any;
+    set: (name: string, val: any) => any;
+}
+
+export type TUser = IUserProps | null;
+
 export interface INFT {
     amount?: string;
     block_number?: string;
@@ -19,4 +49,49 @@ export interface INFTs {
     page_size?: number;
     result?: INFT[] | [];
     total?: number;
+}
+
+export interface ICardItem {
+    id: string;
+    index: number;
+    x: number;
+    y: number;
+    rotation: number;
+    isDragging: boolean;
+    content: {
+        caption: string;
+        path: string | any;
+    };
+    object: any; // Moralis object to update/save/destroy
+}
+
+export type TCardItems = Array<ICardProps> | Array;
+
+export interface ICardProps {
+    index: string | number;
+    item: ICardItem | any;
+    handleDragStart?: (e: any) => void;
+    handleDragEnd?: (e: any) => void;
+    handleClick?: (e: any) => void;
+    handleMouseEnter?: (e: any) => void;
+    handleMouseLeave?: (e: any) => void;
+    isUsersOwnPage?: boolean;
+    cards?: TCardItems;
+}
+
+/** AWS S3 TYPES **/
+interface IS3Config {
+    bucketName: string;
+    dirName: string;
+    region: string;
+    accessKeyId: string;
+    secretAccessKey: string;
+    s3Url: string;
+}
+
+export interface IS3UploadResponse {
+    bucket?: string;
+    key?: string;
+    location?: string;
+    signedRequest?: any;
 }

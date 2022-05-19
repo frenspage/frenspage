@@ -32,6 +32,7 @@
 	width: 100%
 
 
+
 h1
 	margin-bottom: 20px
 	font-size: 24px
@@ -165,7 +166,7 @@ a:-webkit-any-link
 .walletinfo
 	width: 320px
 	padding:  10px 5px 10px 5px
-	border-radius: 25px 25px 0px 0
+	border-radius: $borderRadius $borderRadius 0px 0
 	max-width: 520px
 	margin: 0 auto
 	backdrop-filter:  blur(10px)
@@ -218,7 +219,7 @@ a:-webkit-any-link
 
 .savebutton
 	position: relative
-	bottom: -77px
+	bottom: -1rem //-77px
 	left: 50%
 	transform: translateX(-50%)
 	text-align: center
@@ -281,6 +282,7 @@ a:-webkit-any-link
 	cursor: pointer
 	transition:  opacity 0.2s ease
 	object-fit: cover
+	box-shadow: 0 0 40px rgba(0, 0, 0, 0.1)
 
 
 	&:hover
@@ -297,7 +299,9 @@ a:-webkit-any-link
 	flex-direction: column
 	justify-content: center
 	align-content: center
-
+	width: fit-content
+	margin: 0 auto
+	z-index: 10
 
 
 
