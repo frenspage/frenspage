@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useMoralis } from "react-moralis";
 import { usePopup } from "../../context/PopupContext";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSave } from "@fortawesome/free-solid-svg-icons";
 import { useUser } from "../../context/UserContext";
+import PopupWrapper from "./PopupWrapper";
 
 interface Props {
     setEditProfilePic: (val: boolean) => void;
@@ -21,7 +20,7 @@ const EditProfilePicPopup: React.FC<Props> = ({ setEditProfilePic }) => {
 
     const { showEditProfilePicPopup, setShowEditProfilePicPopup } = usePopup();
     const { Moralis } = useMoralis();
-    const { user } = useUser();
+    const { user, setIsOpenseaDown } = useUser();
 
     const fetcher = async () => {
         let itemsPerPage: number = maxItemsPerPage;
@@ -74,101 +73,84 @@ const EditProfilePicPopup: React.FC<Props> = ({ setEditProfilePic }) => {
     };
 
     return (
-        <div
-            id="profilepicselect_popup"
-            className={"popupbg" + (!showEditProfilePicPopup ? " hidden" : "")}
+        <PopupWrapper
+            isOpen={showEditProfilePicPopup}
+            closePopup={() => setShowEditProfilePicPopup(false)}
+            size={"full"}
+            headerContent={""}
+            flexWrapper={false}
         >
-            <div className="bigpopup">
-                <div className="content">
-                    <button
-                        className="closepopup"
-                        onClick={() => setShowEditProfilePicPopup(false)}
-                        tabIndex={0}
-                    >
-                        <span>&times;</span>
-                    </button>
+            <h1>Select your pfp</h1>
 
-                    <h1>Select your pfp</h1>
-
-                    <h4>(Can be changed later)</h4>
-
-                    {isLoading && (
-                        <div id="profilepicselect_nfts_loading">
-                            <div className="lds-ellipsis">
-                                <div />
-                                <div />
-                                <div />
-                                <div />
-                            </div>
-                        </div>
-                    )}
-
-                    {!isLoading && nfts && nfts.length > 0 && (
-                        <div className="profilepicselect_nfts">
-                            <div className="content flex flex--gap--big paddingTop--big">
-                                {nfts?.map((nft: any, index: number) => {
-                                    return (
-                                        <div
-                                            className="pfp__nft grid__item"
-                                            key={`nft__${index}`}
-                                        >
-                                            <img
-                                                src={
-                                                    nft?.image_preview_url ?? ""
-                                                }
-                                                alt=""
-                                                className={
-                                                    "pfp__nft__image hover" +
-                                                    (currentSelected &&
-                                                    currentSelected?.name ===
-                                                        nft?.name
-                                                        ? " active"
-                                                        : "")
-                                                }
-                                                onClick={() => {
-                                                    changeProfilePic(nft);
-                                                }}
-                                            />
-                                            <h3 className="pfp__nft__title">
-                                                {nft?.name ?? ""}
-                                            </h3>
-                                            <a
-                                                href={nft.permalink ?? ""}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="pfp__nft__permalink"
-                                            >
-                                                <span className="c--grey">
-                                                    {
-                                                        nft?.asset_contract
-                                                            ?.address
-                                                    }
-                                                </span>
-                                            </a>
-                                        </div>
-                                    );
-                                })}
-                                {hasMore && (
-                                    <div className="flex flex-center--vertical flex-center--horizontal w-100">
-                                        <button
-                                            className="button black"
-                                            onClick={fetcher}
-                                        >
-                                            Load More...
-                                        </button>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    )}
-                    {!isLoading && (!nfts || nfts.length <= 0) && (
-                        <div className="paddingTop--big">
-                            It seems that u don't have any nfts yet.
-                        </div>
-                    )}
+            <h4>(Can be changed later)</h4>
+            {isLoading && (
+                <div id="profilepicselect_nfts_loading">
+                    <div className="lds-ellipsis">
+                        <div />
+                        <div />
+                        <div />
+                        <div />
+                    </div>
                 </div>
-            </div>
-        </div>
+            )}
+            {!isLoading && nfts && nfts.length > 0 && (
+                <div className="profilepicselect_nfts">
+                    <div className="content flex flex--gap--big paddingTop--big">
+                        {nfts?.map((nft: any, index: number) => {
+                            return (
+                                <div
+                                    className="pfp__nft grid__item"
+                                    key={`nft__${index}`}
+                                >
+                                    <img
+                                        src={nft?.image_preview_url ?? ""}
+                                        alt=""
+                                        className={
+                                            "pfp__nft__image hover" +
+                                            (currentSelected &&
+                                            currentSelected?.name === nft?.name
+                                                ? " active"
+                                                : "")
+                                        }
+                                        onClick={() => {
+                                            changeProfilePic(nft);
+                                        }}
+                                    />
+                                    <h3 className="pfp__nft__title">
+                                        {nft?.name ?? ""}
+                                    </h3>
+                                    <a
+                                        href={nft.permalink ?? ""}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="pfp__nft__permalink"
+                                    >
+                                        <span className="c--grey">
+                                            {nft?.asset_contract?.address}
+                                        </span>
+                                    </a>
+                                </div>
+                            );
+                        })}
+                        {hasMore && (
+                            <div className="flex flex-center--vertical flex-center--horizontal w-100">
+                                <button
+                                    className="button black"
+                                    onClick={fetcher}
+                                >
+                                    Load More...
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
+            {!isLoading && (!nfts || nfts.length <= 0) && (
+                <div className="paddingTop--big">
+                    It seems that u don't have any nfts yet.
+                </div>
+            )}
+        </PopupWrapper>
     );
 };
 

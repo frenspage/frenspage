@@ -4,6 +4,13 @@
 //              POPUPS             -
 //----------------------------------
 
+@keyframes openPopup
+	0%
+		opacity: 0
+		visibility: hidden
+	100%
+		opacity: 1
+		visibility: visible
 
 .popupbg
 	background:  rgba(0,0,0,0.5)
@@ -16,6 +23,10 @@
 	opacity: 1
 	visibility: visible
 	transition: opacity .3s ease
+	overflow-y: auto
+	padding: 2rem 0
+
+
 
 
 .popup
@@ -24,13 +35,13 @@
 	width: 40%
 	min-height: 50%
 	height: auto
-	top:  50%
+	top: 50%
 	left:  50%
 	transform:  translate(-50%, -50%)
-	padding: 100px 50px
+
 	background: #fff
 	transition: all .3s ease
-	border-radius: 30px
+	border-radius: $borderRadius
 	opacity: 1
 	box-shadow: 0 0 50px rgb(0 0 0 / 25%)
 
@@ -39,12 +50,40 @@
 
 	@include media-below(tablet)
 		min-width: 90%
-		padding: 3rem 1rem
+		padding: 1rem 0
+
+	&__header
+		height: 4.25rem
+		padding: 1.5rem 2rem
+		@include media-below(phone)
+			padding-top: .5rem
+			height: 3rem
+
+		&--border
+			border-bottom: 2px solid #eee
+			margin-bottom: 1rem
+		&--small
+			height: auto
+			padding: 0
+
+		&__title
+			color: #9d9d9d
+
 
 	.content
 		transition: all .3s ease .2s
 		opacity: 1
 		visibility: visible
+		padding: 2rem 2rem //5rem
+		@include media-below(phone)
+			padding: 1rem 1rem
+			width: 100%
+			max-width: 100%
+
+	&__header--small ~ .content
+		padding: 1rem 2rem
+		@include media-below(phone)
+			padding: 1rem 0
 
 	&.transferPopup
 		width: auto
@@ -52,6 +91,13 @@
 		max-width: 80%
 		min-height: auto
 		padding: 2rem
+
+	&.small
+		width: auto
+		min-width: 360px
+		max-width: 80%
+		.content
+			padding-bottom: 2rem
 
 
 

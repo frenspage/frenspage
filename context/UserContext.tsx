@@ -1,7 +1,6 @@
-// Add UserContext
-
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useMoralis } from "react-moralis";
+import { TUser } from "../types/types";
 
 export interface IEnsDomain {
     name?: string;
@@ -13,7 +12,7 @@ export type TEnsDomain = IEnsDomain | any;
 interface ContextProps {
     readonly isAuthenticated: boolean;
     readonly setIsAuthenticated: (val: boolean) => void;
-    readonly user: any;
+    readonly user: TUser;
     readonly setUser: (val: any) => void;
     readonly username: string;
     readonly setUsername: (val: any) => void;
@@ -32,6 +31,9 @@ interface ContextProps {
     readonly disconnect: () => void;
     readonly hasClaimed: () => boolean | any;
     readonly saveProfile: (editPfp: any, editBio: string) => any;
+    readonly deleteUser: () => boolean;
+    readonly isOpenseaDown: boolean;
+    readonly setIsOpenseaDown: (val: boolean) => void;
 }
 
 export const UserContext = createContext<ContextProps>({
@@ -56,6 +58,9 @@ export const UserContext = createContext<ContextProps>({
     disconnect: () => null,
     hasClaimed: () => null,
     saveProfile: () => null,
+    deleteUser: () => false,
+    isOpenseaDown: false,
+    setIsOpenseaDown: () => null,
 });
 
 export const UserProvider: React.FC = ({ children }) => {
@@ -71,13 +76,14 @@ export const UserProvider: React.FC = ({ children }) => {
     } = useMoralis();
 
     const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [user, setUser] = useState<any>(null);
+    const [user, setUser] = useState<TUser>(null);
     const [ensDomain, setEnsDomain] = useState<any>(null);
     const [username, setUsername] = useState<string>("");
     const [pfp, setPfp] = useState<any>(null);
     const [page, setPage] = useState<any>(null);
     const [biography, setBiography] = useState<string | any>(null);
     const [twitter, setTwitter] = useState<string>("");
+    const [isOpenseaDown, setIsOpenseaDown] = useState(false);
 
     /** saves all data in states when loggedin (user-obeject changes) **/
     useEffect(() => {
@@ -199,7 +205,12 @@ export const UserProvider: React.FC = ({ children }) => {
             if (object && object.isDataAvailable()) {
                 let ta = object.get("token_address");
                 let ti = object.get("token_id");
-                const options = { method: "GET" };
+                const options: any = {
+                    method: "GET",
+                    headers: {
+                        "X-API-KEY": process.env.NEXT_PUBLIC_OPENSEEKEY + "",
+                    },
+                };
                 fetch(
                     `https://api.opensea.io/api/v1/asset/${ta}/${ti}/`,
                     options,
@@ -208,7 +219,10 @@ export const UserProvider: React.FC = ({ children }) => {
                     .then((response) => {
                         setPfp(response);
                     })
-                    .catch((err) => console.error(err));
+                    .catch((err) => {
+                        console.error("usercontext loadPfp error: ", err);
+                        setIsOpenseaDown(true);
+                    });
             } else {
                 //console.log("No PFP yet");
             }
@@ -324,6 +338,12 @@ export const UserProvider: React.FC = ({ children }) => {
         }
     };
 
+    /** Deletes the user and all its data **/
+    const deleteUser = () => {
+        console.log("Delete user");
+        return false;
+    };
+
     return (
         <UserContext.Provider
             value={{
@@ -348,6 +368,9 @@ export const UserProvider: React.FC = ({ children }) => {
                 disconnect,
                 hasClaimed,
                 saveProfile,
+                deleteUser,
+                isOpenseaDown,
+                setIsOpenseaDown,
             }}
         >
             {children}

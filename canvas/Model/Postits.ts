@@ -1,4 +1,4 @@
-import Postit, { IPostit } from "./Postit";
+import { IPostit } from "./Postit";
 
 export type TPostitList = IPostit[];
 

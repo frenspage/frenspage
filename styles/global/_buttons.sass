@@ -18,7 +18,7 @@
 		cursor: pointer
 		font-weight: 300
 
-	&.black
+	&.black, &.disabled, &.grey
 		background: $black
 		color: $white
 		border: 2px solid $black
@@ -58,5 +58,18 @@
 			font-size: 1.25rem
 			padding-top: .2rem
 
+
+	&.disabled
+		background: #ccc
+		border: 2px solid #ccc
+		&:hover
+			border: 2px solid #cccccc
+			color: #ccc
+
+	&.grey
+		background: #737373
+		border: 2px solid #737373
+		&:hover
+			color: #737373
 
 

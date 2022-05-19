@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useMoralis } from "react-moralis";
 import { usePopup } from "../../context/PopupContext";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSave } from "@fortawesome/free-solid-svg-icons";
 import { useUser } from "../../context/UserContext";
+import PopupWrapper from "./PopupWrapper";
 
 interface Props {
     setEditUsername: (val: string) => void;
@@ -21,7 +20,7 @@ const EditENSPopup: React.FC<Props> = ({ setEditUsername }) => {
 
     const { showEditENSPopup, setShowEditENSPopup } = usePopup();
     const { Moralis } = useMoralis();
-    const { user, setEnsDomain } = useUser();
+    const { user, setEnsDomain, setIsOpenseaDown } = useUser();
 
     const fetcher = async () => {
         let itemsPerPage: number = maxItemsPerPage;
@@ -81,133 +80,111 @@ const EditENSPopup: React.FC<Props> = ({ setEditUsername }) => {
             setEnsDomain(data);
             setEditUsername(name);
             setShowEditENSPopup(false);
-        } else {
-            /*alert(
-                "a page with the ens username '" +
-                    name +
-                    "' already exists!\nPlease use another name!",
-            );*/
         }
     };
 
     return (
-        <div
-            id="ensselect_popup"
-            className={"popupbg" + (!showEditENSPopup ? " hidden" : "")}
+        <PopupWrapper
+            isOpen={showEditENSPopup}
+            closePopup={() => setShowEditENSPopup(false)}
+            size={"full"}
+            headerContent={""}
+            flexWrapper={false}
         >
-            <div className="bigpopup">
-                <div className="content">
-                    <button
-                        className="closepopup"
-                        onClick={() => setShowEditENSPopup(false)}
-                        tabIndex={0}
-                    >
-                        <span>&times;</span>
-                    </button>
+            <h1>Anon, select your .eth name</h1>
+            <h4>(Can be changed later)</h4>
 
-                    <h1>Anon, select your .eth name</h1>
-                    <h4>(Can be changed later)</h4>
-
-                    {isLoading && (
-                        <div id="ensselect_nfts_loading">
-                            <div className="lds-ellipsis">
-                                <div />
-                                <div />
-                                <div />
-                                <div />
-                            </div>
-                        </div>
-                    )}
-
-                    {!isLoading && ensNames && ensNames.length > 0 && (
-                        <div className="profilepicselect_nfts">
-                            <div className="content flex flex--gap--big paddingTop--big">
-                                {ensNames?.map((nft: any, index: number) => {
-                                    return (
-                                        <div
-                                            className="pfp__nft grid__item"
-                                            key={`nft__${index}`}
-                                        >
-                                            <img
-                                                src={
-                                                    nft?.traits &&
-                                                    nft?.traits?.length > 0
-                                                        ? nft?.image_preview_url ??
-                                                          ""
-                                                        : "/images/punk.png"
-                                                }
-                                                alt=""
-                                                className={
-                                                    "pfp__nft__image overflow-hidden" +
-                                                    (nft?.traits &&
-                                                    nft?.traits?.length > 0
-                                                        ? " hover"
-                                                        : "") +
-                                                    (nft?.traits &&
-                                                    nft?.traits?.length > 0 &&
-                                                    currentSelected &&
-                                                    currentSelected?.name ===
-                                                        nft?.name
-                                                        ? " active"
-                                                        : "")
-                                                }
-                                                onClick={() => {
-                                                    if (
-                                                        nft?.traits &&
-                                                        nft?.traits?.length > 0
-                                                    )
-                                                        changeENS(nft);
-                                                }}
-                                            />
-                                            <h3 className="pfp__nft__title">
-                                                {nft?.name ?? ""}
-                                            </h3>
-                                            <a
-                                                href={nft?.permalink ?? ""}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="pfp__nft__permalink"
-                                            >
-                                                <span className="c--grey">
-                                                    {
-                                                        nft?.asset_contract
-                                                            ?.address
-                                                    }
-                                                </span>
-                                            </a>
-                                        </div>
-                                    );
-                                })}
-                                {hasMore && (
-                                    <div className="flex flex-center--vertical flex-center--horizontal w-100">
-                                        <button
-                                            className="button black"
-                                            onClick={fetcher}
-                                        >
-                                            Load More...
-                                        </button>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    )}
-                    {!isLoading && (!ensNames || ensNames.length <= 0) && (
-                        <div className="paddingTop--big">
-                            It seems that you don't have any ENS domains yet.{" "}
-                            <br />
-                            <a
-                                href="https://ens.domains"
-                                target="_blank"
-                                rel="noreferrer"
-                            >
-                                Buy one here
-                            </a>
-                        </div>
-                    )}
+            {isLoading && (
+                <div id="ensselect_nfts_loading">
+                    <div className="lds-ellipsis">
+                        <div />
+                        <div />
+                        <div />
+                        <div />
+                    </div>
                 </div>
-            </div>
-        </div>
+            )}
+
+            {!isLoading && ensNames && ensNames.length > 0 && (
+                <div className="profilepicselect_nfts">
+                    <div className="content flex flex--gap--big paddingTop--big">
+                        {ensNames?.map((nft: any, index: number) => {
+                            return (
+                                <div
+                                    className="pfp__nft grid__item"
+                                    key={`nft__${index}`}
+                                >
+                                    <img
+                                        src={
+                                            nft?.traits &&
+                                            nft?.traits?.length > 0
+                                                ? nft?.image_preview_url ?? ""
+                                                : "/images/punk.png"
+                                        }
+                                        alt=""
+                                        className={
+                                            "pfp__nft__image overflow-hidden" +
+                                            (nft?.traits &&
+                                            nft?.traits?.length > 0
+                                                ? " hover"
+                                                : "") +
+                                            (nft?.traits &&
+                                            nft?.traits?.length > 0 &&
+                                            currentSelected &&
+                                            currentSelected?.name === nft?.name
+                                                ? " active"
+                                                : "")
+                                        }
+                                        onClick={() => {
+                                            if (
+                                                nft?.traits &&
+                                                nft?.traits?.length > 0
+                                            )
+                                                changeENS(nft);
+                                        }}
+                                    />
+                                    <h3 className="pfp__nft__title">
+                                        {nft?.name ?? ""}
+                                    </h3>
+                                    <a
+                                        href={nft?.permalink ?? ""}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="pfp__nft__permalink"
+                                    >
+                                        <span className="c--grey">
+                                            {nft?.asset_contract?.address}
+                                        </span>
+                                    </a>
+                                </div>
+                            );
+                        })}
+                        {hasMore && (
+                            <div className="flex flex-center--vertical flex-center--horizontal w-100">
+                                <button
+                                    className="button black"
+                                    onClick={fetcher}
+                                >
+                                    Load More...
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
+            {!isLoading && (!ensNames || ensNames.length <= 0) && (
+                <div className="paddingTop--big">
+                    It seems that you don't have any ENS domains yet. <br />
+                    <a
+                        href="https://ens.domains"
+                        target="_blank"
+                        rel="noreferrer"
+                    >
+                        Buy one here
+                    </a>
+                </div>
+            )}
+        </PopupWrapper>
     );
 };
-
 export default EditENSPopup;
