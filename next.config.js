@@ -11,6 +11,9 @@ module.exports = {
         ];
     },
     images: {
-        domains: ["frenspage-assets-dev.s3.eu-central-1.amazonaws.com"],
+        domains: [
+            "frenspage-assets-dev.s3.eu-central-1.amazonaws.com",
+            "frenspage-assets-prod.s3.eu-central-1.amazonaws.com",
+        ],
     },
 };
