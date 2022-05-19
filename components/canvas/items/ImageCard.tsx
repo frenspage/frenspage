@@ -1,6 +1,7 @@
 import React, { FC, useState, useEffect, useRef } from "react";
 import { Group, Image, Rect, Text } from "react-konva";
 import { ICardProps } from "../../../types/types";
+import { removeLinkPrefix } from "../../../lib/textLib";
 
 interface Props extends ICardProps {
     file: any;
@@ -82,7 +83,7 @@ const ImageCard: FC<Props> = (props) => {
             />
             <Image image={file} offset={{ x: -8, y: -8 }} ref={imageNode} />
             <Text
-                text={item.content.caption}
+                text={removeLinkPrefix(item.content.caption)}
                 width={200}
                 fontSize={14}
                 padding={8}

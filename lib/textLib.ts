@@ -37,3 +37,11 @@ export const truncateText = (str: string) => {
     if (str.length < 200) return str;
     return str.substring(0, 250) + "... \n\n\n Read more\n";
 };
+
+export const removeLinkPrefix = (str: string) => {
+    if (!str) return "";
+    return str
+        .replaceAll("https://", "")
+        .replaceAll("http://", "")
+        .replaceAll("www.", "");
+};
