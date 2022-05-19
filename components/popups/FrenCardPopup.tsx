@@ -18,7 +18,6 @@ const FrenCardPopup: FC<Props> = ({ item, setItem }) => {
     };
 
     if (!item) return null;
-    console.log("FrenCardpopup:  ", linkedText(item.content.caption));
 
     return (
         <PopupWrapper
