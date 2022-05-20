@@ -54,44 +54,47 @@ const DonatePopup: FC<Props> = ({ ethAddress }) => {
             size={"transferPopup"}
             headerContent={""}
         >
-            {window?.ethereum ? (
-                <>
-                    {transferMessage && transferMessage !== "" && (
-                        <div className="paddingBottom">
-                            <p>{transferMessage}</p>
-                        </div>
-                    )}
-                    <p>How much ETH, ser?</p>
-                    <input
-                        className="input width--s center"
-                        value={price}
-                        onChange={(val) => onChange(val.target.value)}
-                        type="number"
-                        step={0.1}
-                        min={0.1}
-                    />
-                    {error && (
-                        <DonateError
-                            errorCode={(error as any).code ?? 400}
-                            errorMessage={error.message ?? ""}
+            {
+                //@ts-ignore
+                window?.ethereum ? (
+                    <>
+                        {transferMessage && transferMessage !== "" && (
+                            <div className="paddingBottom">
+                                <p>{transferMessage}</p>
+                            </div>
+                        )}
+                        <p>How much ETH, ser?</p>
+                        <input
+                            className="input width--s center"
+                            value={price}
+                            onChange={(val) => onChange(val.target.value)}
+                            type="number"
+                            step={0.1}
+                            min={0.1}
                         />
-                    )}
-                    <button
-                        className="button black marginTop"
-                        onClick={() => sendDonation()}
-                        disabled={isFetching}
-                        tabIndex={0}
-                    >
-                        Send donation{" "}
-                        <FontAwesomeIcon
-                            icon={faEthereum}
-                            style={{ fontSize: "1rem", height: "1rem" }}
-                        />
-                    </button>
-                </>
-            ) : (
-                <p>no web3 wallet found</p>
-            )}
+                        {error && (
+                            <DonateError
+                                errorCode={(error as any).code ?? 400}
+                                errorMessage={error.message ?? ""}
+                            />
+                        )}
+                        <button
+                            className="button black marginTop"
+                            onClick={() => sendDonation()}
+                            disabled={isFetching}
+                            tabIndex={0}
+                        >
+                            Send donation{" "}
+                            <FontAwesomeIcon
+                                icon={faEthereum}
+                                style={{ fontSize: "1rem", height: "1rem" }}
+                            />
+                        </button>
+                    </>
+                ) : (
+                    <p>no web3 wallet found</p>
+                )
+            }
         </PopupWrapper>
     );
 };
