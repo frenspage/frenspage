@@ -126,6 +126,7 @@ const UserPage: NextPage<Props> = ({}) => {
                             .catch((err) => {
                                 setError(err);
                                 setIsOpenseaDown(true);
+                                setIsLoading(false);
                             });
                     } else {
                         /**********************
@@ -155,7 +156,7 @@ const UserPage: NextPage<Props> = ({}) => {
     };
 
     /**** IF ERROR FROM PFP LOAD *****/
-    if (error) return <p>Error {error.message}</p>;
+    if (error && !isOpenseaDown) return <p>Error {error.message}</p>;
 
     /**** IF LOADING *****/
     if (isLoading) return <Loader />;
@@ -197,6 +198,7 @@ const UserPage: NextPage<Props> = ({}) => {
                         style={{ cursor: "pointer" }}
                         tabIndex={0}
                     />
+
                     <br />
                     <div className="ellipsis flex flex-center--horizontal">
                         <h3

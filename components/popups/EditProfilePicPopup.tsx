@@ -41,7 +41,8 @@ const EditProfilePicPopup: React.FC<Props> = ({ setEditProfilePic }) => {
                     } else {
                         setHasMore(false);
                     }
-                    setNfts((old) => [...old, ...res?.assets]);
+                    if (!nfts) setNfts((old) => [...old, ...res?.assets]);
+                    else setNfts([...res?.assets]);
                     setFetchOffset((old) => old + itemsPerPage);
                 })
                 .catch((err) => (itemsPerPage = 0));
