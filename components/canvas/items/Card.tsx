@@ -14,6 +14,10 @@ const Card: FC<Props> = (props) => {
 
     useEffect(() => {
         loadFile();
+
+        return () => {
+            setFile(null);
+        };
     }, [cards]);
 
     const loadFile = () => {
