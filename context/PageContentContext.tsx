@@ -93,8 +93,9 @@ export const PageContextProvider: React.FC = ({ children }) => {
 
                 //console.log("Result: ", result);
                 if (result) {
-                    await setContent(result);
-                    return result;
+                    let reversed = result.reverse();
+                    await setContent(reversed);
+                    return reversed;
                 }
             }
         }
@@ -121,7 +122,7 @@ export const PageContextProvider: React.FC = ({ children }) => {
                     item,
                     content.length,
                 );
-                setContent((old: any) => [...old, card]);
+                setContent((old: any) => [card, ...old]);
                 return true;
             })
             .catch((error: any) => {
