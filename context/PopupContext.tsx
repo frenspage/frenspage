@@ -50,7 +50,9 @@ export const PopupContext = createContext<ContextProps>({
     setConfirmPopup: () => null,
 });
 
-export const PopupProvider: React.FC = ({ children }) => {
+export const PopupProvider: React.FC<{
+    children?: React.ReactChild | React.ReactChild[];
+}> = ({ children }) => {
     const [showEditProfilePopup, _setShowEditProfilePopup] = useState(false);
     const [showEditENSPopup, _setShowEditENSPopup] = useState(false);
     const [showEditProfilePicPopup, _setShowEditProfilePicPopup] =

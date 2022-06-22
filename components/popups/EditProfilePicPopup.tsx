@@ -31,18 +31,19 @@ const EditProfilePicPopup: React.FC<Props> = ({ setEditProfilePic }) => {
                 headers: {
                     "X-API-KEY": process.env.NEXT_PUBLIC_OPENSEEKEY + "",
                 },
+                redirect: "follow",
             };
 
             await fetchPage(ethAddress, options)
                 .then((res: any) => {
-                    itemsPerPage = res?.assets?.length;
+                    itemsPerPage = res?.ownedNfts?.length;
                     if (itemsPerPage === maxItemsPerPage) {
                         setHasMore(true);
                     } else {
                         setHasMore(false);
                     }
-                    if (!nfts) setNfts((old) => [...old, ...res?.assets]);
-                    else setNfts([...res?.assets]);
+                    if (!nfts) setNfts((old) => [...old, ...res?.ownedNfts]);
+                    else setNfts([...res?.ownedNfts]);
                     setFetchOffset((old) => old + itemsPerPage);
                 })
                 .catch((err) => (itemsPerPage = 0));
@@ -51,8 +52,9 @@ const EditProfilePicPopup: React.FC<Props> = ({ setEditProfilePic }) => {
 
     const fetchPage = async (ethAddress: string, options: any) => {
         let result = null;
-        let url = `https://api.opensea.io/api/v1/assets?owner=${ethAddress}&order_direction=desc&offset=${fetchOffset}&limit=${maxItemsPerPage}`;
-        await fetch(url, options)
+        // let url = `https://api.opensea.io/api/v1/assets?owner=${ethAddress}&order_direction=desc&offset=${fetchOffset}&limit=${maxItemsPerPage}`;
+        let urlAlchemy = `https://eth-mainnet.alchemyapi.io/nft/v2/demo/getNFTs?owner=${ethAddress}`;
+        await fetch(urlAlchemy, options)
             .then((response) => response.json())
             .then((response) => {
                 result = response;
@@ -104,7 +106,11 @@ const EditProfilePicPopup: React.FC<Props> = ({ setEditProfilePic }) => {
                                     key={`nft__${index}`}
                                 >
                                     <img
-                                        src={nft?.image_preview_url ?? ""}
+                                        src={
+                                            nft?.metadata?.image_url ??
+                                            nft?.metadata?.image ??
+                                            ""
+                                        }
                                         alt=""
                                         className={
                                             "pfp__nft__image hover" +

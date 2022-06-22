@@ -110,9 +110,15 @@ const UserPage: NextPage<Props> = ({}) => {
                                 "X-API-KEY":
                                     process.env.NEXT_PUBLIC_OPENSEEKEY + "",
                             },
+                            redirect: "follow",
                         };
-                        await fetch(
+                        /*await fetch(
                             `https://api.opensea.io/api/v1/asset/${ta}/${ti}/`,
+                            options,
+                        )*/
+                        console.log(ta);
+                        await fetch(
+                            `https://eth-mainnet.alchemyapi.io/nft/v2/demo/getNFTs?owner=${ta}`,
                             options,
                         )
                             .then((response) => response.json())

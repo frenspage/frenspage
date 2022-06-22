@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { ICardItem, TCardItems } from "../types/types";
 import { useUser } from "./UserContext";
 import { useMoralis } from "react-moralis";
@@ -23,7 +23,9 @@ export const PageContentContext = createContext<ContextProps>({
     setFrenPage: () => null,
 });
 
-export const PageContextProvider: React.FC = ({ children }) => {
+export const PageContextProvider: React.FC<{
+    children?: React.ReactChild | React.ReactChild[];
+}> = ({ children }) => {
     const { Moralis } = useMoralis();
     const { page: userPage, user, ensDomain, username } = useUser();
     const [page, setPage] = useState<any>();

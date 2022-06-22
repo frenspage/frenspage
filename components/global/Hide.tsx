@@ -5,6 +5,7 @@ type size = "phone" | "tablet" | "desktop";
 interface Props {
     down?: size;
     up?: size;
+    children?: JSX.Element | JSX.Element[];
 }
 
 const Hide: React.FC<Props> = ({ down, up, children }) => {

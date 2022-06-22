@@ -7,6 +7,7 @@ import React from "react";
 interface Props {
     addClass?: string;
     showFooter?: boolean;
+    children?: React.ReactChild | React.ReactChild[] | any;
 }
 
 const Layout: NextPage<Props> = ({

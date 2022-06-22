@@ -63,7 +63,9 @@ export const UserContext = createContext<ContextProps>({
     setIsOpenseaDown: () => null,
 });
 
-export const UserProvider: React.FC = ({ children }) => {
+export const UserProvider: React.FC<{
+    children?: React.ReactChild | React.ReactChild[];
+}> = ({ children }) => {
     const {
         authenticate: moralisAuth,
         isAuthenticated: isMoralisAuthenticated,
