@@ -30,7 +30,7 @@ const showCanvas = true;
 const UserPage: NextPage<Props> = ({}) => {
     const router = useRouter();
 
-    //const [pfp, setPfp] = useState<any>(null);
+    const [pfp, setPfp] = useState<any>(null);
     const [page, setPage] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [doesExist, setDoesExist] = useState(true);
@@ -50,8 +50,6 @@ const UserPage: NextPage<Props> = ({}) => {
         disconnect,
         isOpenseaDown,
         setIsOpenseaDown,
-        pfp,
-        setPfp,
     } = useUser();
 
     const { setFrenPopup } = usePopup();
@@ -133,6 +131,7 @@ const UserPage: NextPage<Props> = ({}) => {
                                 if (response?.metadata) {
                                     //let imageUrl = getNftImage(response);
                                     setPfp(response);
+                                    //console.log("User has PFP: ", response);
                                     setIsLoading(false);
                                 } else {
                                     throw new Error("No metadata available.");
@@ -212,6 +211,8 @@ const UserPage: NextPage<Props> = ({}) => {
                         onClick={() => setFrenPopup(true)}
                         style={{ cursor: "pointer" }}
                         tabIndex={0}
+                        alt=""
+                        data-alt={pfp?.title}
                     />
 
                     <br />

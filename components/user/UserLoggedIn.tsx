@@ -81,6 +81,8 @@ const UserLoggedIn: FC<Props> = ({
                                 className="profilepic myprofilepic"
                                 onClick={() => setShowEditProfilePopup(true)}
                                 tabIndex={0}
+                                alt=""
+                                data-alt={pfp?.title}
                                 onKeyPress={(e) => {
                                     if (e.key === "Enter")
                                         setShowEditProfilePopup(true);

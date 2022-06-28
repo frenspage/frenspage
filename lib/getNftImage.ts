@@ -1,5 +1,5 @@
 export const getNftImage = (response: any): string => {
-    if (!response) return "";
+    if (!response) return "/images/punk.png";
     return (
         response.metadata?.thumbnail ??
         response.metadata?.thumbnail_url ??

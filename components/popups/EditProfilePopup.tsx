@@ -95,7 +95,8 @@ const EditProfilePopup: React.FC<Props> = ({
                 src={getNftImage(editProfilePic) ?? "/images/punk.png"}
                 className="profilepicselect myprofilepic"
                 onClick={() => setShowEditProfilePicPopup(true)}
-                alt="Profile Picture"
+                alt=""
+                data-alt={editProfilePic?.title}
                 tabIndex={0}
             />
 
