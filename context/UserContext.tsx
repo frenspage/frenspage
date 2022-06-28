@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useMoralis } from "react-moralis";
 import { TUser } from "../types/types";
+import { getNftImage } from "../lib/getNftImage";
 
 export interface IEnsDomain {
     name?: string;
@@ -213,13 +214,19 @@ export const UserProvider: React.FC<{
                         "X-API-KEY": process.env.NEXT_PUBLIC_OPENSEEKEY + "",
                     },
                 };
-                fetch(
-                    `https://api.opensea.io/api/v1/asset/${ta}/${ti}/`,
-                    options,
-                )
+
+                const tokenType = "erc721";
+                let baseURL = `https://eth-mainnet.alchemyapi.io/nft/v2/${process.env.NEXT_PUBLIC_ALCHEMY}/getNFTMetadata`;
+                let finalUrl = `${baseURL}?contractAddress=${ta}&tokenId=${ti}&tokenType=${tokenType}`;
+                await fetch(finalUrl, options)
                     .then((response) => response.json())
                     .then((response) => {
-                        setPfp(response);
+                        if (response?.metadata) {
+                            let imageUrl = getNftImage(response);
+                            setPfp(imageUrl);
+                        } else {
+                            throw new Error("No metadata available.");
+                        }
                     })
                     .catch((err) => {
                         console.error("usercontext loadPfp error: ", err);

@@ -17,6 +17,7 @@ import { faTwitter } from "@fortawesome/free-brands-svg-icons";
 import dynamic from "next/dynamic";
 import CardsRenderer from "../components/mobile/CardsRenderer";
 import Hide from "../components/global/Hide";
+import { getNftImage } from "../lib/getNftImage";
 
 const FrenCanvas = dynamic(() => import("../components/canvas/FrenCanvas"), {
     ssr: false,
@@ -130,14 +131,8 @@ const UserPage: NextPage<Props> = ({}) => {
                                  *  User has PFP
                                  * *****************/
 
-                                let metadata = response?.metadata;
-
-                                if (metadata) {
-                                    let imageUrl =
-                                        metadata?.thumbnail ??
-                                        metadata?.thumbnail_url ??
-                                        response?.metadata?.image_url ??
-                                        response?.metadata?.image;
+                                if (response?.metadata) {
+                                    let imageUrl = getNftImage(response);
                                     setPfp(imageUrl);
                                     setIsLoading(false);
                                 } else {

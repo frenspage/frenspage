@@ -3,6 +3,7 @@ import { useMoralis } from "react-moralis";
 import { usePopup } from "../../context/PopupContext";
 import { useUser } from "../../context/UserContext";
 import PopupWrapper from "./PopupWrapper";
+import { getNftImage } from "../../lib/getNftImage";
 
 interface Props {
     setEditProfilePic: (val: boolean) => void;
@@ -107,11 +108,7 @@ const EditProfilePicPopup: React.FC<Props> = ({ setEditProfilePic }) => {
                                     key={`nft__${index}`}
                                 >
                                     <img
-                                        src={
-                                            nft?.metadata?.image_url ??
-                                            nft?.metadata?.image ??
-                                            ""
-                                        }
+                                        src={getNftImage(nft) ?? ""}
                                         data-alt={nft?.title}
                                         alt=""
                                         className={
