@@ -112,7 +112,8 @@ const EditProfilePicPopup: React.FC<Props> = ({ setEditProfilePic }) => {
                                             nft?.metadata?.image ??
                                             ""
                                         }
-                                        alt={nft?.title}
+                                        data-alt={nft?.title}
+                                        alt=""
                                         className={
                                             "pfp__nft__image hover" +
                                             (currentSelected &&

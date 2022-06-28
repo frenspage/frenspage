@@ -100,6 +100,12 @@
 				width: 10rem
 				border-radius: 5rem
 				object-fit: cover
+				border: 1px solid $black
+				overflow: hidden
+
+				@include pseudo($loc: before, $left: 50%, $top: 50%)
+					content: attr(data-alt)
+					transform: translate(-50%, -50%)
 
 				&.hover
 					&:hover, &:focus-visible, &.active
