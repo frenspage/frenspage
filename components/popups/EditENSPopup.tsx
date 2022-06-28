@@ -45,7 +45,6 @@ const EditENSPopup: React.FC<Props> = ({ setEditUsername }) => {
                     if (!ensNames)
                         setEnsNames((old) => [...old, ...res?.ownedNfts]);
                     else setEnsNames([...res?.ownedNfts]);
-                    console.log(res.ownedNfts);
                     setFetchOffset((old) => old + itemsPerPage);
                 })
                 .catch((err) => (itemsPerPage = 0));
@@ -59,7 +58,7 @@ const EditENSPopup: React.FC<Props> = ({ setEditUsername }) => {
         await fetch(urlAlchemy, options)
             .then((res) => res.json())
             .then((response) => {
-                console.log("Alchemy req: ", response);
+                //console.log("Alchemy req: ", response);
                 result = response;
             })
             .catch((err) => console.error(err));

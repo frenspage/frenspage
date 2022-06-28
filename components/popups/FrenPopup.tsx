@@ -23,27 +23,25 @@ const FrenPopup: React.FC<Props> = ({ pageData, profilePic }) => {
             headerContent={""}
         >
             {profilePic ? (
-                <a
+                <>
+                    {/*<a
                     href={profilePic?.permalink}
                     target="_blank"
                     rel="noreferrer"
-                >
+                >*/}
                     <img
-                        src={
-                            profilePic?.image_preview_url ?? "/images/punk.png"
-                        }
+                        src={profilePic ?? "/images/punk.png"}
                         className="profilepic"
                         alt="Profile Picture"
                     />
-                </a>
+                    {/**</a>>**/}
+                </>
             ) : (
                 <img
                     src={profilePic?.image_preview_url ?? "/images/punk.png"}
                     className="profilepic noHover"
                     style={{
-                        cursor: profilePic?.image_preview_url
-                            ? "pointer"
-                            : "initial",
+                        cursor: profilePic ? "pointer" : "initial",
                     }}
                     alt="Profile Picture"
                 />

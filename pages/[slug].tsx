@@ -2,7 +2,7 @@ import type { NextPage } from "next";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Layout from "../components/global/Layout";
-import { useMoralis } from "react-moralis";
+import { useMoralis, useMoralisWeb3Api } from "react-moralis";
 import UserLoggedIn from "../components/user/UserLoggedIn";
 import FrenPopup from "../components/popups/FrenPopup";
 import { usePopup } from "../context/PopupContext";
@@ -29,7 +29,7 @@ const showCanvas = true;
 const UserPage: NextPage<Props> = ({}) => {
     const router = useRouter();
 
-    const [pfp, setPfp] = useState<any>(null);
+    //const [pfp, setPfp] = useState<any>(null);
     const [page, setPage] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [doesExist, setDoesExist] = useState(true);
@@ -41,6 +41,7 @@ const UserPage: NextPage<Props> = ({}) => {
     const slug = punifyCode(lowercasedSlug);
 
     const { isInitialized, Moralis } = useMoralis();
+    const Web3Api = useMoralisWeb3Api();
     const {
         user,
         isAuthenticated,
@@ -48,6 +49,8 @@ const UserPage: NextPage<Props> = ({}) => {
         disconnect,
         isOpenseaDown,
         setIsOpenseaDown,
+        pfp,
+        setPfp,
     } = useUser();
 
     const { setFrenPopup } = usePopup();
@@ -116,18 +119,30 @@ const UserPage: NextPage<Props> = ({}) => {
                             `https://api.opensea.io/api/v1/asset/${ta}/${ti}/`,
                             options,
                         )*/
-                        console.log(ta);
-                        await fetch(
-                            `https://eth-mainnet.alchemyapi.io/nft/v2/demo/getNFTs?owner=${ta}`,
-                            options,
-                        )
+
+                        const tokenType = "erc721";
+                        let baseURL = `https://eth-mainnet.alchemyapi.io/nft/v2/${process.env.NEXT_PUBLIC_ALCHEMY}/getNFTMetadata`;
+                        let finalUrl = `${baseURL}?contractAddress=${ta}&tokenId=${ti}&tokenType=${tokenType}`;
+                        await fetch(finalUrl, options)
                             .then((response) => response.json())
                             .then((response) => {
                                 /*******************
                                  *  User has PFP
                                  * *****************/
-                                setPfp(response);
-                                setIsLoading(false);
+
+                                let metadata = response?.metadata;
+
+                                if (metadata) {
+                                    let imageUrl =
+                                        metadata?.thumbnail ??
+                                        metadata?.thumbnail_url ??
+                                        response?.metadata?.image_url ??
+                                        response?.metadata?.image;
+                                    setPfp(imageUrl);
+                                    setIsLoading(false);
+                                } else {
+                                    throw new Error("No metadata available.");
+                                }
                             })
                             .catch((err) => {
                                 setError(err);
@@ -198,7 +213,7 @@ const UserPage: NextPage<Props> = ({}) => {
             <div className="user-container">
                 <div id="profilepicbox">
                     <img
-                        src={pfp?.image_preview_url ?? "/images/punk.png"}
+                        src={pfp ?? "/images/punk.png"}
                         className="profilepic"
                         onClick={() => setFrenPopup(true)}
                         style={{ cursor: "pointer" }}

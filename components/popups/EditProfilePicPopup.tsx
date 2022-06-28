@@ -58,6 +58,7 @@ const EditProfilePicPopup: React.FC<Props> = ({ setEditProfilePic }) => {
             .then((response) => response.json())
             .then((response) => {
                 result = response;
+                console.log(result);
             })
             .catch((err) => console.error(err));
         return result;
@@ -111,7 +112,7 @@ const EditProfilePicPopup: React.FC<Props> = ({ setEditProfilePic }) => {
                                             nft?.metadata?.image ??
                                             ""
                                         }
-                                        alt=""
+                                        alt={nft?.title}
                                         className={
                                             "pfp__nft__image hover" +
                                             (currentSelected &&

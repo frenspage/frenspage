@@ -76,9 +76,7 @@ const UserLoggedIn: FC<Props> = ({
                     <div className="frenpage user-container">
                         <div id="profilepicbox">
                             <img
-                                src={
-                                    pfp?.image_preview_url ?? "/images/punk.png"
-                                }
+                                src={pfp}
                                 className="profilepic myprofilepic"
                                 onClick={() => setShowEditProfilePopup(true)}
                                 tabIndex={0}
