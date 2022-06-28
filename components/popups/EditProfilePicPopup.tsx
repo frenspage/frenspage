@@ -59,7 +59,7 @@ const EditProfilePicPopup: React.FC<Props> = ({ setEditProfilePic }) => {
             .then((response) => response.json())
             .then((response) => {
                 result = response;
-                console.log(result);
+                //console.log(result);
             })
             .catch((err) => console.error(err));
         return result;
