@@ -130,10 +130,9 @@ const UserPage: NextPage<Props> = ({}) => {
                                 /*******************
                                  *  User has PFP
                                  * *****************/
-
                                 if (response?.metadata) {
-                                    let imageUrl = getNftImage(response);
-                                    setPfp(imageUrl);
+                                    //let imageUrl = getNftImage(response);
+                                    setPfp(response);
                                     setIsLoading(false);
                                 } else {
                                     throw new Error("No metadata available.");
@@ -208,7 +207,7 @@ const UserPage: NextPage<Props> = ({}) => {
             <div className="user-container">
                 <div id="profilepicbox">
                     <img
-                        src={pfp ?? "/images/punk.png"}
+                        src={getNftImage(pfp) ?? "/images/punk.png"}
                         className="profilepic"
                         onClick={() => setFrenPopup(true)}
                         style={{ cursor: "pointer" }}

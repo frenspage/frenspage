@@ -6,7 +6,7 @@ import PopupWrapper from "./PopupWrapper";
 import { getNftImage } from "../../lib/getNftImage";
 
 interface Props {
-    setEditProfilePic: (val: boolean) => void;
+    setEditProfilePic: (val: any) => void;
 }
 
 const maxItemsPerPage: number = 50;
@@ -59,7 +59,6 @@ const EditProfilePicPopup: React.FC<Props> = ({ setEditProfilePic }) => {
             .then((response) => response.json())
             .then((response) => {
                 result = response;
-                //console.log(result);
             })
             .catch((err) => console.error(err));
         return result;

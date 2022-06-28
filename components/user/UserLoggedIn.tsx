@@ -16,6 +16,7 @@ import dynamic from "next/dynamic";
 import Hide from "../global/Hide";
 import CardsRenderer from "../mobile/CardsRenderer";
 import LoggedInCardsRenderer from "../mobile/LoggedInCardsRenderer";
+import { getNftImage } from "../../lib/getNftImage";
 
 const LoggedInCanvas = dynamic(() => import("../canvas/LoggedInCanvas"), {
     ssr: false,
@@ -76,7 +77,7 @@ const UserLoggedIn: FC<Props> = ({
                     <div className="frenpage user-container">
                         <div id="profilepicbox">
                             <img
-                                src={pfp ?? "/images/punk.png"}
+                                src={getNftImage(pfp) ?? "/images/punk.png"}
                                 className="profilepic myprofilepic"
                                 onClick={() => setShowEditProfilePopup(true)}
                                 tabIndex={0}

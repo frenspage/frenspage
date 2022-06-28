@@ -10,6 +10,7 @@ import {
 
 import Confetti from "react-confetti";
 import { useUser } from "../../context/UserContext";
+import { getNftImage } from "../../lib/getNftImage";
 
 interface Props {
     editProfilePic: any;
@@ -68,10 +69,7 @@ const FirstTimePopup: React.FC<Props> = ({ editProfilePic, editUsername }) => {
                 </header>
                 <div className="content">
                     <img
-                        src={
-                            editProfilePic?.image_preview_url ??
-                            "/images/punk.png"
-                        }
+                        src={getNftImage(editProfilePic) ?? "/images/punk.png"}
                         className="profilepicselect myprofilepic noHover"
                         alt="Profile Picture"
                     />

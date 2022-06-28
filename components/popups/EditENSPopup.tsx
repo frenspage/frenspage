@@ -3,6 +3,8 @@ import { useMoralis } from "react-moralis";
 import { usePopup } from "../../context/PopupContext";
 import { useUser } from "../../context/UserContext";
 import PopupWrapper from "./PopupWrapper";
+import { ensContractAdress } from "../../lib/variousContractAddresses";
+import { getNftImage } from "../../lib/getNftImage";
 
 interface Props {
     setEditUsername: (val: string) => void;
@@ -42,9 +44,8 @@ const EditENSPopup: React.FC<Props> = ({ setEditUsername }) => {
                     } else {
                         setHasMore(false);
                     }
-                    if (!ensNames)
-                        setEnsNames((old) => [...old, ...res?.ownedNfts]);
-                    else setEnsNames([...res?.ownedNfts]);
+                    if (!ensNames) setEnsNames((old) => [...old, ...res]);
+                    else setEnsNames([...res]);
                     setFetchOffset((old) => old + itemsPerPage);
                 })
                 .catch((err) => (itemsPerPage = 0));
@@ -58,8 +59,12 @@ const EditENSPopup: React.FC<Props> = ({ setEditUsername }) => {
         await fetch(urlAlchemy, options)
             .then((res) => res.json())
             .then((response) => {
-                //console.log("Alchemy req: ", response);
-                result = response;
+                result = response?.ownedNfts?.filter((item: any) => {
+                    return (
+                        item.contract.address.toLowerCase() ===
+                        ensContractAdress.toLowerCase()
+                    );
+                });
             })
             .catch((err) => console.error(err));
         return result;
@@ -120,13 +125,9 @@ const EditENSPopup: React.FC<Props> = ({ setEditUsername }) => {
                                     key={`nft__${index}`}
                                 >
                                     <img
-                                        src={
-                                            nft?.traits &&
-                                            nft?.traits?.length > 0
-                                                ? nft?.image_preview_url ?? ""
-                                                : "/images/punk.png"
-                                        }
+                                        src={getNftImage(nft) ?? ""}
                                         alt=""
+                                        data-alt={nft?.title}
                                         className={
                                             "pfp__nft__image overflow-hidden" +
                                             (nft?.traits &&

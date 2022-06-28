@@ -11,6 +11,7 @@ import {
 import { useUser } from "../../context/UserContext";
 import { faTwitter } from "@fortawesome/free-brands-svg-icons";
 import PopupWrapper from "./PopupWrapper";
+import { getNftImage } from "../../lib/getNftImage";
 
 interface Props {
     editProfilePic: any;
@@ -91,7 +92,7 @@ const EditProfilePopup: React.FC<Props> = ({
             headerContent={""}
         >
             <img
-                src={editProfilePic?.image_preview_url ?? "/images/punk.png"}
+                src={getNftImage(editProfilePic) ?? "/images/punk.png"}
                 className="profilepicselect myprofilepic"
                 onClick={() => setShowEditProfilePicPopup(true)}
                 alt="Profile Picture"

@@ -222,8 +222,8 @@ export const UserProvider: React.FC<{
                     .then((response) => response.json())
                     .then((response) => {
                         if (response?.metadata) {
-                            let imageUrl = getNftImage(response);
-                            setPfp(imageUrl);
+                            //let imageUrl = getNftImage(response);
+                            setPfp(response);
                         } else {
                             throw new Error("No metadata available.");
                         }
@@ -257,6 +257,7 @@ export const UserProvider: React.FC<{
     /** saves new pfp to DB **/
     const saveChangeProfilePic = async (editProfilePic: any) => {
         let data = editProfilePic;
+        console.log(data);
 
         if (!data) return;
 
@@ -264,8 +265,8 @@ export const UserProvider: React.FC<{
         let pfp = new PFP();
 
         pfp.set("owner", user);
-        pfp.set("token_address", data.asset_contract?.address);
-        pfp.set("token_id", data.token_id);
+        pfp.set("token_address", data.contract?.address);
+        pfp.set("token_id", data.id?.tokenId);
 
         pfp.save()
             .then((res: any) => {
