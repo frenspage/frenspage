@@ -21,9 +21,12 @@ const CropImagePopup: FC<Props> = ({ file, setFile }) => {
         setUncroppedImage(file);
     }, [file, setFile]);
 
-    const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
-        setCroppedAreaPixels(croppedAreaPixels);
-    }, []);
+    const onCropComplete = useCallback(
+        (croppedArea: any, croppedAreaPixels: any) => {
+            setCroppedAreaPixels(croppedAreaPixels);
+        },
+        [],
+    );
 
     const save = async () => {
         if (uncroppedImage) {

@@ -26,13 +26,19 @@
 		&:hover
 			text-decoration: none
 			opacity: 1
+			cursor: initial
 
 	@include media-below(phone)
 		max-width: 70vw
 		aspect-ratio: 1 / 1
+
 	@media screen and (max-width: 300px)
 		width: auto
 		height: auto
+
+	@include pseudo($loc: before, $left: 50%, $top: 50%)
+		content: attr(data-alt)
+		transform: translate(-50%, -50%)
 
 
 .ethname
@@ -100,6 +106,12 @@
 				width: 10rem
 				border-radius: 5rem
 				object-fit: cover
+				border: 1px solid #ddd
+				overflow: hidden
+
+				@include pseudo($loc: before, $left: 50%, $top: 50%)
+					content: attr(data-alt)
+					transform: translate(-50%, -50%)
 
 				&.hover
 					&:hover, &:focus-visible, &.active

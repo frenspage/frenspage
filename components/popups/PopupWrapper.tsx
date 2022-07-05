@@ -8,6 +8,7 @@ interface Props {
     flexWrapper?: boolean;
     addClass?: string;
     addClassBg?: string;
+    children?: JSX.Element | JSX.Element[] | any;
 }
 
 const PopupWrapper: FC<Props> = ({

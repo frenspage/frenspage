@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useMoralis } from "react-moralis";
 import { TUser } from "../types/types";
+import { getNftImage } from "../lib/getNftImage";
 
 export interface IEnsDomain {
     name?: string;
@@ -63,7 +64,9 @@ export const UserContext = createContext<ContextProps>({
     setIsOpenseaDown: () => null,
 });
 
-export const UserProvider: React.FC = ({ children }) => {
+export const UserProvider: React.FC<{
+    children?: React.ReactChild | React.ReactChild[];
+}> = ({ children }) => {
     const {
         authenticate: moralisAuth,
         isAuthenticated: isMoralisAuthenticated,
@@ -211,13 +214,19 @@ export const UserProvider: React.FC = ({ children }) => {
                         "X-API-KEY": process.env.NEXT_PUBLIC_OPENSEEKEY + "",
                     },
                 };
-                fetch(
-                    `https://api.opensea.io/api/v1/asset/${ta}/${ti}/`,
-                    options,
-                )
+
+                const tokenType = "erc721";
+                let baseURL = `https://eth-mainnet.alchemyapi.io/nft/v2/${process.env.NEXT_PUBLIC_ALCHEMY}/getNFTMetadata`;
+                let finalUrl = `${baseURL}?contractAddress=${ta}&tokenId=${ti}&tokenType=${tokenType}`;
+                await fetch(finalUrl, options)
                     .then((response) => response.json())
                     .then((response) => {
-                        setPfp(response);
+                        if (response?.metadata) {
+                            //let imageUrl = getNftImage(response);
+                            setPfp(response);
+                        } else {
+                            throw new Error("No metadata available.");
+                        }
                     })
                     .catch((err) => {
                         console.error("usercontext loadPfp error: ", err);
@@ -248,6 +257,7 @@ export const UserProvider: React.FC = ({ children }) => {
     /** saves new pfp to DB **/
     const saveChangeProfilePic = async (editProfilePic: any) => {
         let data = editProfilePic;
+        console.log(data);
 
         if (!data) return;
 
@@ -255,8 +265,8 @@ export const UserProvider: React.FC = ({ children }) => {
         let pfp = new PFP();
 
         pfp.set("owner", user);
-        pfp.set("token_address", data.asset_contract?.address);
-        pfp.set("token_id", data.token_id);
+        pfp.set("token_address", data.contract?.address);
+        pfp.set("token_id", data.id?.tokenId);
 
         pfp.save()
             .then((res: any) => {

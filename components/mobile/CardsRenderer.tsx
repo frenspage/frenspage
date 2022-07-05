@@ -20,7 +20,9 @@ const CardsRenderer: FC<Props> = ({ page = null }) => {
     }, [page]);
 
     useEffect(() => {
-        if (page && content) setCards(content);
+        if (page && content) {
+            setCards(content);
+        }
     }, [content]);
 
     const handleClick = (e: any, item: ICardItem) => {

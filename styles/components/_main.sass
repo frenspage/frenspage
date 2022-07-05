@@ -283,13 +283,19 @@ a:-webkit-any-link
 	transition:  opacity 0.2s ease
 	object-fit: cover
 	box-shadow: 0 0 40px rgba(0, 0, 0, 0.1)
+	overflow: hidden
 
+	@include pseudo($loc: before, $left: 50%, $top: 50%)
+		content: attr(data-alt)
+		transform: translate(-50%, -50%)
 
 	&:hover
 		opacity: 0.7
 	&.noHover
 		&:hover
 			opacity: 1
+
+
 
 
 

@@ -3,6 +3,8 @@ import { useMoralis } from "react-moralis";
 import { usePopup } from "../../context/PopupContext";
 import { useUser } from "../../context/UserContext";
 import PopupWrapper from "./PopupWrapper";
+import { ensContractAdress } from "../../lib/variousContractAddresses";
+import { getNftImage } from "../../lib/getNftImage";
 
 interface Props {
     setEditUsername: (val: string) => void;
@@ -31,19 +33,19 @@ const EditENSPopup: React.FC<Props> = ({ setEditUsername }) => {
                 headers: {
                     "X-API-KEY": process.env.NEXT_PUBLIC_OPENSEEKEY + "",
                 },
+                redirect: "follow",
             };
 
             await fetchPage(ethAddress, options)
                 .then((res: any) => {
-                    itemsPerPage = res?.assets?.length;
+                    itemsPerPage = res?.ownedNfts?.length;
                     if (itemsPerPage === maxItemsPerPage) {
                         setHasMore(true);
                     } else {
                         setHasMore(false);
                     }
-                    if (!ensNames)
-                        setEnsNames((old) => [...old, ...res?.assets]);
-                    else setEnsNames([...res?.assets]);
+                    if (!ensNames) setEnsNames((old) => [...old, ...res]);
+                    else setEnsNames([...res]);
                     setFetchOffset((old) => old + itemsPerPage);
                 })
                 .catch((err) => (itemsPerPage = 0));
@@ -52,11 +54,17 @@ const EditENSPopup: React.FC<Props> = ({ setEditUsername }) => {
 
     const fetchPage = async (ethAddress: string, options: any) => {
         let result = null;
-        let url = `https://api.opensea.io/api/v1/assets?owner=${ethAddress}&asset_contract_address=${process.env.NEXT_PUBLIC_ENSCONTRACTADDRESS}&offset=${fetchOffset}&limit=${maxItemsPerPage}`;
-        await fetch(url, options)
+        //let url = `https://api.opensea.io/api/v1/assets?owner=${ethAddress}&asset_contract_address=${process.env.NEXT_PUBLIC_ENSCONTRACTADDRESS}&offset=${fetchOffset}&limit=${maxItemsPerPage}`;
+        let urlAlchemy = `https://eth-mainnet.alchemyapi.io/nft/v2/demo/getNFTs?owner=${ethAddress}`;
+        await fetch(urlAlchemy, options)
             .then((res) => res.json())
             .then((response) => {
-                result = response;
+                result = response?.ownedNfts?.filter((item: any) => {
+                    return (
+                        item.contract.address.toLowerCase() ===
+                        ensContractAdress.toLowerCase()
+                    );
+                });
             })
             .catch((err) => console.error(err));
         return result;
@@ -117,13 +125,9 @@ const EditENSPopup: React.FC<Props> = ({ setEditUsername }) => {
                                     key={`nft__${index}`}
                                 >
                                     <img
-                                        src={
-                                            nft?.traits &&
-                                            nft?.traits?.length > 0
-                                                ? nft?.image_preview_url ?? ""
-                                                : "/images/punk.png"
-                                        }
+                                        src={getNftImage(nft) ?? ""}
                                         alt=""
+                                        data-alt={nft?.title}
                                         className={
                                             "pfp__nft__image overflow-hidden" +
                                             (nft?.traits &&

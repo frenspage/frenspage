@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEthereum } from "@fortawesome/free-brands-svg-icons";
 import { faExternalLinkAlt } from "@fortawesome/free-solid-svg-icons";
 import PopupWrapper from "./PopupWrapper";
+import { getNftImage } from "../../lib/getNftImage";
 
 interface Props {
     pageData: any;
@@ -23,27 +24,25 @@ const FrenPopup: React.FC<Props> = ({ pageData, profilePic }) => {
             headerContent={""}
         >
             {profilePic ? (
-                <a
+                <>
+                    {/*<a
                     href={profilePic?.permalink}
                     target="_blank"
                     rel="noreferrer"
-                >
+                >*/}
                     <img
-                        src={
-                            profilePic?.image_preview_url ?? "/images/punk.png"
-                        }
-                        className="profilepic"
+                        src={getNftImage(profilePic) ?? "/images/punk.png"}
+                        className="profilepic noHover"
                         alt="Profile Picture"
                     />
-                </a>
+                    {/**</a>>**/}
+                </>
             ) : (
                 <img
                     src={profilePic?.image_preview_url ?? "/images/punk.png"}
                     className="profilepic noHover"
                     style={{
-                        cursor: profilePic?.image_preview_url
-                            ? "pointer"
-                            : "initial",
+                        cursor: profilePic ? "pointer" : "initial",
                     }}
                     alt="Profile Picture"
                 />
