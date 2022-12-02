@@ -32,20 +32,14 @@ function MyApp({ Component, pageProps }: AppProps) {
         return null;
 
     return (
-        <MoralisProvider appId={appId} serverUrl={serverUrl}>
-            <UserProvider>
-                <PageContextProvider>
-                    <PopupProvider>
-                        <Head>
-                            <title>frens.page</title>
-                            <meta name="description" content="gm" />
-                            <link rel="icon" href="/images/favicon.png" />
-                        </Head>
-                        <Component {...pageProps} />
-                    </PopupProvider>
-                </PageContextProvider>
-            </UserProvider>
-        </MoralisProvider>
+        <>
+            <Head>
+                <title>frens.page</title>
+                <meta name="description" content="gm" />
+                <link rel="icon" href="/images/favicon.png" />
+            </Head>
+            <Component {...pageProps} />
+        </>
     );
 }
 
