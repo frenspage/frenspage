@@ -30,7 +30,7 @@ const showCanvas = true;
 const UserPage: NextPage<Props> = ({}) => {
     const router = useRouter();
 
-    const [pfp, setPfp] = useState<any>(null);
+    /*const [pfp, setPfp] = useState<any>(null);
     const [page, setPage] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [doesExist, setDoesExist] = useState(true);
@@ -54,12 +54,12 @@ const UserPage: NextPage<Props> = ({}) => {
 
     const { setFrenPopup } = usePopup();
 
-    /***** INITIAL LOAD *****/
+    /***** INITIAL LOAD *****
     useEffect(() => {
         if (slug) load();
     }, [isInitialized, slug]);
 
-    /***** CHECK IF USER has page claimed after connect *****/
+    /***** CHECK IF USER has page claimed after connect *****
     useEffect(() => {
         if (isAuthenticated && user && isClickAuth && !user.get("hasClaimed")) {
             setIsClickAuth(false);
@@ -77,7 +77,7 @@ const UserPage: NextPage<Props> = ({}) => {
      * 1. Check if Moralis is Initialized
      * 2. Check if Page with given slug exists
      * 3. Check if User has pfp -> then get pfp
-     **********************************************/
+     **********************************************
     const loadData = async () => {
         if (isInitialized) {
             let PageObject = Moralis.Object.extend("Page");
@@ -87,22 +87,22 @@ const UserPage: NextPage<Props> = ({}) => {
             checkUserHasPage.descending("createdAt");
             const userPage = await checkUserHasPage.first();
 
-            /*** CHECK IF PAGE EXISTS ***/
+            /*** CHECK IF PAGE EXISTS ***
             if (userPage) {
                 setPage(userPage);
 
                 const pageOwner = userPage.get("owner");
 
-                /*** CHECK IF OWNER EXISTS (to prevent errors) ***/
+                /*** CHECK IF OWNER EXISTS (to prevent errors) ***
                 if (pageOwner) {
-                    /*** Fetch ProfilePic from DB ***/
+                    /*** Fetch ProfilePic from DB ***
                     const PFPObject = Moralis.Object.extend("ProfilePic");
                     const pfpQuery = await new Moralis.Query(PFPObject);
                     pfpQuery.equalTo("owner", pageOwner);
                     pfpQuery.descending("createdAt");
                     const pfp = await pfpQuery.first();
 
-                    /*** CHECK IF USER HAS PFP ***/
+                    /*** CHECK IF USER HAS PFP ***
                     if (pfp && pfp?.isDataAvailable()) {
                         let ta = pfp.get("token_address");
                         let ti = pfp.get("token_id");
@@ -117,7 +117,7 @@ const UserPage: NextPage<Props> = ({}) => {
                         /*await fetch(
                             `https://api.opensea.io/api/v1/asset/${ta}/${ti}/`,
                             options,
-                        )*/
+                        )*
 
                         const tokenType = "erc721";
                         let baseURL = `https://eth-mainnet.alchemyapi.io/nft/v2/${process.env.NEXT_PUBLIC_ALCHEMY}/getNFTMetadata`;
@@ -127,7 +127,7 @@ const UserPage: NextPage<Props> = ({}) => {
                             .then((response) => {
                                 /*******************
                                  *  User has PFP
-                                 * *****************/
+                                 * *****************
                                 if (response?.metadata) {
                                     //let imageUrl = getNftImage(response);
                                     setPfp(response);
@@ -145,7 +145,7 @@ const UserPage: NextPage<Props> = ({}) => {
                     } else {
                         /**********************
                          *  User has no PFP
-                         * ********************/
+                         * ********************
                         setPfp(null);
                         setIsLoading(false);
                     }
@@ -154,7 +154,7 @@ const UserPage: NextPage<Props> = ({}) => {
                 /************************
                  *  Page does not exist
                  *   --> no fren here
-                 * **********************/
+                 * **********************
                 if (!page) {
                     setPfp(null);
                     setIsLoading(false);
@@ -164,18 +164,42 @@ const UserPage: NextPage<Props> = ({}) => {
         } else {
             /********************************
              *  Moralis not yet initialised
-             * ******************************/
+             * ******************************
             setIsLoading(true);
         }
     };
 
-    /**** IF ERROR FROM PFP LOAD *****/
+     */
+
+    return (
+        <Layout showFooter={true}>
+            <div className="container">
+                <div id="loggedoutcontent" className="content">
+                    <div>
+                        gn fren
+                        <br />
+                        <br />
+                        <a
+                            href=" https://twitter.com/FrensPage/status/1598670523029856256?s=20&t=4y9XdgG2OFdL3Vk13injkA"
+                            target="_blank"
+                        >
+                            <button className="connectwallet">
+                                Read Tweet
+                            </button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </Layout>
+    );
+
+    /**** IF ERROR FROM PFP LOAD *****
     if (error && !isOpenseaDown) return <p>Error {error.message}</p>;
 
-    /**** IF LOADING *****/
+    /**** IF LOADING *****
     if (isLoading) return <Loader />;
 
-    /**** IF NO USER *****/
+    /**** IF NO USER *****
     if (!isLoading && !doesExist)
         return (
             <Layout addClass="root-user centertext">
@@ -191,7 +215,7 @@ const UserPage: NextPage<Props> = ({}) => {
             </Layout>
         );
 
-    /**** IF USER === OWNER *****/
+    /**** IF USER === OWNER *****
     if (
         !isLoading &&
         doesExist &&
@@ -200,7 +224,7 @@ const UserPage: NextPage<Props> = ({}) => {
     )
         return <UserLoggedIn showCanvas={showCanvas} page={page} />;
 
-    /**** IF PAGE *****/
+    /**** IF PAGE *****
     return (
         <Layout addClass="root-user root-user__mobile">
             <div className="user-container">
@@ -312,7 +336,7 @@ const UserPage: NextPage<Props> = ({}) => {
                 </Hide>
             )}
         </Layout>
-    );
+    );*/
 };
 
 export default UserPage;
